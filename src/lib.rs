@@ -1,3 +1,3 @@
-pub mod tuple_ext;
+pub mod tuples;
 
-pub use crate::tuple_ext::TupleExt;
+pub use crate::tuples::TupleExt;

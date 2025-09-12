@@ -25,3 +25,14 @@ Feature: Tuples, Vectors, and Points
   Scenario: vector() creates tuples with w=0
     Given v ← vector(4, -4, 3)
     Then v = tuple(4, -4, 3, 0)
+
+  Scenario: two tuples with different values are different
+    Given p1 ← point(4, -4, 3)
+    Given p2 ← point(4.00001, -4, 3)
+    Then p1 does not equal p2
+
+  Scenario: two tuples with very close values are equal
+    Given p1 ← point(4, -4, 3)
+    Given p2 ← point(4.000009, -4, 3)
+    Then p1 equals p2
+
