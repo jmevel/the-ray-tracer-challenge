@@ -1,5 +1,6 @@
 use cucumber::{given, then, World};
 use the_ray_tracer_challenge::TupleExt;
+use the_ray_tracer_challenge::tuple_ext::{point, vector};
 
 #[derive(Debug, Default, World)]
 pub struct TupleWorld {
@@ -9,6 +10,16 @@ pub struct TupleWorld {
 #[given(expr = "a ← tuple\\({float}, {float}, {float}, {float})")]
 fn a_tuple(world: &mut TupleWorld, x: f32, y: f32, z: f32, w: f32) {
     world.tuple = (x, y, z, w);
+}
+
+#[given(expr = "p ← point\\({float}, {float}, {float})")]
+fn a_point(world: &mut TupleWorld, x: f32, y: f32, z: f32) {
+    world.tuple =  point(x, y, z);
+}
+
+#[given(expr = "v ← vector\\({float}, {float}, {float})")]
+fn a_vector(world: &mut TupleWorld, x: f32, y: f32, z: f32) {
+    world.tuple =  vector(x, y, z);
 }
 
 #[then(expr = "a.x = {float}")]
@@ -49,5 +60,10 @@ fn a_is_not_a_point(world: &mut TupleWorld) {
 #[then(expr = "a is not a vector")]
 fn a_is_not_a_vector(world: &mut TupleWorld) {
     assert!(!world.tuple.is_vector());
+}
+
+#[then(expr = "{word} = tuple\\({float}, {float}, {float}, {float})")]
+fn p_equals_tuple(world: &mut TupleWorld, tuple_name: String, x: f32, y: f32, z: f32, w: f32) {
+    assert_eq!(world.tuple, (x, y, z, w));
 }
 
