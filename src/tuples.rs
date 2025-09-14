@@ -2,6 +2,9 @@ pub trait TupleExt {
     fn is_point(&self) -> bool;
     fn is_vector(&self) -> bool;
     fn equals(&self, other: &(f32, f32, f32, f32)) -> bool;
+    fn add(&self, other: &(f32, f32, f32, f32)) -> (f32, f32, f32, f32);
+    fn subtract(&self, other: &(f32, f32, f32, f32)) -> (f32, f32, f32, f32);
+    fn negate(&self) -> (f32, f32, f32, f32);
 }
 
 impl TupleExt for (f32, f32, f32, f32) {
@@ -16,6 +19,26 @@ impl TupleExt for (f32, f32, f32, f32) {
             && float_equals(self.1, other.1)
             && float_equals(self.2, other.2)
             && float_equals(self.3, other.3)
+    }
+    fn add(&self, other: &(f32, f32, f32, f32)) -> (f32, f32, f32, f32) {
+        (
+            self.0 + other.0,
+            self.1 + other.1,
+            self.2 + other.2,
+            self.3 + other.3,
+        )
+    }
+    fn subtract(&self, other: &(f32, f32, f32, f32)) -> (f32, f32, f32, f32) {
+        (
+            self.0 - other.0,
+            self.1 - other.1,
+            self.2 - other.2,
+            self.3 - other.3,
+        )
+    }
+
+    fn negate(&self) -> (f32, f32, f32, f32) {
+        (-self.0, -self.1, -self.2, -self.3)
     }
 }
 

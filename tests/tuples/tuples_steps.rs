@@ -5,7 +5,7 @@ use the_ray_tracer_challenge::TupleExt;
 
 #[derive(Debug, Default, World)]
 pub struct TupleWorld {
-    tuples: HashMap<String, (f32, f32, f32, f32)>, //tuple: (f32, f32, f32, f32),
+    tuples: HashMap<String, (f32, f32, f32, f32)>,
 }
 
 #[given(expr = "{word} ← tuple\\({float}, {float}, {float}, {float})")]
@@ -115,7 +115,9 @@ fn is_not_a_vector(world: &mut TupleWorld, tuple_name: String) {
     );
 }
 
-#[then(expr = "{word} = tuple\\({float}, {float}, {float}, {float})")]
+#[then(
+    regex = r"^([a-zA-Z0-9]*) = tuple\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
+)]
 fn equals_tuple(world: &mut TupleWorld, tuple_name: String, x: f32, y: f32, z: f32, w: f32) {
     assert_eq!(
         world
@@ -126,34 +128,130 @@ fn equals_tuple(world: &mut TupleWorld, tuple_name: String, x: f32, y: f32, z: f
     );
 }
 
-#[then(expr = "{word} equals {word}")]
-fn tuple_equals_tuple(world: &mut TupleWorld, tuple_name1: String, tuple_name2: String) {
+#[then(regex = r"^([a-zA-Z0-9]*) = ([a-zA-Z0-9]*)$")]
+fn tuple_equals_tuple(world: &mut TupleWorld, tuple1: String, tuple2: String) {
     assert!(
         world
             .tuples
-            .get(&tuple_name1)
-            .expect(format!("{tuple_name1} does not exist").as_str())
+            .get(&tuple1)
+            .expect(format!("{tuple1} does not exist").as_str())
             .equals(
                 world
                     .tuples
-                    .get(&tuple_name2)
-                    .expect(format!("{tuple_name2} does not exist").as_str()),
+                    .get(&tuple2)
+                    .expect(format!("{tuple2} does not exist").as_str()),
             )
     );
 }
 
-#[then(expr = "{word} does not equal {word}")]
-fn tuple_does_not_equal_tuple(world: &mut TupleWorld, tuple_name1: String, tuple_name2: String) {
+#[then(expr = "{word} != {word}")]
+fn tuple_does_not_equal_tuple(world: &mut TupleWorld, tuple1: String, tuple2: String) {
     assert!(
         !world
             .tuples
-            .get(&tuple_name1)
-            .expect(format!("{tuple_name1} does not exist").as_str())
+            .get(&tuple1)
+            .expect(format!("{tuple1} does not exist").as_str())
             .equals(
                 world
                     .tuples
-                    .get(&tuple_name2)
-                    .expect(format!("{tuple_name2} does not exist").as_str()),
+                    .get(&tuple2)
+                    .expect(format!("{tuple2} does not exist").as_str()),
             )
     );
+}
+
+#[then(expr = "{word} + {word} = tuple\\({float}, {float}, {float}, {float})")]
+fn tuple_added_to_tuple_equals_tuple(
+    world: &mut TupleWorld,
+    tuple1: String,
+    tuple2: String,
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
+) {
+    let expected = (x, y, z, w);
+
+    let tuple1 = world
+        .tuples
+        .get(&tuple1)
+        .expect(format!("{tuple1} does not exist").as_str());
+
+    let tuple2 = world
+        .tuples
+        .get(&tuple2)
+        .expect(format!("{tuple2} does not exist").as_str());
+
+    let result = tuple1.add(&tuple2);
+    result.equals(&expected);
+}
+
+#[then(expr = "{word} - {word} = vector\\({float}, {float}, {float})")]
+fn point_subtracted_to_point_equals_vector(
+    world: &mut TupleWorld,
+    point1: String,
+    point2: String,
+    x: f32,
+    y: f32,
+    z: f32,
+) {
+    let expected = tuples::vector(x, y, z);
+
+    let tuple1 = world
+        .tuples
+        .get(&point1)
+        .expect(format!("{point1} does not exist").as_str());
+
+    let tuple2 = world
+        .tuples
+        .get(&point2)
+        .expect(format!("{point2} does not exist").as_str());
+
+    let result = tuple1.subtract(&tuple2);
+    result.equals(&expected);
+}
+
+#[then(expr = "{word} - {word} = point\\({float}, {float}, {float})")]
+fn point_subtracted_to_vector_equals_point(
+    world: &mut TupleWorld,
+    point: String,
+    vector: String,
+    x: f32,
+    y: f32,
+    z: f32,
+) {
+    let expected = tuples::point(x, y, z);
+
+    let tuple1 = world
+        .tuples
+        .get(&point)
+        .expect(format!("{point} does not exist").as_str());
+
+    let tuple2 = world
+        .tuples
+        .get(&vector)
+        .expect(format!("{vector} does not exist").as_str());
+
+    let result = tuple1.subtract(&tuple2);
+    result.equals(&expected);
+}
+
+#[then(expr = "-{word} = tuple\\({float}, {float}, {float}, {float})")]
+fn negated_tuple_equals_tuple(
+    world: &mut TupleWorld,
+    tuple: String,
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
+) {
+    let expected = (x, y, z, w);
+
+    let tuple = world
+        .tuples
+        .get(&tuple)
+        .expect(format!("{tuple} does not exist").as_str());
+
+    let result = tuple.negate();
+    result.equals(&expected);
 }
