@@ -1,53 +1,77 @@
-pub trait TupleExt {
-    fn is_point(&self) -> bool;
-    fn is_vector(&self) -> bool;
-    fn equals(&self, other: &(f32, f32, f32, f32)) -> bool;
-    fn add(&self, other: &(f32, f32, f32, f32)) -> (f32, f32, f32, f32);
-    fn subtract(&self, other: &(f32, f32, f32, f32)) -> (f32, f32, f32, f32);
-    fn negate(&self) -> (f32, f32, f32, f32);
+use std::ops::{Add, Deref, Neg, Sub};
+
+impl Add for &ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        ExtendedTuple::new(
+            self.0.0 + rhs.0.0,
+            self.0.1 + rhs.0.1,
+            self.0.2 + rhs.0.2,
+            self.0.3 + rhs.0.3,
+        )
+    }
 }
 
-impl TupleExt for (f32, f32, f32, f32) {
-    fn is_point(&self) -> bool {
+impl Sub for &ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        ExtendedTuple::new(
+            self.0.0 - rhs.0.0,
+            self.0.1 - rhs.0.1,
+            self.0.2 - rhs.0.2,
+            self.0.3 - rhs.0.3,
+        )
+    }
+}
+
+impl Neg for &ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn neg(self) -> Self::Output {
+        ExtendedTuple::new(-self.0.0, -self.0.1, -self.0.2, -self.0.3)
+    }
+}
+
+impl PartialEq for ExtendedTuple {
+    fn eq(&self, other: &Self) -> bool {
+        float_equals(self.0.0, other.0.0)
+            && float_equals(self.0.1, other.0.1)
+            && float_equals(self.0.2, other.0.2)
+            && float_equals(self.0.3, other.0.3)
+    }
+}
+
+impl Eq for ExtendedTuple {}
+
+#[derive(Debug)]
+pub struct ExtendedTuple((f32, f32, f32, f32));
+
+impl ExtendedTuple {
+    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
+        Self((x, y, z, w))
+    }
+    pub fn new_point(x: f32, y: f32, z: f32) -> ExtendedTuple {
+        ExtendedTuple((x, y, z, 1.0))
+    }
+    pub fn new_vector(x: f32, y: f32, z: f32) -> ExtendedTuple {
+        ExtendedTuple((x, y, z, 0.0))
+    }
+    pub fn is_point(&self) -> bool {
         self.3 == 1.0
     }
-    fn is_vector(&self) -> bool {
+    pub fn is_vector(&self) -> bool {
         self.3 == 0.0
     }
-    fn equals(&self, other: &(f32, f32, f32, f32)) -> bool {
-        float_equals(self.0, other.0)
-            && float_equals(self.1, other.1)
-            && float_equals(self.2, other.2)
-            && float_equals(self.3, other.3)
-    }
-    fn add(&self, other: &(f32, f32, f32, f32)) -> (f32, f32, f32, f32) {
-        (
-            self.0 + other.0,
-            self.1 + other.1,
-            self.2 + other.2,
-            self.3 + other.3,
-        )
-    }
-    fn subtract(&self, other: &(f32, f32, f32, f32)) -> (f32, f32, f32, f32) {
-        (
-            self.0 - other.0,
-            self.1 - other.1,
-            self.2 - other.2,
-            self.3 - other.3,
-        )
-    }
-
-    fn negate(&self) -> (f32, f32, f32, f32) {
-        (-self.0, -self.1, -self.2, -self.3)
-    }
 }
 
-pub fn point(x: f32, y: f32, z: f32) -> (f32, f32, f32, f32) {
-    (x, y, z, 1.0)
-}
+impl Deref for ExtendedTuple {
+    type Target = (f32, f32, f32, f32);
 
-pub fn vector(x: f32, y: f32, z: f32) -> (f32, f32, f32, f32) {
-    (x, y, z, 0.0)
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 fn float_equals(first: f32, second: f32) -> bool {

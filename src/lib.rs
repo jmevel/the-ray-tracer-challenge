@@ -1,3 +1,3 @@
 pub mod tuples;
 
-pub use crate::tuples::TupleExt;
+pub use crate::tuples::ExtendedTuple;
