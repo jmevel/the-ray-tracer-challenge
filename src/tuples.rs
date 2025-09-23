@@ -1,4 +1,4 @@
-use std::ops::{Add, Deref, Neg, Sub};
+use std::ops::{Add, Deref, Div, Mul, Neg, Sub};
 
 impl Add for &ExtendedTuple {
     type Output = ExtendedTuple;
@@ -34,6 +34,22 @@ impl Neg for &ExtendedTuple {
     }
 }
 
+impl Mul<f32> for &ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn mul(self, scalar: f32) -> Self::Output {
+        ExtendedTuple::new(self.0.0 * scalar, self.0.1 * scalar, self.0.2 * scalar, self.0.3 * scalar)
+    }
+}
+
+impl Div<f32> for &ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn div(self, fraction: f32) -> Self::Output {
+        ExtendedTuple::new(self.0.0 / fraction, self.0.1 / fraction, self.0.2 / fraction, self.0.3 / fraction)
+    }
+}
+
 impl PartialEq for ExtendedTuple {
     fn eq(&self, other: &Self) -> bool {
         float_equals(self.0.0, other.0.0)
@@ -63,6 +79,9 @@ impl ExtendedTuple {
     }
     pub fn is_vector(&self) -> bool {
         self.3 == 0.0
+    }
+    pub fn magnitude(&self) -> f32 {
+        (self.0.0.powi(2) + self.0.1.powi(2) + self.0.2.powi(2) + self.0.3.powi(2)).sqrt()
     }
 }
 

@@ -256,3 +256,74 @@ fn negated_tuple_equals_tuple(
     let result = -tuple;
     assert_eq!(result, expected);
 }
+
+#[then(expr = "{word} * {float} = tuple\\({float}, {float}, {float}, {float})")]
+fn multiplied_tuple_by_scalar_equals_tuple(
+    world: &mut TupleWorld,
+    tuple: String,
+    scalar:f32,
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
+) {
+    let expected = ExtendedTuple::new(x, y, z, w);
+
+    let tuple = world
+        .tuples
+        .get(&tuple)
+        .expect(format!("{tuple} does not exist").as_str());
+
+    let result = tuple * scalar;
+    assert_eq!(result, expected);
+}
+
+#[then(expr = "{word} \\/ {int} = tuple\\({float}, {float}, {float}, {float})")]
+fn divided_tuple_by_fraction_equals_tuple(
+    world: &mut TupleWorld,
+    tuple: String,
+    fraction:f32,
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
+) {
+    let expected = ExtendedTuple::new(x, y, z, w);
+
+    let tuple = world
+        .tuples
+        .get(&tuple)
+        .expect(format!("{tuple} does not exist").as_str());
+
+    let result = tuple / fraction;
+    assert_eq!(result, expected);
+}
+
+#[then(expr = "magnitude\\({word}) = {float}")]
+fn magnitude_equals_float(
+    world: &mut TupleWorld,
+    tuple: String,
+    expected:f32,
+) {
+    let tuple = world
+        .tuples
+        .get(&tuple)
+        .expect(format!("{tuple} does not exist").as_str());
+
+    assert_eq!(tuple.magnitude(), expected);
+}
+
+#[then(expr = "magnitude\\({word}) = √{float}")]
+fn magnitude_equals_squareroot_float(
+    world: &mut TupleWorld,
+    tuple: String,
+    expected:f32,
+) {
+    let expected = expected.sqrt();
+    let tuple = world
+        .tuples
+        .get(&tuple)
+        .expect(format!("{tuple} does not exist").as_str());
+
+    assert_eq!(tuple.magnitude(), expected);
+}
