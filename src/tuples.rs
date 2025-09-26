@@ -85,8 +85,20 @@ impl ExtendedTuple {
         (self.0.0.powi(2) + self.0.1.powi(2) + self.0.2.powi(2) + self.0.3.powi(2)).sqrt()
     }
     pub  fn normalize(&self) -> ExtendedTuple {
+        if !self.is_vector() { 
+            panic!("Only a vector can be normalized");
+        }
         let mag = self.magnitude();
+        if mag == 0f32 {
+            panic!("Magnitude is 0");
+        }
         ExtendedTuple((self.0.0/mag, self.0.1/mag, self.0.2/mag, self.0.3/mag))
+    }
+    pub fn dot_product(&self, other: &ExtendedTuple) -> f32 {
+        if !self.is_vector() || !other.is_vector() {
+            panic!("Dot product can only be applied on vectors");
+        }
+        self.0.0 * other.0.0 + self.0.1 * other.0.1 + self.0.2 * other.0.2 + self.0.3 * other.0.3
     }
 }
 

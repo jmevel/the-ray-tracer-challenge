@@ -1,7 +1,7 @@
 use cucumber::{given, then, when, World};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::ExtendedTuple;
 use the_ray_tracer_challenge::float::float_equals;
+use the_ray_tracer_challenge::ExtendedTuple;
 
 #[derive(Debug, Default, World)]
 pub struct TupleWorld {
@@ -35,7 +35,7 @@ fn tuple_is_normalization(world: &mut TupleWorld, tuple2: String, tuple1: String
         .tuples
         .get(&tuple1)
         .expect(format!("{tuple1} does not exist").as_str());
-    
+
     world
         .tuples
         .insert(tuple2, tuple1.normalize());
@@ -168,9 +168,9 @@ fn tuple_does_not_equal_tuple(world: &mut TupleWorld, tuple1: String, tuple2: St
             .get(&tuple1)
             .expect(format!("{tuple1} does not exist").as_str())
             == world
-                .tuples
-                .get(&tuple2)
-                .expect(format!("{tuple2} does not exist").as_str()))
+            .tuples
+            .get(&tuple2)
+            .expect(format!("{tuple2} does not exist").as_str()))
     );
 }
 
@@ -274,7 +274,7 @@ fn negated_tuple_equals_tuple(
 fn multiplied_tuple_by_scalar_equals_tuple(
     world: &mut TupleWorld,
     tuple: String,
-    scalar:f32,
+    scalar: f32,
     x: f32,
     y: f32,
     z: f32,
@@ -295,7 +295,7 @@ fn multiplied_tuple_by_scalar_equals_tuple(
 fn divided_tuple_by_fraction_equals_tuple(
     world: &mut TupleWorld,
     tuple: String,
-    fraction:f32,
+    fraction: f32,
     x: f32,
     y: f32,
     z: f32,
@@ -316,7 +316,7 @@ fn divided_tuple_by_fraction_equals_tuple(
 fn magnitude_equals_float(
     world: &mut TupleWorld,
     tuple: String,
-    expected:f32,
+    expected: f32,
 ) {
     let tuple = world
         .tuples
@@ -330,7 +330,7 @@ fn magnitude_equals_float(
 fn magnitude_equals_squareroot_float(
     world: &mut TupleWorld,
     tuple: String,
-    expected:f32,
+    expected: f32,
 ) {
     let expected = expected.sqrt();
     let tuple = world
@@ -366,5 +366,25 @@ fn normalize_equals_approximately_vector(
     y: f32,
     z: f32,
 ) {
-    normalize_equals_vector(world,tuple, x, y, z);
+    normalize_equals_vector(world, tuple, x, y, z);
+}
+
+#[then(expr = "dot\\({word}, {word}) = {float}")]
+fn dot_two_vectors_equals(
+    world: &mut TupleWorld,
+    tuple1: String,
+    tuple2: String,
+    expected: f32,
+) {
+    let tuple1 = world
+        .tuples
+        .get(&tuple1)
+        .expect(format!("{tuple1} does not exist").as_str());
+
+    let tuple2 = world
+        .tuples
+        .get(&tuple2)
+        .expect(format!("{tuple2} does not exist").as_str());
+
+    assert_eq!(tuple1.dot_product(tuple2), expected);
 }
