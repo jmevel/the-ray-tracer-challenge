@@ -1,0 +1,2 @@
+[alias]
+test_tuples = "test --test tuples -- --fail-fast"

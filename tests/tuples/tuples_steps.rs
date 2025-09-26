@@ -1,6 +1,7 @@
-use cucumber::{given, then, World};
+use cucumber::{given, then, when, World};
 use std::collections::HashMap;
 use the_ray_tracer_challenge::ExtendedTuple;
+use the_ray_tracer_challenge::float::float_equals;
 
 #[derive(Debug, Default, World)]
 pub struct TupleWorld {
@@ -8,114 +9,126 @@ pub struct TupleWorld {
 }
 
 #[given(expr = "{word} ← tuple\\({float}, {float}, {float}, {float})")]
-fn tuple(world: &mut TupleWorld, tuple_name: String, x: f32, y: f32, z: f32, w: f32) {
+fn tuple_is(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
     world
         .tuples
-        .insert(tuple_name, ExtendedTuple::new(x, y, z, w));
+        .insert(tuple, ExtendedTuple::new(x, y, z, w));
 }
 
 #[given(expr = "{word} ← point\\({float}, {float}, {float})")]
-fn point(world: &mut TupleWorld, tuple_name: String, x: f32, y: f32, z: f32) {
+fn tuple_is_point(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32) {
     world
         .tuples
-        .insert(tuple_name, ExtendedTuple::new_point(x, y, z));
+        .insert(tuple, ExtendedTuple::new_point(x, y, z));
 }
 
 #[given(expr = "{word} ← vector\\({float}, {float}, {float})")]
-fn vector(world: &mut TupleWorld, tuple_name: String, x: f32, y: f32, z: f32) {
+fn tuple_is_vector(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32) {
     world
         .tuples
-        .insert(tuple_name, ExtendedTuple::new_vector(x, y, z));
+        .insert(tuple, ExtendedTuple::new_vector(x, y, z));
+}
+
+#[when(expr = "{word} ← normalize\\({word})")]
+fn tuple_is_normalization(world: &mut TupleWorld, tuple2: String, tuple1: String) {
+    let tuple1 = world
+        .tuples
+        .get(&tuple1)
+        .expect(format!("{tuple1} does not exist").as_str());
+    
+    world
+        .tuples
+        .insert(tuple2, tuple1.normalize());
 }
 
 #[then(expr = "{word}.x = {float}")]
-fn x_equal(world: &mut TupleWorld, tuple_name: String, x: f32) {
+fn x_equal(world: &mut TupleWorld, tuple: String, x: f32) {
     assert_eq!(
         world
             .tuples
-            .get(&tuple_name)
-            .expect(format!("{tuple_name} does not exist").as_str())
+            .get(&tuple)
+            .expect(format!("{tuple} does not exist").as_str())
             .0,
         x
     );
 }
 
 #[then(expr = "{word}.y = {float}")]
-fn y_equal(world: &mut TupleWorld, tuple_name: String, y: f32) {
+fn y_equal(world: &mut TupleWorld, tuple: String, y: f32) {
     assert_eq!(
         world
             .tuples
-            .get(&tuple_name)
-            .expect(format!("{tuple_name} does not exist").as_str())
+            .get(&tuple)
+            .expect(format!("{tuple} does not exist").as_str())
             .1,
         y
     );
 }
 
 #[then(expr = "{word}.z = {float}")]
-fn z_equal(world: &mut TupleWorld, tuple_name: String, z: f32) {
+fn z_equal(world: &mut TupleWorld, tuple: String, z: f32) {
     assert_eq!(
         world
             .tuples
-            .get(&tuple_name)
-            .expect(format!("{tuple_name} does not exist").as_str())
+            .get(&tuple)
+            .expect(format!("{tuple} does not exist").as_str())
             .2,
         z
     );
 }
 
 #[then(expr = "{word}.w = {float}")]
-fn w_equal(world: &mut TupleWorld, tuple_name: String, w: f32) {
+fn w_equal(world: &mut TupleWorld, tuple: String, w: f32) {
     assert_eq!(
         world
             .tuples
-            .get(&tuple_name)
-            .expect(format!("{tuple_name} does not exist").as_str())
+            .get(&tuple)
+            .expect(format!("{tuple} does not exist").as_str())
             .3,
         w
     );
 }
 
 #[then(expr = "{word} is a point")]
-fn is_a_point(world: &mut TupleWorld, tuple_name: String) {
+fn is_a_point(world: &mut TupleWorld, tuple: String) {
     assert!(
         world
             .tuples
-            .get(&tuple_name)
-            .expect(format!("{tuple_name} does not exist").as_str())
+            .get(&tuple)
+            .expect(format!("{tuple} does not exist").as_str())
             .is_point()
     );
 }
 
 #[then(expr = "{word} is a vector")]
-fn is_a_vector(world: &mut TupleWorld, tuple_name: String) {
+fn is_a_vector(world: &mut TupleWorld, tuple: String) {
     assert!(
         world
             .tuples
-            .get(&tuple_name)
-            .expect(format!("{tuple_name} does not exist").as_str())
+            .get(&tuple)
+            .expect(format!("{tuple} does not exist").as_str())
             .is_vector()
     );
 }
 
 #[then(expr = "{word} is not a point")]
-fn is_not_a_point(world: &mut TupleWorld, tuple_name: String) {
+fn is_not_a_point(world: &mut TupleWorld, tuple: String) {
     assert!(
         !world
             .tuples
-            .get(&tuple_name)
-            .expect(format!("{tuple_name} does not exist").as_str())
+            .get(&tuple)
+            .expect(format!("{tuple} does not exist").as_str())
             .is_point()
     );
 }
 
 #[then(expr = "{word} is not a vector")]
-fn is_not_a_vector(world: &mut TupleWorld, tuple_name: String) {
+fn is_not_a_vector(world: &mut TupleWorld, tuple: String) {
     assert!(
         !world
             .tuples
-            .get(&tuple_name)
-            .expect(format!("{tuple_name} does not exist").as_str())
+            .get(&tuple)
+            .expect(format!("{tuple} does not exist").as_str())
             .is_vector()
     );
 }
@@ -123,12 +136,12 @@ fn is_not_a_vector(world: &mut TupleWorld, tuple_name: String) {
 #[then(
     regex = r"^([a-zA-Z0-9]*) = tuple\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
 )]
-fn equals_tuple(world: &mut TupleWorld, tuple_name: String, x: f32, y: f32, z: f32, w: f32) {
+fn equals_tuple(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
     assert_eq!(
         *world
             .tuples
-            .get(&tuple_name)
-            .expect(format!("{tuple_name} does not exist").as_str()),
+            .get(&tuple)
+            .expect(format!("{tuple} does not exist").as_str()),
         ExtendedTuple::new(x, y, z, w)
     );
 }
@@ -310,7 +323,7 @@ fn magnitude_equals_float(
         .get(&tuple)
         .expect(format!("{tuple} does not exist").as_str());
 
-    assert_eq!(tuple.magnitude(), expected);
+    assert!(float_equals(tuple.magnitude(), expected));
 }
 
 #[then(expr = "magnitude\\({word}) = √{float}")]
@@ -326,4 +339,32 @@ fn magnitude_equals_squareroot_float(
         .expect(format!("{tuple} does not exist").as_str());
 
     assert_eq!(tuple.magnitude(), expected);
+}
+
+#[then(expr = "normalize\\({word}) = vector\\({float}, {float}, {float})")]
+fn normalize_equals_vector(
+    world: &mut TupleWorld,
+    tuple: String,
+    x: f32,
+    y: f32,
+    z: f32,
+) {
+    let expected = ExtendedTuple::new_vector(x, y, z);
+    let tuple = world
+        .tuples
+        .get(&tuple)
+        .expect(format!("{tuple} does not exist").as_str());
+
+    assert_eq!(tuple.normalize(), expected);
+}
+
+#[then(expr = "normalize\\({word}) = approximately vector\\({float}, {float}, {float})")]
+fn normalize_equals_approximately_vector(
+    world: &mut TupleWorld,
+    tuple: String,
+    x: f32,
+    y: f32,
+    z: f32,
+) {
+    normalize_equals_vector(world,tuple, x, y, z);
 }

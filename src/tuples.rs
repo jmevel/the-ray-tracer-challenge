@@ -1,4 +1,5 @@
 use std::ops::{Add, Deref, Div, Mul, Neg, Sub};
+use crate::float::float_equals;
 
 impl Add for &ExtendedTuple {
     type Output = ExtendedTuple;
@@ -83,6 +84,10 @@ impl ExtendedTuple {
     pub fn magnitude(&self) -> f32 {
         (self.0.0.powi(2) + self.0.1.powi(2) + self.0.2.powi(2) + self.0.3.powi(2)).sqrt()
     }
+    pub  fn normalize(&self) -> ExtendedTuple {
+        let mag = self.magnitude();
+        ExtendedTuple((self.0.0/mag, self.0.1/mag, self.0.2/mag, self.0.3/mag))
+    }
 }
 
 impl Deref for ExtendedTuple {
@@ -93,7 +98,4 @@ impl Deref for ExtendedTuple {
     }
 }
 
-fn float_equals(first: f32, second: f32) -> bool {
-    const EPSILON: f32 = 0.00001;
-    f32::abs(first - second) < EPSILON
-}
+
