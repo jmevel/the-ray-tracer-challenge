@@ -48,8 +48,8 @@ fn x_equal(world: &mut TupleWorld, tuple: String, x: f32) {
             .tuples
             .get(&tuple)
             .expect(format!("{tuple} does not exist").as_str())
-            .0,
-        x
+            .x(),
+        &x
     );
 }
 
@@ -60,8 +60,8 @@ fn y_equal(world: &mut TupleWorld, tuple: String, y: f32) {
             .tuples
             .get(&tuple)
             .expect(format!("{tuple} does not exist").as_str())
-            .1,
-        y
+            .y(),
+        &y
     );
 }
 
@@ -72,8 +72,8 @@ fn z_equal(world: &mut TupleWorld, tuple: String, z: f32) {
             .tuples
             .get(&tuple)
             .expect(format!("{tuple} does not exist").as_str())
-            .2,
-        z
+            .z(),
+        &z
     );
 }
 
@@ -84,8 +84,8 @@ fn w_equal(world: &mut TupleWorld, tuple: String, w: f32) {
             .tuples
             .get(&tuple)
             .expect(format!("{tuple} does not exist").as_str())
-            .3,
-        w
+            .w(),
+        &w
     );
 }
 
@@ -387,4 +387,28 @@ fn dot_two_vectors_equals(
         .expect(format!("{tuple2} does not exist").as_str());
 
     assert_eq!(tuple1.dot_product(tuple2), expected);
+}
+
+#[then(expr = "cross\\({word}, {word}) = vector\\({float}, {float}, {float})")]
+fn cross_two_vectors_equals_vector(
+    world: &mut TupleWorld,
+    tuple1: String,
+    tuple2: String,
+    x: f32,
+    y: f32,
+    z: f32,
+) {
+    let tuple1 = world
+        .tuples
+        .get(&tuple1)
+        .expect(format!("{tuple1} does not exist").as_str());
+
+    let tuple2 = world
+        .tuples
+        .get(&tuple2)
+        .expect(format!("{tuple2} does not exist").as_str());
+
+    let expected = ExtendedTuple::new_vector(x, y, z);
+
+    assert_eq!(tuple1.cross_product(tuple2), expected);
 }
