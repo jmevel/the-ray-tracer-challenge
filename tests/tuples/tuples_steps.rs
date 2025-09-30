@@ -1,7 +1,7 @@
-use cucumber::{given, then, when, World};
+use cucumber::{World, given, then, when};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::float::float_equals;
 use the_ray_tracer_challenge::ExtendedTuple;
+use the_ray_tracer_challenge::float::float_equals;
 
 #[derive(Debug, Default, World)]
 pub struct TupleWorld {
@@ -10,9 +10,7 @@ pub struct TupleWorld {
 
 #[given(expr = "{word} ← tuple\\({float}, {float}, {float}, {float})")]
 fn tuple_is(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
-    world
-        .tuples
-        .insert(tuple, ExtendedTuple::new(x, y, z, w));
+    world.tuples.insert(tuple, ExtendedTuple::new(x, y, z, w));
 }
 
 #[given(expr = "{word} ← point\\({float}, {float}, {float})")]
@@ -36,9 +34,7 @@ fn tuple_is_normalization(world: &mut TupleWorld, tuple2: String, tuple1: String
         .get(&tuple1)
         .expect(format!("{tuple1} does not exist").as_str());
 
-    world
-        .tuples
-        .insert(tuple2, tuple1.normalize());
+    world.tuples.insert(tuple2, tuple1.normalize());
 }
 
 #[then(expr = "{word}.x = {float}")]
@@ -168,9 +164,9 @@ fn tuple_does_not_equal_tuple(world: &mut TupleWorld, tuple1: String, tuple2: St
             .get(&tuple1)
             .expect(format!("{tuple1} does not exist").as_str())
             == world
-            .tuples
-            .get(&tuple2)
-            .expect(format!("{tuple2} does not exist").as_str()))
+                .tuples
+                .get(&tuple2)
+                .expect(format!("{tuple2} does not exist").as_str()))
     );
 }
 
@@ -313,11 +309,7 @@ fn divided_tuple_by_fraction_equals_tuple(
 }
 
 #[then(expr = "magnitude\\({word}) = {float}")]
-fn magnitude_equals_float(
-    world: &mut TupleWorld,
-    tuple: String,
-    expected: f32,
-) {
+fn magnitude_equals_float(world: &mut TupleWorld, tuple: String, expected: f32) {
     let tuple = world
         .tuples
         .get(&tuple)
@@ -327,11 +319,7 @@ fn magnitude_equals_float(
 }
 
 #[then(expr = "magnitude\\({word}) = √{float}")]
-fn magnitude_equals_squareroot_float(
-    world: &mut TupleWorld,
-    tuple: String,
-    expected: f32,
-) {
+fn magnitude_equals_squareroot_float(world: &mut TupleWorld, tuple: String, expected: f32) {
     let expected = expected.sqrt();
     let tuple = world
         .tuples
@@ -342,13 +330,7 @@ fn magnitude_equals_squareroot_float(
 }
 
 #[then(expr = "normalize\\({word}) = vector\\({float}, {float}, {float})")]
-fn normalize_equals_vector(
-    world: &mut TupleWorld,
-    tuple: String,
-    x: f32,
-    y: f32,
-    z: f32,
-) {
+fn normalize_equals_vector(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32) {
     let expected = ExtendedTuple::new_vector(x, y, z);
     let tuple = world
         .tuples
@@ -370,12 +352,7 @@ fn normalize_equals_approximately_vector(
 }
 
 #[then(expr = "dot\\({word}, {word}) = {float}")]
-fn dot_two_vectors_equals(
-    world: &mut TupleWorld,
-    tuple1: String,
-    tuple2: String,
-    expected: f32,
-) {
+fn dot_two_vectors_equals(world: &mut TupleWorld, tuple1: String, tuple2: String, expected: f32) {
     let tuple1 = world
         .tuples
         .get(&tuple1)

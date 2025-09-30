@@ -2,8 +2,7 @@ use crate::float::float_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 #[derive(Debug)]
-pub struct ExtendedTuple
-{
+pub struct ExtendedTuple {
     x: f32,
     y: f32,
     z: f32,
@@ -11,16 +10,16 @@ pub struct ExtendedTuple
 }
 
 impl ExtendedTuple {
-    pub fn x(&self) -> &f32{
+    pub fn x(&self) -> &f32 {
         &self.x
     }
-    pub fn y(&self) -> &f32{
+    pub fn y(&self) -> &f32 {
         &self.y
     }
-    pub fn z(&self) -> &f32{
+    pub fn z(&self) -> &f32 {
         &self.z
     }
-    pub fn w(&self) -> &f32{
+    pub fn w(&self) -> &f32 {
         &self.w
     }
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
@@ -39,6 +38,9 @@ impl ExtendedTuple {
         self.w == 0.0
     }
     pub fn magnitude(&self) -> f32 {
+        if !self.is_vector() { 
+            panic!("Magnitude only makes sense on vectors")
+        }
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)).sqrt()
     }
     pub fn normalize(&self) -> ExtendedTuple {
@@ -49,7 +51,12 @@ impl ExtendedTuple {
         if mag == 0f32 {
             panic!("Magnitude is 0");
         }
-        ExtendedTuple { x: self.x / mag, y: self.y / mag, z: self.z / mag, w: self.w / mag }
+        ExtendedTuple {
+            x: self.x / mag,
+            y: self.y / mag,
+            z: self.z / mag,
+            w: self.w / mag,
+        }
     }
     pub fn dot_product(&self, other: &ExtendedTuple) -> f32 {
         if !self.is_vector() || !other.is_vector() {
@@ -61,9 +68,11 @@ impl ExtendedTuple {
         if !self.is_vector() || !other.is_vector() {
             panic!("Dot product can only be applied on vectors");
         }
-        ExtendedTuple::new_vector(self.y * other.z - self.z * other.y,
-                                  self.z * other.x - self.x * other.z,
-                                  self.x * other.y - self.y * other.x)
+        ExtendedTuple::new_vector(
+            self.y * other.z - self.z * other.y,
+            self.z * other.x - self.x * other.z,
+            self.x * other.y - self.y * other.x,
+        )
     }
 }
 
@@ -91,6 +100,14 @@ impl Add for &ExtendedTuple {
     }
 }
 
+impl Add for ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        &self + &rhs
+    }
+}
+
 impl Sub for &ExtendedTuple {
     type Output = ExtendedTuple;
 
@@ -104,6 +121,14 @@ impl Sub for &ExtendedTuple {
     }
 }
 
+impl Sub for ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        &self - &rhs
+    }
+}
+
 impl Neg for &ExtendedTuple {
     type Output = ExtendedTuple;
 
@@ -112,11 +137,32 @@ impl Neg for &ExtendedTuple {
     }
 }
 
+impl Neg for ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn neg(self) -> Self::Output {
+        -&self
+    }
+}
+
 impl Mul<f32> for &ExtendedTuple {
     type Output = ExtendedTuple;
 
     fn mul(self, scalar: f32) -> Self::Output {
-        ExtendedTuple::new(self.x * scalar, self.y * scalar, self.z * scalar, self.w * scalar)
+        ExtendedTuple::new(
+            self.x * scalar,
+            self.y * scalar,
+            self.z * scalar,
+            self.w * scalar,
+        )
+    }
+}
+
+impl Mul<f32> for ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn mul(self, scalar: f32) -> Self::Output {
+        &self * scalar
     }
 }
 
@@ -124,9 +170,19 @@ impl Div<f32> for &ExtendedTuple {
     type Output = ExtendedTuple;
 
     fn div(self, fraction: f32) -> Self::Output {
-        ExtendedTuple::new(self.x / fraction, self.y / fraction, self.z / fraction, self.w / fraction)
+        ExtendedTuple::new(
+            self.x / fraction,
+            self.y / fraction,
+            self.z / fraction,
+            self.w / fraction,
+        )
     }
 }
 
+impl Div<f32> for ExtendedTuple {
+    type Output = ExtendedTuple;
 
-
+    fn div(self, fraction: f32) -> Self::Output {
+        &self / fraction
+    }
+}
