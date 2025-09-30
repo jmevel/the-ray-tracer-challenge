@@ -14,6 +14,7 @@ fn tuple_is(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32, w: f3
 }
 
 #[given(expr = "{word} ← point\\({float}, {float}, {float})")]
+#[given(expr = "{word} ← color\\({float}, {float}, {float})")]
 fn tuple_is_point(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32) {
     world
         .tuples
@@ -38,6 +39,7 @@ fn tuple_is_normalization(world: &mut TupleWorld, tuple2: String, tuple1: String
 }
 
 #[then(expr = "{word}.x = {float}")]
+#[then(expr = "{word}.red = {float}")]
 fn x_equal(world: &mut TupleWorld, tuple: String, x: f32) {
     assert_eq!(
         world
@@ -50,6 +52,7 @@ fn x_equal(world: &mut TupleWorld, tuple: String, x: f32) {
 }
 
 #[then(expr = "{word}.y = {float}")]
+#[then(expr = "{word}.green = {float}")]
 fn y_equal(world: &mut TupleWorld, tuple: String, y: f32) {
     assert_eq!(
         world
@@ -62,6 +65,7 @@ fn y_equal(world: &mut TupleWorld, tuple: String, y: f32) {
 }
 
 #[then(expr = "{word}.z = {float}")]
+#[then(expr = "{word}.blue = {float}")]
 fn z_equal(world: &mut TupleWorld, tuple: String, z: f32) {
     assert_eq!(
         world
@@ -196,6 +200,18 @@ fn tuple_added_to_tuple_equals_tuple(
     assert_eq!(result, expected);
 }
 
+#[then(expr = "{word} + {word} = color\\({float}, {float}, {float})")]
+fn color_added_to_color_equals_color(
+    world: &mut TupleWorld,
+    tuple1: String,
+    tuple2: String,
+    red: f32,
+    green: f32,
+    blue: f32,
+) {
+    tuple_added_to_tuple_equals_tuple(world, tuple1, tuple2, red, green, blue, 2f32);
+}
+
 #[then(expr = "{word} - {word} = vector\\({float}, {float}, {float})")]
 fn point_subtracted_to_point_equals_vector(
     world: &mut TupleWorld,
@@ -246,6 +262,18 @@ fn point_subtracted_to_vector_equals_point(
     assert_eq!(result, expected);
 }
 
+#[then(expr = "{word} - {word} = color\\({float}, {float}, {float})")]
+fn color_subtracted_to_color_equals_color(
+    world: &mut TupleWorld,
+    tuple1: String,
+    tuple2: String,
+    red: f32,
+    green: f32,
+    blue: f32,
+) {
+    point_subtracted_to_point_equals_vector(world, tuple1, tuple2, red, green, blue);
+}
+
 #[then(expr = "-{word} = tuple\\({float}, {float}, {float}, {float})")]
 fn negated_tuple_equals_tuple(
     world: &mut TupleWorld,
@@ -287,6 +315,37 @@ fn multiplied_tuple_by_scalar_equals_tuple(
     assert_eq!(result, expected);
 }
 
+#[then(expr = "{word} * {word} = color\\({float}, {float}, {float})")]
+fn multiplied_color_by_color_equals_color(
+    world: &mut TupleWorld,
+    color1: String,
+    scalar_or_color: String,
+    red: f32,
+    green: f32,
+    blue: f32,
+) {
+    let expected = ExtendedTuple::new_color(red, green, blue);
+
+    let color1 = world
+        .tuples
+        .get(&color1)
+        .expect(format!("{color1} does not exist").as_str());
+
+    let result = match scalar_or_color.parse::<f32>() {
+        Ok(scalar) => color1 * scalar,
+        Err(_) => {
+            let color2 = world
+                .tuples
+                .get(&scalar_or_color)
+                .expect(format!("{scalar_or_color} does not exist").as_str());
+
+            color1 * color2
+        }
+    };
+
+    assert!(float_equals(&result.x(), &expected.x()));
+}
+
 #[then(expr = "{word} \\/ {int} = tuple\\({float}, {float}, {float}, {float})")]
 fn divided_tuple_by_fraction_equals_tuple(
     world: &mut TupleWorld,
@@ -315,7 +374,7 @@ fn magnitude_equals_float(world: &mut TupleWorld, tuple: String, expected: f32) 
         .get(&tuple)
         .expect(format!("{tuple} does not exist").as_str());
 
-    assert!(float_equals(tuple.magnitude(), expected));
+    assert!(float_equals(&tuple.magnitude(), &expected));
 }
 
 #[then(expr = "magnitude\\({word}) = √{float}")]

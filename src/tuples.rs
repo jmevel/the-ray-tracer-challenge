@@ -28,6 +28,9 @@ impl ExtendedTuple {
     pub fn new_point(x: f32, y: f32, z: f32) -> ExtendedTuple {
         ExtendedTuple { x, y, z, w: 1.0 }
     }
+    pub fn new_color(red: f32, green: f32, blue: f32) -> ExtendedTuple {
+        Self::new_point(red, green, blue)
+    }
     pub fn new_vector(x: f32, y: f32, z: f32) -> ExtendedTuple {
         ExtendedTuple { x, y, z, w: 0.0 }
     }
@@ -38,7 +41,7 @@ impl ExtendedTuple {
         self.w == 0.0
     }
     pub fn magnitude(&self) -> f32 {
-        if !self.is_vector() { 
+        if !self.is_vector() {
             panic!("Magnitude only makes sense on vectors")
         }
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)).sqrt()
@@ -80,10 +83,10 @@ impl Eq for ExtendedTuple {}
 
 impl PartialEq for ExtendedTuple {
     fn eq(&self, other: &Self) -> bool {
-        float_equals(self.x, other.x)
-            && float_equals(self.y, other.y)
-            && float_equals(self.z, other.z)
-            && float_equals(self.w, other.w)
+        float_equals(&self.x, &other.x)
+            && float_equals(&self.y, &other.y)
+            && float_equals(&self.z, &other.z)
+            && float_equals(&self.w, &other.w)
     }
 }
 
@@ -163,6 +166,27 @@ impl Mul<f32> for ExtendedTuple {
 
     fn mul(self, scalar: f32) -> Self::Output {
         &self * scalar
+    }
+}
+
+impl Mul<&ExtendedTuple> for &ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn mul(self, other: &ExtendedTuple) -> Self::Output {
+        ExtendedTuple::new(
+            self.x * other.x,
+            self.y * other.y,
+            self.z * other.z,
+            self.w * other.w,
+        )
+    }
+}
+
+impl Mul<&ExtendedTuple> for ExtendedTuple {
+    type Output = ExtendedTuple;
+
+    fn mul(self, other: &ExtendedTuple) -> Self::Output {
+        &self * other
     }
 }
 
