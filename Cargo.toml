@@ -11,3 +11,8 @@ tokio = { version = "1.10", features = ["macros", "rt-multi-thread", "time"] }
 name = "tuples" # this should be the same as the filename of your test target
 path = "tests/tuples/tuples.rs"
 harness = false  # allows Cucumber to print output instead of libtest
+
+[[test]]
+name = "canvas"
+path = "tests/canvas/canvas.rs"
+harness = false
