@@ -1,7 +1,7 @@
 use crate::float::float_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ExtendedTuple {
     x: f32,
     y: f32,
@@ -39,6 +39,9 @@ impl ExtendedTuple {
     }
     pub fn is_vector(&self) -> bool {
         self.w == 0.0
+    }
+    pub fn is_color(&self) -> bool {
+        self.is_point()
     }
     pub fn magnitude(&self) -> f32 {
         if !self.is_vector() {

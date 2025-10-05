@@ -1,5 +1,5 @@
-use cucumber::World;
 use crate::canvas_steps::CanvasWorld;
+use cucumber::World;
 
 mod canvas_steps;
 

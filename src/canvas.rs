@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use crate::ExtendedTuple;
+use std::collections::HashMap;
 
 #[derive(Debug, Default)]
 pub struct Canvas {
@@ -30,5 +30,11 @@ impl Canvas {
             height,
             pixels,
         }
+    }
+    pub fn write_pixel(&mut self, x: usize, y: usize, pixel: ExtendedTuple) {
+        if !pixel.is_color() {
+            panic!("pixel is not color");
+        }
+        self.pixels.entry((x, y)).and_modify(|p| *p = pixel);
     }
 }
