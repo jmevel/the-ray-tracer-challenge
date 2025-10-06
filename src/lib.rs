@@ -3,3 +3,4 @@ pub mod float;
 pub mod tuples;
 
 pub use crate::tuples::ExtendedTuple;
+pub use crate::canvas::Canvas;

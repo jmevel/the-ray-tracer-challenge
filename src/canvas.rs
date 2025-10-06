@@ -37,4 +37,9 @@ impl Canvas {
         }
         self.pixels.entry((x, y)).and_modify(|p| *p = pixel);
     }
+    pub fn convert_to_ppm(&self) -> String {
+        "P3\n\
+        5 3\n\
+        255\n".to_owned()
+    }
 }

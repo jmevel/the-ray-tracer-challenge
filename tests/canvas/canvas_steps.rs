@@ -1,12 +1,14 @@
-use cucumber::{World, given, then, when};
+use cucumber::{given, then, when, World};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::ExtendedTuple;
+use cucumber::gherkin::Step;
 use the_ray_tracer_challenge::canvas::Canvas;
+use the_ray_tracer_challenge::ExtendedTuple;
 
 #[derive(Debug, Default, World)]
 pub struct CanvasWorld {
     canvases: HashMap<String, Canvas>,
     tuples: HashMap<String, ExtendedTuple>,
+    ppms: HashMap<String, String>,
 }
 
 #[given(expr = "{word} ← canvas\\({int}, {int})")]
@@ -23,8 +25,15 @@ fn tuple_is_color(world: &mut CanvasWorld, tuple: String, x: f32, y: f32, z: f32
 
 #[when(expr = "write_pixel\\({word}, {int}, {int}, {word})")]
 fn write_pixels(world: &mut CanvasWorld, canvas: String, x: usize, y: usize, color: String) {
-    let test: ExtendedTuple = world.get_tuple(color).to_owned();
-    world.get_mut_canvas(canvas).write_pixel(x, y, test)
+    let color = world.get_tuple(color).to_owned();
+    world.get_mut_canvas(canvas).write_pixel(x, y, color)
+}
+
+#[when(expr = "{word} ← canvas_to_ppm\\({word})")]
+fn convert_to_ppm(world: &mut CanvasWorld, ppm: String, canvas: String) {
+    let canvas = world.get_canvas(canvas);
+    let result = canvas.convert_to_ppm();
+    world.ppms.insert(ppm, result);
 }
 
 #[then(expr = "{word}.width = {int}")]
@@ -53,15 +62,37 @@ fn every_pixel_of_canvas_is_color(
 }
 
 #[then(expr = "pixel_at\\({word}, {int}, {int}) = {word}")]
-fn pixel_at(
-    world: &mut CanvasWorld,
-    canvas: String,
-    x: usize,
-    y: usize,
-    color: String,
-) {
+fn pixel_at(world: &mut CanvasWorld, canvas: String, x: usize, y: usize, color: String) {
     let expected = world.get_tuple(color);
-    assert_eq!(world.get_canvas(canvas).pixels().get(&(x, y)).unwrap(),expected);
+    assert_eq!(
+        world.get_canvas(canvas).pixels().get(&(x, y)).unwrap(),
+        expected
+    );
+}
+
+#[then(expr = "lines {int}-{int} of {word} are")]
+fn lines_of_ppm_are(
+    world: &mut CanvasWorld,
+    first_line: usize,
+    last_line: usize,
+    ppm: String,
+    step: &Step,
+) {
+    let lines_range = first_line-1..last_line;
+    let lines = world
+        .get_ppm(ppm)
+        .lines()
+        .enumerate()
+        .filter_map(
+            |(i, line)| {
+                if lines_range.contains(&i) { Some(line) } else { None }
+            },
+        )
+        .collect();
+    let lines: Vec<&str> = lines;
+    step.docstring.as_ref().unwrap().lines().skip(1).enumerate().for_each(|(i, line)| {
+        assert_eq!(line.to_string(), lines[i].to_string());
+    });
 }
 
 impl CanvasWorld {
@@ -79,5 +110,10 @@ impl CanvasWorld {
         self.tuples
             .get(&tuple)
             .expect(format!("{tuple} does not exist").as_str())
+    }
+    fn get_ppm(&self, ppm: String) -> &str {
+        self.ppms
+            .get(&ppm)
+            .expect(format!("{ppm} does not exist").as_str())
     }
 }
