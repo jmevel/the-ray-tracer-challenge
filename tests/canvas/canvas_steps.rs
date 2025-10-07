@@ -1,8 +1,8 @@
-use cucumber::{given, then, when, World};
-use std::collections::HashMap;
 use cucumber::gherkin::Step;
-use the_ray_tracer_challenge::canvas::Canvas;
+use cucumber::{World, given, then, when};
+use std::collections::HashMap;
 use the_ray_tracer_challenge::ExtendedTuple;
+use the_ray_tracer_challenge::canvas::Canvas;
 
 #[derive(Debug, Default, World)]
 pub struct CanvasWorld {
@@ -13,7 +13,9 @@ pub struct CanvasWorld {
 
 #[given(expr = "{word} ← canvas\\({int}, {int})")]
 fn canvas_is(world: &mut CanvasWorld, canvas: String, width: usize, height: usize) {
-    world.canvases.insert(canvas, Canvas::new(width, height));
+    world
+        .canvases
+        .insert(canvas, Canvas::new(width, height, None));
 }
 
 #[given(expr = "{word} ← color\\({float}, {float}, {float})")]
@@ -78,21 +80,29 @@ fn lines_of_ppm_are(
     ppm: String,
     step: &Step,
 ) {
-    let lines_range = first_line-1..last_line;
+    let lines_range = first_line - 1..last_line;
     let lines = world
         .get_ppm(ppm)
         .lines()
         .enumerate()
-        .filter_map(
-            |(i, line)| {
-                if lines_range.contains(&i) { Some(line) } else { None }
-            },
-        )
+        .filter_map(|(i, line)| {
+            if lines_range.contains(&i) {
+                Some(line)
+            } else {
+                None
+            }
+        })
         .collect();
     let lines: Vec<&str> = lines;
-    step.docstring.as_ref().unwrap().lines().skip(1).enumerate().for_each(|(i, line)| {
-        assert_eq!(line.to_string(), lines[i].to_string());
-    });
+    step.docstring
+        .as_ref()
+        .unwrap()
+        .lines()
+        .skip(1)
+        .enumerate()
+        .for_each(|(i, line)| {
+            assert_eq!(line.to_string(), lines[i].to_string());
+        });
 }
 
 impl CanvasWorld {
