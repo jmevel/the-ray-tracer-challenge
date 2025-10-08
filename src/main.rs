@@ -1,13 +1,15 @@
+use the_ray_tracer_challenge::vector::Vector;
 use the_ray_tracer_challenge::ExtendedTuple;
+use the_ray_tracer_challenge::point::Point;
 
 fn main() {
     let mut projectile = Projectile::new(
-        ExtendedTuple::new_point(0f32, 1f32, 0f32),
-        ExtendedTuple::new_vector(1f32, 1f32, 0f32).normalize(),
+        Point::new(0f32, 1f32, 0f32, None),
+        Vector::new(1f32, 1f32, 0f32, None).normalize(),
     );
     let environment = Environment::new(
-        ExtendedTuple::new_vector(0f32, -0.1, 0f32),
-        ExtendedTuple::new_vector(-0.01, 0f32, 0f32),
+        Vector::new(0f32, -0.1, 0f32, None),
+        Vector::new(-0.01, 0f32, 0f32, None),
     );
 
     println!("initial position: {:#?}", projectile.position);
@@ -21,35 +23,23 @@ fn main() {
 }
 
 struct Projectile {
-    position: ExtendedTuple,
-    velocity: ExtendedTuple,
+    position: Point,
+    velocity: Vector,
 }
 
 impl Projectile {
-    pub fn new(position: ExtendedTuple, velocity: ExtendedTuple) -> Self {
-        if !position.is_point() {
-            panic!("position must be a point");
-        }
-        if !velocity.is_vector() {
-            panic!("velocity must be a vector");
-        }
+    pub fn new(position: Point, velocity: Vector) -> Self {
         Self { position, velocity }
     }
 }
 
 struct Environment {
-    gravity: ExtendedTuple,
-    wind: ExtendedTuple,
+    gravity: Vector,
+    wind: Vector,
 }
 
 impl Environment {
-    pub fn new(gravity: ExtendedTuple, wind: ExtendedTuple) -> Self {
-        if !gravity.is_vector() {
-            panic!("gravity must be a vector");
-        }
-        if !wind.is_vector() {
-            panic!("velocity must be a vector");
-        }
+    pub fn new(gravity: Vector, wind: Vector) -> Self {
         Self { gravity, wind }
     }
 }

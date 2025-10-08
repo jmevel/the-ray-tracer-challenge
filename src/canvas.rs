@@ -1,12 +1,12 @@
-use crate::ExtendedTuple;
 use std::cmp;
 use std::collections::HashMap;
+use crate::color::Color;
 
 #[derive(Debug, Default)]
 pub struct Canvas {
     width: usize,
     height: usize,
-    pixels: HashMap<(usize, usize), ExtendedTuple>,
+    pixels: HashMap<(usize, usize), Color>,
     max_color_value: u32,
 }
 
@@ -17,7 +17,7 @@ impl Canvas {
     pub fn height(&self) -> &usize {
         &self.height
     }
-    pub fn pixels(&self) -> &HashMap<(usize, usize), ExtendedTuple> {
+    pub fn pixels(&self) -> &HashMap<(usize, usize), Color> {
         &self.pixels
     }
     pub fn new(width: usize, height: usize, max_color_value: Option<u32>) -> Self {
@@ -25,7 +25,7 @@ impl Canvas {
         let mut pixels = HashMap::with_capacity(width * height);
         for x in 0..width {
             for y in 0..height {
-                pixels.insert((x, y), ExtendedTuple::new_color(0.0, 0.0, 0.0));
+                pixels.insert((x, y), Color::new(0.0, 0.0, 0.0));
             }
         }
         Self {
@@ -35,10 +35,7 @@ impl Canvas {
             max_color_value,
         }
     }
-    pub fn write_pixel(&mut self, x: usize, y: usize, pixel: ExtendedTuple) {
-        if !pixel.is_color() {
-            panic!("pixel is not color");
-        }
+    pub fn write_pixel(&mut self, x: usize, y: usize, pixel: Color) {
         self.pixels.entry((x, y)).and_modify(|p| *p = pixel);
     }
     pub fn convert_to_ppm(&self) -> String {
@@ -57,9 +54,9 @@ impl Canvas {
                 let pixel_to_ppm = format!(
                     "{}{} {} {}",
                     separator,
-                    self.scale_color(pixel.x()),
-                    self.scale_color(pixel.y()),
-                    self.scale_color(pixel.z())
+                    self.scale_color(pixel.red()),
+                    self.scale_color(pixel.green()),
+                    self.scale_color(pixel.blue())
                 );
                 ppm.push_str(pixel_to_ppm.as_str());
             }

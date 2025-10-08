@@ -1,13 +1,13 @@
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::ExtendedTuple;
 use the_ray_tracer_challenge::canvas::Canvas;
+use the_ray_tracer_challenge::color::Color;
 
 #[derive(Debug, Default, World)]
 pub struct CanvasWorld {
     canvases: HashMap<String, Canvas>,
-    tuples: HashMap<String, ExtendedTuple>,
+    colors: HashMap<String, Color>,
     ppms: HashMap<String, String>,
 }
 
@@ -19,15 +19,15 @@ fn canvas_is(world: &mut CanvasWorld, canvas: String, width: usize, height: usiz
 }
 
 #[given(expr = "{word} ← color\\({float}, {float}, {float})")]
-fn tuple_is_color(world: &mut CanvasWorld, tuple: String, x: f32, y: f32, z: f32) {
+fn color_is(world: &mut CanvasWorld, color: String, red: f32, green: f32, blue: f32) {
     world
-        .tuples
-        .insert(tuple, ExtendedTuple::new_point(x, y, z));
+        .colors
+        .insert(color, Color::new(red, green, blue));
 }
 
 #[when(expr = "write_pixel\\({word}, {int}, {int}, {word})")]
 fn write_pixels(world: &mut CanvasWorld, canvas: String, x: usize, y: usize, color: String) {
-    let color = world.get_tuple(color).to_owned();
+    let color = world.get_color(color).to_owned();
     world.get_mut_canvas(canvas).write_pixel(x, y, color)
 }
 
@@ -56,7 +56,7 @@ fn every_pixel_of_canvas_is_color(
     green: f32,
     blue: f32,
 ) {
-    let black = ExtendedTuple::new_color(red, green, blue);
+    let black = Color::new(red, green, blue);
     let canvas_pixels = world.get_canvas(canvas).pixels();
     canvas_pixels.iter().for_each(|pixel| {
         assert_eq!(pixel.1, &black);
@@ -65,7 +65,7 @@ fn every_pixel_of_canvas_is_color(
 
 #[then(expr = "pixel_at\\({word}, {int}, {int}) = {word}")]
 fn pixel_at(world: &mut CanvasWorld, canvas: String, x: usize, y: usize, color: String) {
-    let expected = world.get_tuple(color);
+    let expected = world.get_color(color);
     assert_eq!(
         world.get_canvas(canvas).pixels().get(&(x, y)).unwrap(),
         expected
@@ -116,10 +116,10 @@ impl CanvasWorld {
             .get_mut(&canvas)
             .expect(format!("{canvas} does not exist").as_str())
     }
-    fn get_tuple(&self, tuple: String) -> &ExtendedTuple {
-        self.tuples
-            .get(&tuple)
-            .expect(format!("{tuple} does not exist").as_str())
+    fn get_color(&self, color: String) -> &Color {
+        self.colors
+            .get(&color)
+            .expect(format!("{color} does not exist").as_str())
     }
     fn get_ppm(&self, ppm: String) -> &str {
         self.ppms
