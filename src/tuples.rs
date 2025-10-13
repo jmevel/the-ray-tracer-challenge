@@ -1,13 +1,28 @@
-use crate::float::float_equals;
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::any::Any;
+use std::fmt::Debug;
 
+#[derive(PartialEq, Eq, Hash, Debug)]
+pub enum TupleType {
+    Point,
+    Vector,
+}
 
 pub trait ExtendedTuple {
     fn x(&self) -> &f32;
     fn y(&self) -> &f32;
     fn z(&self) -> &f32;
     fn w(&self) -> &f32;
-    fn new(x: f32, y: f32, z: f32, w: Option<f32>) -> Self where Self: Sized;
+    fn new(x: f32, y: f32, z: f32, w: Option<f32>) -> Self
+    where
+        Self: Sized;
+    fn as_any(&self) -> &dyn Any;
+    fn get_type(&self) -> TupleType;
+}
+
+impl Debug for dyn ExtendedTuple {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "ExtendedTuple{{{}}}", self.x())
+    }
 }
 
 // impl ExtendedTuple {

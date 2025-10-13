@@ -1,5 +1,7 @@
 use crate::float::float_equals;
+use crate::tuples::TupleType;
 use crate::ExtendedTuple;
+use std::any::Any;
 use std::ops::{Add, Div, Mul, Neg};
 
 #[derive(Debug, Clone)]
@@ -63,6 +65,14 @@ impl ExtendedTuple for Vector {
             z,
             w: w.unwrap_or(0.0),
         }
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
+    fn get_type(&self) -> TupleType {
+        TupleType::Vector
     }
 }
 

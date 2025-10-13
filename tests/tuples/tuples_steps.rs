@@ -1,8 +1,10 @@
 use cucumber::{given, then, when, World};
+use std::any::Any;
 use std::collections::HashMap;
 use the_ray_tracer_challenge::color::Color;
 use the_ray_tracer_challenge::float::float_equals;
 use the_ray_tracer_challenge::point::Point;
+use the_ray_tracer_challenge::tuples::TupleType;
 use the_ray_tracer_challenge::vector::Vector;
 use the_ray_tracer_challenge::ExtendedTuple;
 
@@ -11,10 +13,16 @@ pub struct TupleWorld {
     points: HashMap<String, Point>,
     vectors: HashMap<String, Vector>,
     colors: HashMap<String, Color>,
+    tuples: HashMap<(String, TupleType), Box<dyn ExtendedTuple>>,
 }
 
 #[given(expr = "{word} ← tuple\\({float}, {float}, {float}, {float})")]
 fn tuple_is(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
+    world.tuples.insert(
+        (tuple, TupleType::Vector),
+        Box::new(Vector::new(x, y, z, Some(w))),
+    );
+
     match w {
         0f32 => {
             world.vectors.insert(tuple, Vector::new(x, y, z, Some(w)));
@@ -108,8 +116,8 @@ fn tuple_does_not_equal_tuple(world: &mut TupleWorld, tuple1: String, tuple2: St
 #[then(expr = "{word} + {word} = tuple\\({float}, {float}, {float}, {float})")]
 fn tuple_added_to_tuple_equals_tuple(
     world: &mut TupleWorld,
-    tuple1: String,
-    tuple2: String,
+    tuple1_name: String,
+    tuple2_name: String,
     x: f32,
     y: f32,
     z: f32,
@@ -120,8 +128,22 @@ fn tuple_added_to_tuple_equals_tuple(
         1f32 => &Point::new(x, y, z, None) as &dyn ExtendedTuple,
         _ => panic!("w out of bounds"),
     };
-    let tuple1 = world.get_tuple(tuple1);
-    let tuple2 = world.get_tuple(tuple2);
+
+    if world.tuples.contains_key(&(tuple1_name, TupleType::Point)) {}
+
+    let tuple1 = world.get_tuple(tuple1_name);
+    let tuple1 = {
+        if tuple1.get_type() == TupleType::Point {
+            tuple1.as_any().downcast_ref::<Point>()
+        } else {
+            tuple1.as_any().downcast_ref::<Vector>()
+        }
+    };
+    let tuple2 = world.get_tuple(tuple2_name);
+    let tuple2 = match tuple2.as_any().downcast_ref::<Vector>() {
+        Some(x) => x,
+        None => panic!("&a isn't a B!"),
+    };
 
     let result = tuple1 + tuple2;
     assert_eq!(result, expected);
@@ -321,14 +343,25 @@ fn cross_two_vectors_equals_vector(
 }
 
 impl TupleWorld {
-    fn get_tuple(&self, tuple: String) -> &dyn ExtendedTuple {
-        match self.points.get(&tuple) {
-            Some(point) => point as &dyn ExtendedTuple,
-            None => match self.vectors.get(&tuple) {
-                Some(vector) => vector,
-                None => panic!("{}", format!("{tuple} not found")),
-            },
-        }
+    // fn get_tuple<T: ExtendedTuple + 'static>(&self, tuple: String) -> &T
+    // where
+    //     T: ExtendedTuple,
+    // {
+    //     //self.tuples.get(&tuple).unwrap().as_any().downcast_ref::<T>().unwrap()
+    //
+    //     match self.points.get(&tuple) {
+    //         Some(point) => point.into(),
+    //         None => match self.vectors.get(&tuple) {
+    //             Some(vector) => vector,
+    //             None => panic!("{}", format!("{tuple} not found")),
+    //         },
+    //     }
+    // }
+
+    fn get_tuple(&self, tuple: String) -> &Box<&dyn ExtendedTuple> {
+        self.tuples
+            .get(&tuple)
+            .expect(format!("{tuple} does not exist").as_str())
     }
     fn get_point(&self, point: String) -> &Point {
         self.points

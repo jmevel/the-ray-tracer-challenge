@@ -1,35 +1,50 @@
-use std::ops::{Add, Div, Mul, Neg, Sub};
-use crate::ExtendedTuple;
 use crate::float::float_equals;
+use crate::tuples::TupleType;
 use crate::vector::Vector;
+use crate::ExtendedTuple;
+use std::any::Any;
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
 #[derive(Debug, Clone)]
-pub struct Point{
+pub struct Point {
     x: f32,
     y: f32,
     z: f32,
-    w:f32,
+    w: f32,
 }
 
-impl ExtendedTuple for Point{
-    fn x(&self) -> &f32{
+impl ExtendedTuple for Point {
+    fn x(&self) -> &f32 {
         &self.x
     }
-    fn y(&self) -> &f32{
+    fn y(&self) -> &f32 {
         &self.y
     }
-    fn z(&self) -> &f32{
+    fn z(&self) -> &f32 {
         &self.z
     }
-    fn w(&self) -> &f32{
+    fn w(&self) -> &f32 {
         &self.w
     }
 
     fn new(x: f32, y: f32, z: f32, w: Option<f32>) -> Self
     where
-        Self: Sized
+        Self: Sized,
     {
-        Self{x, y, z, w: w.unwrap_or(1.0)}
+        Self {
+            x,
+            y,
+            z,
+            w: w.unwrap_or(1.0),
+        }
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
+    fn get_type(&self) -> TupleType {
+        TupleType::Point
     }
 }
 
@@ -37,12 +52,7 @@ impl Add<&Vector> for &Point {
     type Output = Point;
 
     fn add(self, rhs: &Vector) -> Self::Output {
-        Point::new(
-            self.x + rhs.x(),
-            self.y + rhs.y(),
-            self.z + rhs.z(),
-            None
-        )
+        Point::new(self.x + rhs.x(), self.y + rhs.y(), self.z + rhs.z(), None)
     }
 }
 
@@ -69,12 +79,7 @@ impl Sub for &Point {
     type Output = Vector;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Vector::new(
-            self.x - rhs.x,
-            self.y - rhs.y,
-            self.z - rhs.z,
-            None
-        )
+        Vector::new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z, None)
     }
 }
 
@@ -90,12 +95,7 @@ impl Sub<&Vector> for &Point {
     type Output = Point;
 
     fn sub(self, rhs: &Vector) -> Self::Output {
-        Point::new(
-            self.x - rhs.x(),
-            self.y - rhs.y(),
-            self.z - rhs.z(),
-            None
-        )
+        Point::new(self.x - rhs.x(), self.y - rhs.y(), self.z - rhs.z(), None)
     }
 }
 
