@@ -1,8 +1,8 @@
 use cucumber::gherkin::Step;
-use cucumber::{World, given, then, when};
+use cucumber::{given, then, when, World};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::ExtendedTuple;
 use the_ray_tracer_challenge::canvas::Canvas;
+use the_ray_tracer_challenge::ExtendedTuple;
 
 #[derive(Debug, Default, World)]
 pub struct CanvasWorld {
@@ -19,10 +19,10 @@ fn canvas_is(world: &mut CanvasWorld, canvas: String, width: usize, height: usiz
 }
 
 #[given(expr = "{word} ← color\\({float}, {float}, {float})")]
-fn tuple_is_color(world: &mut CanvasWorld, tuple: String, x: f32, y: f32, z: f32) {
+fn tuple_is_color(world: &mut CanvasWorld, tuple: String, red: f32, green: f32, blue: f32) {
     world
         .tuples
-        .insert(tuple, ExtendedTuple::new_point(x, y, z));
+        .insert(tuple, ExtendedTuple::new_color(red, green, blue));
 }
 
 #[when(expr = "write_pixel\\({word}, {int}, {int}, {word})")]
@@ -36,6 +36,19 @@ fn convert_to_ppm(world: &mut CanvasWorld, ppm: String, canvas: String) {
     let canvas = world.get_canvas(canvas);
     let result = canvas.convert_to_ppm();
     world.ppms.insert(ppm, result);
+}
+
+#[when(expr = "every pixel of {word} is set to color\\({float}, {float}, {float})")]
+fn every_pixel_of_canvas_is_set_to_color(
+    world: &mut CanvasWorld,
+    canvas_name: String,
+    red: f32,
+    green: f32,
+    blue: f32,
+) {
+    let color = ExtendedTuple::new_color(red, green, blue);
+    let canvas = world.get_mut_canvas(canvas_name);
+    canvas.write_all_pixels(color);
 }
 
 #[then(expr = "{word}.width = {int}")]
@@ -103,6 +116,11 @@ fn lines_of_ppm_are(
         .for_each(|(i, line)| {
             assert_eq!(line.to_string(), lines[i].to_string());
         });
+}
+
+#[then(expr = "{word} ends with a newline character")]
+fn ppm_ends_with_a_new_line_character(world: &mut CanvasWorld, ppm: String) {
+    assert_eq!(world.get_ppm(ppm).chars().last().unwrap(), '\n');
 }
 
 impl CanvasWorld {

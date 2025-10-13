@@ -35,11 +35,17 @@ impl Canvas {
             max_color_value,
         }
     }
-    pub fn write_pixel(&mut self, x: usize, y: usize, pixel: ExtendedTuple) {
-        if !pixel.is_color() {
+    pub fn write_pixel(&mut self, x: usize, y: usize, color: ExtendedTuple) {
+        if !color.is_color() {
+            panic!("color is not color");
+        }
+        self.pixels.entry((x, y)).and_modify(|p| *p = color);
+    }
+    pub fn write_all_pixels(&mut self, color: ExtendedTuple) {
+        if !color.is_color() {
             panic!("pixel is not color");
         }
-        self.pixels.entry((x, y)).and_modify(|p| *p = pixel);
+        self.pixels.values_mut().for_each(|p| *p = color.clone());
     }
     pub fn convert_to_ppm(&self) -> String {
         let header = format!(
@@ -51,6 +57,7 @@ impl Canvas {
 
         let mut ppm = header;
         for y in 0..self.height {
+            let mut line = "".to_owned();
             for x in 0..self.width {
                 let separator = if x != 0 { " " } else { "" };
                 let pixel = self.pixels.get(&(x, y)).unwrap();
@@ -61,10 +68,25 @@ impl Canvas {
                     self.scale_color(pixel.y()),
                     self.scale_color(pixel.z())
                 );
-                ppm.push_str(pixel_to_ppm.as_str());
+                line.push_str(pixel_to_ppm.as_str());
             }
+            // each line must not be more than 70 characters long
+            if line.chars().count() > 70 {
+                // we can't split a line in the middle of a number, it must be a space
+                let split_index = find_index_to_split_at(line.as_str(), 70); 
+                let (first, second) = line.split_at(split_index.unwrap());
+                ppm.push_str(first);
+                ppm.push('\n');
+                ppm.push_str(second.trim());
+            } else {
+                ppm.push_str(line.as_str());
+            }
+
             ppm.push('\n');
         }
+
+        // must end with a new line character
+        ppm.push('\n');
 
         ppm
     }
@@ -72,4 +94,13 @@ impl Canvas {
     fn scale_color(&self, color: &f32) -> u32 {
         cmp::min((color * self.max_color_value as f32).round() as u32, 255)
     }
+}
+
+fn find_index_to_split_at(line: &str, index: usize) -> Option<usize> {
+    if line.chars().nth(index) == Some(' ') {
+        return Some(index);
+    }
+    let mut new_index = index;
+    new_index -= 1;
+    find_index_to_split_at(line, new_index)
 }

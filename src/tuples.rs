@@ -1,12 +1,20 @@
 use crate::float::float_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum TupleType{
+    Point,
+    Vector,
+    Color,
+}
+
 #[derive(Debug, Clone)]
 pub struct ExtendedTuple {
     x: f32,
     y: f32,
     z: f32,
     w: f32,
+    tuple_type: TupleType
 }
 
 impl ExtendedTuple {
@@ -23,25 +31,29 @@ impl ExtendedTuple {
         &self.w
     }
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
-        Self { x, y, z, w }
+        let tuple_type = match w {
+            1f32 => TupleType::Point,
+            0f32 | _ => TupleType::Vector,
+        };
+        Self { x, y, z, w, tuple_type }
     }
     pub fn new_point(x: f32, y: f32, z: f32) -> ExtendedTuple {
-        ExtendedTuple { x, y, z, w: 1.0 }
+        ExtendedTuple { x, y, z, w: 1.0, tuple_type: TupleType::Point}
     }
     pub fn new_color(red: f32, green: f32, blue: f32) -> ExtendedTuple {
-        Self::new_point(red, green, blue)
+        ExtendedTuple { x: red, y: green, z: blue, w: 1.0, tuple_type: TupleType::Color}
     }
     pub fn new_vector(x: f32, y: f32, z: f32) -> ExtendedTuple {
-        ExtendedTuple { x, y, z, w: 0.0 }
+        ExtendedTuple { x, y, z, w: 0.0, tuple_type: TupleType::Vector }
     }
     pub fn is_point(&self) -> bool {
-        self.w == 1.0
+        self.tuple_type == TupleType::Point
     }
     pub fn is_vector(&self) -> bool {
-        self.w == 0.0
+        self.tuple_type == TupleType::Vector
     }
     pub fn is_color(&self) -> bool {
-        self.is_point()
+        self.tuple_type == TupleType::Color
     }
     pub fn magnitude(&self) -> f32 {
         if !self.is_vector() {
@@ -62,6 +74,7 @@ impl ExtendedTuple {
             y: self.y / mag,
             z: self.z / mag,
             w: self.w / mag,
+            tuple_type: TupleType::Vector
         }
     }
     pub fn dot_product(&self, other: &ExtendedTuple) -> f32 {
