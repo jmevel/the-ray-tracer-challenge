@@ -1,8 +1,8 @@
 use cucumber::gherkin::Step;
-use cucumber::{given, then, when, World};
+use cucumber::{World, given, then, when};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::canvas::Canvas;
 use the_ray_tracer_challenge::ExtendedTuple;
+use the_ray_tracer_challenge::canvas::Canvas;
 
 #[derive(Debug, Default, World)]
 pub struct CanvasWorld {

@@ -73,7 +73,7 @@ impl Canvas {
             // each line must not be more than 70 characters long
             if line.chars().count() > 70 {
                 // we can't split a line in the middle of a number, it must be a space
-                let split_index = find_index_to_split_at(line.as_str(), 70); 
+                let split_index = find_index_to_split_at(line.as_str(), 70);
                 let (first, second) = line.split_at(split_index.unwrap());
                 ppm.push_str(first);
                 ppm.push('\n');
