@@ -9,7 +9,7 @@ pub enum TupleType {
 }
 
 #[derive(Debug, Clone)]
-pub struct ExtendedTuple {
+pub struct Tuple {
     x: f32,
     y: f32,
     z: f32,
@@ -17,7 +17,7 @@ pub struct ExtendedTuple {
     tuple_type: TupleType,
 }
 
-impl ExtendedTuple {
+impl Tuple {
     pub fn x(&self) -> &f32 {
         &self.x
     }
@@ -43,8 +43,8 @@ impl ExtendedTuple {
             tuple_type,
         }
     }
-    pub fn new_point(x: f32, y: f32, z: f32) -> ExtendedTuple {
-        ExtendedTuple {
+    pub fn new_point(x: f32, y: f32, z: f32) -> Tuple {
+        Tuple {
             x,
             y,
             z,
@@ -52,8 +52,8 @@ impl ExtendedTuple {
             tuple_type: TupleType::Point,
         }
     }
-    pub fn new_color(red: f32, green: f32, blue: f32) -> ExtendedTuple {
-        ExtendedTuple {
+    pub fn new_color(red: f32, green: f32, blue: f32) -> Tuple {
+        Tuple {
             x: red,
             y: green,
             z: blue,
@@ -61,8 +61,8 @@ impl ExtendedTuple {
             tuple_type: TupleType::Color,
         }
     }
-    pub fn new_vector(x: f32, y: f32, z: f32) -> ExtendedTuple {
-        ExtendedTuple {
+    pub fn new_vector(x: f32, y: f32, z: f32) -> Tuple {
+        Tuple {
             x,
             y,
             z,
@@ -85,7 +85,7 @@ impl ExtendedTuple {
         }
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)).sqrt()
     }
-    pub fn normalize(&self) -> ExtendedTuple {
+    pub fn normalize(&self) -> Tuple {
         if !self.is_vector() {
             panic!("Only a vector can be normalized");
         }
@@ -93,7 +93,7 @@ impl ExtendedTuple {
         if mag == 0f32 {
             panic!("Magnitude is 0");
         }
-        ExtendedTuple {
+        Tuple {
             x: self.x / mag,
             y: self.y / mag,
             z: self.z / mag,
@@ -101,17 +101,17 @@ impl ExtendedTuple {
             tuple_type: TupleType::Vector,
         }
     }
-    pub fn dot_product(&self, other: &ExtendedTuple) -> f32 {
+    pub fn dot_product(&self, other: &Tuple) -> f32 {
         if !self.is_vector() || !other.is_vector() {
             panic!("Dot product can only be applied on vectors");
         }
         self.x * other.x + self.y * other.y + self.z * other.z + self.w * other.w
     }
-    pub fn cross_product(&self, other: &ExtendedTuple) -> ExtendedTuple {
+    pub fn cross_product(&self, other: &Tuple) -> Tuple {
         if !self.is_vector() || !other.is_vector() {
             panic!("Dot product can only be applied on vectors");
         }
-        ExtendedTuple::new_vector(
+        Tuple::new_vector(
             self.y * other.z - self.z * other.y,
             self.z * other.x - self.x * other.z,
             self.x * other.y - self.y * other.x,
@@ -119,9 +119,9 @@ impl ExtendedTuple {
     }
 }
 
-impl Eq for ExtendedTuple {}
+impl Eq for Tuple {}
 
-impl PartialEq for ExtendedTuple {
+impl PartialEq for Tuple {
     fn eq(&self, other: &Self) -> bool {
         float_equals(&self.x, &other.x)
             && float_equals(&self.y, &other.y)
@@ -130,11 +130,11 @@ impl PartialEq for ExtendedTuple {
     }
 }
 
-impl Add for &ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Add for &Tuple {
+    type Output = Tuple;
 
     fn add(self, rhs: Self) -> Self::Output {
-        ExtendedTuple::new(
+        Tuple::new(
             self.x + rhs.x,
             self.y + rhs.y,
             self.z + rhs.z,
@@ -143,19 +143,19 @@ impl Add for &ExtendedTuple {
     }
 }
 
-impl Add for ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Add for Tuple {
+    type Output = Tuple;
 
     fn add(self, rhs: Self) -> Self::Output {
         &self + &rhs
     }
 }
 
-impl Sub for &ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Sub for &Tuple {
+    type Output = Tuple;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        ExtendedTuple::new(
+        Tuple::new(
             self.x - rhs.x,
             self.y - rhs.y,
             self.z - rhs.z,
@@ -164,35 +164,35 @@ impl Sub for &ExtendedTuple {
     }
 }
 
-impl Sub for ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Sub for Tuple {
+    type Output = Tuple;
 
     fn sub(self, rhs: Self) -> Self::Output {
         &self - &rhs
     }
 }
 
-impl Neg for &ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Neg for &Tuple {
+    type Output = Tuple;
 
     fn neg(self) -> Self::Output {
-        ExtendedTuple::new(-self.x, -self.y, -self.z, -self.w)
+        Tuple::new(-self.x, -self.y, -self.z, -self.w)
     }
 }
 
-impl Neg for ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Neg for Tuple {
+    type Output = Tuple;
 
     fn neg(self) -> Self::Output {
         -&self
     }
 }
 
-impl Mul<f32> for &ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Mul<f32> for &Tuple {
+    type Output = Tuple;
 
     fn mul(self, scalar: f32) -> Self::Output {
-        ExtendedTuple::new(
+        Tuple::new(
             self.x * scalar,
             self.y * scalar,
             self.z * scalar,
@@ -201,19 +201,19 @@ impl Mul<f32> for &ExtendedTuple {
     }
 }
 
-impl Mul<f32> for ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Mul<f32> for Tuple {
+    type Output = Tuple;
 
     fn mul(self, scalar: f32) -> Self::Output {
         &self * scalar
     }
 }
 
-impl Mul<&ExtendedTuple> for &ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Mul<&Tuple> for &Tuple {
+    type Output = Tuple;
 
-    fn mul(self, other: &ExtendedTuple) -> Self::Output {
-        ExtendedTuple::new(
+    fn mul(self, other: &Tuple) -> Self::Output {
+        Tuple::new(
             self.x * other.x,
             self.y * other.y,
             self.z * other.z,
@@ -222,19 +222,19 @@ impl Mul<&ExtendedTuple> for &ExtendedTuple {
     }
 }
 
-impl Mul<&ExtendedTuple> for ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Mul<&Tuple> for Tuple {
+    type Output = Tuple;
 
-    fn mul(self, other: &ExtendedTuple) -> Self::Output {
+    fn mul(self, other: &Tuple) -> Self::Output {
         &self * other
     }
 }
 
-impl Div<f32> for &ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Div<f32> for &Tuple {
+    type Output = Tuple;
 
     fn div(self, fraction: f32) -> Self::Output {
-        ExtendedTuple::new(
+        Tuple::new(
             self.x / fraction,
             self.y / fraction,
             self.z / fraction,
@@ -243,8 +243,8 @@ impl Div<f32> for &ExtendedTuple {
     }
 }
 
-impl Div<f32> for ExtendedTuple {
-    type Output = ExtendedTuple;
+impl Div<f32> for Tuple {
+    type Output = Tuple;
 
     fn div(self, fraction: f32) -> Self::Output {
         &self / fraction

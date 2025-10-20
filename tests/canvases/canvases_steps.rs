@@ -1,13 +1,13 @@
 use cucumber::gherkin::Step;
-use cucumber::{World, given, then, when};
+use cucumber::{given, then, when, World};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::ExtendedTuple;
 use the_ray_tracer_challenge::canvas::Canvas;
+use the_ray_tracer_challenge::Tuple;
 
 #[derive(Debug, Default, World)]
 pub struct CanvasWorld {
     canvases: HashMap<String, Canvas>,
-    tuples: HashMap<String, ExtendedTuple>,
+    tuples: HashMap<String, Tuple>,
     ppms: HashMap<String, String>,
 }
 
@@ -22,7 +22,7 @@ fn canvas_is(world: &mut CanvasWorld, canvas: String, width: usize, height: usiz
 fn tuple_is_color(world: &mut CanvasWorld, tuple: String, red: f32, green: f32, blue: f32) {
     world
         .tuples
-        .insert(tuple, ExtendedTuple::new_color(red, green, blue));
+        .insert(tuple, Tuple::new_color(red, green, blue));
 }
 
 #[when(expr = "write_pixel\\({word}, {int}, {int}, {word})")]
@@ -46,7 +46,7 @@ fn every_pixel_of_canvas_is_set_to_color(
     green: f32,
     blue: f32,
 ) {
-    let color = ExtendedTuple::new_color(red, green, blue);
+    let color = Tuple::new_color(red, green, blue);
     let canvas = world.get_mut_canvas(canvas_name);
     canvas.write_all_pixels(color);
 }
@@ -69,7 +69,7 @@ fn every_pixel_of_canvas_is_color(
     green: f32,
     blue: f32,
 ) {
-    let black = ExtendedTuple::new_color(red, green, blue);
+    let black = Tuple::new_color(red, green, blue);
     let canvas_pixels = world.get_canvas(canvas).pixels();
     canvas_pixels.iter().for_each(|pixel| {
         assert_eq!(pixel.1, &black);
@@ -134,7 +134,7 @@ impl CanvasWorld {
             .get_mut(&canvas)
             .expect(format!("{canvas} does not exist").as_str())
     }
-    fn get_tuple(&self, tuple: String) -> &ExtendedTuple {
+    fn get_tuple(&self, tuple: String) -> &Tuple {
         self.tuples
             .get(&tuple)
             .expect(format!("{tuple} does not exist").as_str())

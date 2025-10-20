@@ -1,6 +1,8 @@
 pub mod canvas;
 pub mod float;
-pub mod tuples;
+pub mod matrix;
+pub mod tuple;
 
 pub use crate::canvas::Canvas;
-pub use crate::tuples::ExtendedTuple;
+pub use crate::matrix::Matrix;
+pub use crate::tuple::Tuple;

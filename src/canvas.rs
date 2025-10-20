@@ -1,4 +1,4 @@
-use crate::ExtendedTuple;
+use crate::Tuple;
 use std::cmp;
 use std::collections::HashMap;
 
@@ -6,7 +6,7 @@ use std::collections::HashMap;
 pub struct Canvas {
     width: usize,
     height: usize,
-    pixels: HashMap<(usize, usize), ExtendedTuple>,
+    pixels: HashMap<(usize, usize), Tuple>,
     max_color_value: u32,
 }
 
@@ -17,7 +17,7 @@ impl Canvas {
     pub fn height(&self) -> &usize {
         &self.height
     }
-    pub fn pixels(&self) -> &HashMap<(usize, usize), ExtendedTuple> {
+    pub fn pixels(&self) -> &HashMap<(usize, usize), Tuple> {
         &self.pixels
     }
     pub fn new(width: usize, height: usize, max_color_value: Option<u32>) -> Self {
@@ -25,7 +25,7 @@ impl Canvas {
         let mut pixels = HashMap::with_capacity(width * height);
         for x in 0..width {
             for y in 0..height {
-                pixels.insert((x, y), ExtendedTuple::new_color(0.0, 0.0, 0.0));
+                pixels.insert((x, y), Tuple::new_color(0.0, 0.0, 0.0));
             }
         }
         Self {
@@ -35,13 +35,13 @@ impl Canvas {
             max_color_value,
         }
     }
-    pub fn write_pixel(&mut self, x: usize, y: usize, color: ExtendedTuple) {
+    pub fn write_pixel(&mut self, x: usize, y: usize, color: Tuple) {
         if !color.is_color() {
             panic!("color is not color");
         }
         self.pixels.entry((x, y)).and_modify(|p| *p = color);
     }
-    pub fn write_all_pixels(&mut self, color: ExtendedTuple) {
+    pub fn write_all_pixels(&mut self, color: Tuple) {
         if !color.is_color() {
             panic!("pixel is not color");
         }

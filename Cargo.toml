@@ -13,6 +13,11 @@ path = "tests/tuples/tuples.rs"
 harness = false  # allows Cucumber to print output instead of libtest
 
 [[test]]
-name = "canvas"
-path = "tests/canvas/canvas.rs"
+name = "canvases"
+path = "tests/canvases/canvases.rs"
+harness = false
+
+[[test]]
+name = "matrices"
+path = "tests/matrices/matrices.rs"
 harness = false

@@ -1,31 +1,27 @@
 use cucumber::{World, given, then, when};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::ExtendedTuple;
+use the_ray_tracer_challenge::Tuple;
 use the_ray_tracer_challenge::float::float_equals;
 
 #[derive(Debug, Default, World)]
 pub struct TupleWorld {
-    tuples: HashMap<String, ExtendedTuple>,
+    tuples: HashMap<String, Tuple>,
 }
 
 #[given(expr = "{word} ← tuple\\({float}, {float}, {float}, {float})")]
 fn tuple_is(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
-    world.tuples.insert(tuple, ExtendedTuple::new(x, y, z, w));
+    world.tuples.insert(tuple, Tuple::new(x, y, z, w));
 }
 
 #[given(expr = "{word} ← point\\({float}, {float}, {float})")]
 #[given(expr = "{word} ← color\\({float}, {float}, {float})")]
 fn tuple_is_point(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32) {
-    world
-        .tuples
-        .insert(tuple, ExtendedTuple::new_point(x, y, z));
+    world.tuples.insert(tuple, Tuple::new_point(x, y, z));
 }
 
 #[given(expr = "{word} ← vector\\({float}, {float}, {float})")]
 fn tuple_is_vector(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32) {
-    world
-        .tuples
-        .insert(tuple, ExtendedTuple::new_vector(x, y, z));
+    world.tuples.insert(tuple, Tuple::new_vector(x, y, z));
 }
 
 #[when(expr = "{word} ← normalize\\({word})")]
@@ -81,7 +77,7 @@ fn is_not_a_vector(world: &mut TupleWorld, tuple: String) {
     regex = r"^([a-zA-Z0-9]*) = tuple\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
 )]
 fn equals_tuple(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
-    assert_eq!(*world.get_tuple(tuple), ExtendedTuple::new(x, y, z, w));
+    assert_eq!(*world.get_tuple(tuple), Tuple::new(x, y, z, w));
 }
 
 #[then(regex = r"^([a-zA-Z0-9]*) = ([a-zA-Z0-9]*)$")]
@@ -104,7 +100,7 @@ fn tuple_added_to_tuple_equals_tuple(
     z: f32,
     w: f32,
 ) {
-    let expected = ExtendedTuple::new(x, y, z, w);
+    let expected = Tuple::new(x, y, z, w);
     let tuple1 = world.get_tuple(tuple1);
     let tuple2 = world.get_tuple(tuple2);
 
@@ -133,7 +129,7 @@ fn point_subtracted_to_point_equals_vector(
     y: f32,
     z: f32,
 ) {
-    let expected = ExtendedTuple::new_vector(x, y, z);
+    let expected = Tuple::new_vector(x, y, z);
     let point1 = world.get_tuple(point1);
     let point2 = world.get_tuple(point2);
 
@@ -150,7 +146,7 @@ fn point_subtracted_to_vector_equals_point(
     y: f32,
     z: f32,
 ) {
-    let expected = ExtendedTuple::new_point(x, y, z);
+    let expected = Tuple::new_point(x, y, z);
     let point = world.get_tuple(point);
     let vector = world.get_tuple(vector);
 
@@ -179,7 +175,7 @@ fn negated_tuple_equals_tuple(
     z: f32,
     w: f32,
 ) {
-    let expected = ExtendedTuple::new(x, y, z, w);
+    let expected = Tuple::new(x, y, z, w);
     let tuple = world.get_tuple(tuple);
 
     let result = -tuple;
@@ -196,7 +192,7 @@ fn multiplied_tuple_by_scalar_equals_tuple(
     z: f32,
     w: f32,
 ) {
-    let expected = ExtendedTuple::new(x, y, z, w);
+    let expected = Tuple::new(x, y, z, w);
     let tuple = world.get_tuple(tuple);
 
     let result = tuple * scalar;
@@ -212,7 +208,7 @@ fn multiplied_color_by_color_equals_color(
     green: f32,
     blue: f32,
 ) {
-    let expected = ExtendedTuple::new_color(red, green, blue);
+    let expected = Tuple::new_color(red, green, blue);
     let color1 = world.get_tuple(color1);
 
     let result = match scalar_or_color.parse::<f32>() {
@@ -240,7 +236,7 @@ fn divided_tuple_by_fraction_equals_tuple(
     z: f32,
     w: f32,
 ) {
-    let expected = ExtendedTuple::new(x, y, z, w);
+    let expected = Tuple::new(x, y, z, w);
 
     let tuple = world.get_tuple(tuple);
 
@@ -265,7 +261,7 @@ fn magnitude_equals_squareroot_float(world: &mut TupleWorld, tuple: String, expe
 
 #[then(expr = "normalize\\({word}) = vector\\({float}, {float}, {float})")]
 fn normalize_equals_vector(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32) {
-    let expected = ExtendedTuple::new_vector(x, y, z);
+    let expected = Tuple::new_vector(x, y, z);
     let tuple = world.get_tuple(tuple);
 
     assert_eq!(tuple.normalize(), expected);
@@ -302,13 +298,13 @@ fn cross_two_vectors_equals_vector(
     let tuple1 = world.get_tuple(tuple1);
     let tuple2 = world.get_tuple(tuple2);
 
-    let expected = ExtendedTuple::new_vector(x, y, z);
+    let expected = Tuple::new_vector(x, y, z);
 
     assert_eq!(tuple1.cross_product(tuple2), expected);
 }
 
 impl TupleWorld {
-    fn get_tuple(&self, tuple: String) -> &ExtendedTuple {
+    fn get_tuple(&self, tuple: String) -> &Tuple {
         self.tuples
             .get(&tuple)
             .expect(format!("{tuple} does not exist").as_str())
