@@ -31,3 +31,29 @@ Feature: Matrices
     Then M[0,0] = -3
     And M[1,1] = -2
     And M[2,2] = 1
+
+  Scenario: Matrix equality with identical matrices
+    Given the following matrix A:
+      | 1 | 2 | 3 | 4 |
+      | 5 | 6 | 7 | 8 |
+      | 9 | 8 | 7 | 6 |
+      | 5 | 4 | 3 | 2 |
+    And the following matrix B:
+      | 1 | 2 | 3 | 4 |
+      | 5 | 6 | 7 | 8 |
+      | 9 | 8 | 7 | 6 |
+      | 5 | 4 | 3 | 2 |
+    Then A = B
+
+  Scenario: Matrix equality with different matrices
+    Given the following matrix A:
+      | 1 | 2 | 3 | 4 |
+      | 5 | 6 | 7 | 8 |
+      | 9 | 8 | 7 | 6 |
+      | 5 | 4 | 3 | 2 |
+    And the following matrix B:
+      | 2 | 3 | 4 | 5 |
+      | 6 | 7 | 8 | 9 |
+      | 8 | 7 | 6 | 5 |
+      | 4 | 3 | 2 | 1 |
+    Then A != B
