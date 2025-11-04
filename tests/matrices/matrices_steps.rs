@@ -1,5 +1,5 @@
 use cucumber::gherkin::Step;
-use cucumber::{given, then, World};
+use cucumber::{World, given, then};
 use std::collections::HashMap;
 use the_ray_tracer_challenge::matrix::Matrix;
 
@@ -108,19 +108,40 @@ fn matrix_does_not_equal_matrix(world: &mut MatrixWorld, matrix1: String, matrix
     }
 }
 
+#[then(expr = "{word} * {word} is the following {int}x{int} matrix:")]
+fn matrix_multiplied_by_matrix_is_the_following_matrix(
+    world: &mut MatrixWorld,
+    matrix1: String,
+    matrix2: String,
+    row_size: usize,
+    col_size: usize,
+    step: &Step,
+) {
+    match (row_size, col_size) {
+        (2, 2) | (3, 3) => panic!("step definition not implemented (not needed)"),
+        (4, 4) => {
+            let matrix1 = world.matrices4x4.get(&matrix1).unwrap();
+            let matrix2 = world.matrices4x4.get(&matrix2).unwrap();
+
+            let expected = get_matrix::<4, 4>(step);
+            let actual = matrix1 * matrix2;
+
+            assert_eq!(actual, expected);
+        }
+        _ => panic!("no matrix with given size"),
+    }
+}
+
 fn get_matrix<const ROW_COUNT: usize, const COL_COUNT: usize>(
     step: &Step,
 ) -> Matrix<ROW_COUNT, COL_COUNT> {
-    let mut data = Vec::<[f32; ROW_COUNT]>::with_capacity(COL_COUNT);
+    let mut data = Vec::<[f32; COL_COUNT]>::with_capacity(ROW_COUNT);
     let table = step.table.as_ref().unwrap();
-    for (_, row_value) in table.rows.iter().enumerate().map(|(idx, row_values)| {
-        (
-            idx,
-            row_values
-                .iter()
-                .map(|v| v.parse::<f32>().unwrap())
-                .collect::<Vec<f32>>(),
-        )
+    for row_value in table.rows.iter().map(|row_values| {
+        row_values
+            .iter()
+            .map(|v| v.parse::<f32>().unwrap())
+            .collect::<Vec<f32>>()
     }) {
         data.push(row_value.try_into().unwrap());
     }
