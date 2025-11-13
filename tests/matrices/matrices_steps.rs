@@ -2,6 +2,7 @@ use cucumber::gherkin::Step;
 use cucumber::{World, given, then};
 use std::collections::HashMap;
 use the_ray_tracer_challenge::matrix::Matrix;
+use the_ray_tracer_challenge::Tuple;
 
 #[derive(Debug, Default, World)]
 pub struct MatrixWorld {
@@ -9,6 +10,7 @@ pub struct MatrixWorld {
     matrices3x3: HashMap<String, Matrix<3, 3>>,
     matrices4x4: HashMap<String, Matrix<4, 4>>,
     matrices: HashMap<String, (usize, usize)>,
+    tuples: HashMap<String, Tuple>,
 }
 
 #[given(expr = "the following 2x2 matrix {word}:")]
@@ -58,6 +60,11 @@ fn the_following_matrix(world: &mut MatrixWorld, matrix: String, step: &Step) {
         }
         _ => panic!("matrix size not supported"),
     }
+}
+
+#[given(expr = "{word} ← tuple\\({float}, {float}, {float}, {float})")]
+fn tuple_is(world: &mut MatrixWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
+    world.tuples.insert(tuple, Tuple::new(x, y, z, w));
 }
 
 #[then(expr = "{word}[{int},{int}] = {float}")]
@@ -132,6 +139,31 @@ fn matrix_multiplied_by_matrix_is_the_following_matrix(
     }
 }
 
+#[then(expr = "{word} * {word} = tuple\\({float}, {float}, {float}, {float})")]
+fn matrix_multiplied_by_tuple_equals_tuple(
+    world: &mut MatrixWorld,
+    matrix: String,
+    tuple: String,
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
+) {
+    let tuple = world.get_tuple(tuple);
+    let expected = Tuple::new(x, y, z, w);
+    
+    match world
+        .matrices
+        .get(&matrix)
+        .expect(format!("{matrix} does not exist").as_str())
+    {
+        (2, 2) => assert_eq!(world.get_matrix2x2(matrix) * tuple, expected),
+        (3, 3) => assert_eq!(world.get_matrix3x3(matrix) * tuple, expected),
+        (4, 4) => assert_eq!(world.get_matrix4x4(matrix) * tuple, expected),
+        _ => panic!("no matrix with given size"),
+    }
+}
+
 fn get_matrix<const ROW_COUNT: usize, const COL_COUNT: usize>(
     step: &Step,
 ) -> Matrix<ROW_COUNT, COL_COUNT> {
@@ -156,6 +188,8 @@ fn get_matrix_size(step: &Step) -> usize {
     table.rows.iter().count()
 }
 
+
+
 impl MatrixWorld {
     fn get_matrix2x2(&self, matrix: String) -> &Matrix<2, 2> {
         self.matrices2x2
@@ -171,5 +205,8 @@ impl MatrixWorld {
         self.matrices4x4
             .get(&matrix)
             .expect(format!("{matrix} does not exist").as_str())
+    }
+    fn get_tuple(&self, tuple: String) -> &Tuple {
+        self.tuples.get(&tuple).expect(format!("{tuple} does not exist").as_str())
     }
 }
