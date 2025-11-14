@@ -1,8 +1,8 @@
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::matrix::Matrix;
 use the_ray_tracer_challenge::Tuple;
+use the_ray_tracer_challenge::matrix::Matrix;
 
 #[derive(Debug, Default, World)]
 pub struct MatrixWorld {
@@ -80,9 +80,9 @@ fn matrix_index_equals(
         .get(&matrix)
         .expect(format!("{matrix} does not exist").as_str())
     {
-        (2, 2) => assert_eq!(world.get_matrix2x2(matrix).data[row_idx][col_idx], value),
-        (3, 3) => assert_eq!(world.get_matrix3x3(matrix).data[row_idx][col_idx], value),
-        (4, 4) => assert_eq!(world.get_matrix4x4(matrix).data[row_idx][col_idx], value),
+        (2, 2) => assert_eq!(world.get_matrix2x2(&matrix).data[row_idx][col_idx], value),
+        (3, 3) => assert_eq!(world.get_matrix3x3(&matrix).data[row_idx][col_idx], value),
+        (4, 4) => assert_eq!(world.get_matrix4x4(&matrix).data[row_idx][col_idx], value),
         _ => panic!("no matrix with given size"),
     }
 }
@@ -94,9 +94,9 @@ fn matrix_equals_matrix(world: &mut MatrixWorld, matrix1: String, matrix2: Strin
         .get(&matrix1)
         .expect(format!("{matrix1} does not exist").as_str())
     {
-        (2, 2) => assert_eq!(world.get_matrix2x2(matrix1), world.get_matrix2x2(matrix2)),
-        (3, 3) => assert_eq!(world.get_matrix3x3(matrix1), world.get_matrix3x3(matrix2)),
-        (4, 4) => assert_eq!(world.get_matrix4x4(matrix1), world.get_matrix4x4(matrix2)),
+        (2, 2) => assert_eq!(world.get_matrix2x2(&matrix1), world.get_matrix2x2(&matrix2)),
+        (3, 3) => assert_eq!(world.get_matrix3x3(&matrix1), world.get_matrix3x3(&matrix2)),
+        (4, 4) => assert_eq!(world.get_matrix4x4(&matrix1), world.get_matrix4x4(&matrix2)),
         _ => panic!("no matrix with given size"),
     }
 }
@@ -108,9 +108,9 @@ fn matrix_does_not_equal_matrix(world: &mut MatrixWorld, matrix1: String, matrix
         .get(&matrix1)
         .expect(format!("{matrix1} does not exist").as_str())
     {
-        (2, 2) => assert_ne!(world.get_matrix2x2(matrix1), world.get_matrix2x2(matrix2)),
-        (3, 3) => assert_ne!(world.get_matrix3x3(matrix1), world.get_matrix3x3(matrix2)),
-        (4, 4) => assert_ne!(world.get_matrix4x4(matrix1), world.get_matrix4x4(matrix2)),
+        (2, 2) => assert_ne!(world.get_matrix2x2(&matrix1), world.get_matrix2x2(&matrix2)),
+        (3, 3) => assert_ne!(world.get_matrix3x3(&matrix1), world.get_matrix3x3(&matrix2)),
+        (4, 4) => assert_ne!(world.get_matrix4x4(&matrix1), world.get_matrix4x4(&matrix2)),
         _ => panic!("no matrix with given size"),
     }
 }
@@ -149,19 +149,47 @@ fn matrix_multiplied_by_tuple_equals_tuple(
     z: f32,
     w: f32,
 ) {
-    let tuple = world.get_tuple(tuple);
+    let tuple = world.get_tuple(&tuple);
     let expected = Tuple::new(x, y, z, w);
-    
+
     match world
         .matrices
         .get(&matrix)
         .expect(format!("{matrix} does not exist").as_str())
     {
-        (2, 2) => assert_eq!(world.get_matrix2x2(matrix) * tuple, expected),
-        (3, 3) => assert_eq!(world.get_matrix3x3(matrix) * tuple, expected),
-        (4, 4) => assert_eq!(world.get_matrix4x4(matrix) * tuple, expected),
+        (2, 2) | (3,3) => panic!("not supported"),
+        (4, 4) => assert_eq!(world.get_matrix4x4(&matrix) * tuple, expected),
         _ => panic!("no matrix with given size"),
     }
+}
+
+#[then(expr = "{word} * identity_matrix = {word}")]
+fn matrix_multiplied_by_identity_matrix_equals_matrix(
+    world: &mut MatrixWorld,
+    matrix: String,
+    _matrix: String,
+) {
+    match world
+        .matrices
+        .get(&matrix)
+        .expect(format!("{matrix} does not exist").as_str())
+    {
+        (2, 2) => assert_eq!(world.get_matrix2x2(&matrix) * &Matrix::identity_matrix(), *world.get_matrix2x2(&matrix)),
+        (3, 3) => assert_eq!(world.get_matrix3x3(&matrix) * &Matrix::identity_matrix(), *world.get_matrix3x3(&matrix)),
+        (4, 4) => assert_eq!(world.get_matrix4x4(&matrix) * &Matrix::identity_matrix(), *world.get_matrix4x4(&matrix)),
+        _ => panic!("no matrix with given size"),
+    }
+}
+
+#[then(expr = "identity_matrix * {word} = {word}")]
+fn identity_matrix_multiplied_by_tuple_equals_tuple(
+    world: &mut MatrixWorld,
+    tuple: String,
+    _tuple: String,
+) {
+    let tuple = world.get_tuple(&tuple);
+    let identity_matrix: Matrix<4,4> = Matrix::identity_matrix();
+    assert_eq!(&identity_matrix * tuple, *tuple);
 }
 
 fn get_matrix<const ROW_COUNT: usize, const COL_COUNT: usize>(
@@ -188,25 +216,25 @@ fn get_matrix_size(step: &Step) -> usize {
     table.rows.iter().count()
 }
 
-
-
 impl MatrixWorld {
-    fn get_matrix2x2(&self, matrix: String) -> &Matrix<2, 2> {
+    fn get_matrix2x2(&self, matrix: &str) -> &Matrix<2, 2> {
         self.matrices2x2
-            .get(&matrix)
+            .get(matrix)
             .expect(format!("{matrix} does not exist").as_str())
     }
-    fn get_matrix3x3(&self, matrix: String) -> &Matrix<3, 3> {
+    fn get_matrix3x3(&self, matrix: &str) -> &Matrix<3, 3> {
         self.matrices3x3
-            .get(&matrix)
+            .get(matrix)
             .expect(format!("{matrix} does not exist").as_str())
     }
-    fn get_matrix4x4(&self, matrix: String) -> &Matrix<4, 4> {
+    fn get_matrix4x4(&self, matrix: &str) -> &Matrix<4, 4> {
         self.matrices4x4
-            .get(&matrix)
+            .get(matrix)
             .expect(format!("{matrix} does not exist").as_str())
     }
-    fn get_tuple(&self, tuple: String) -> &Tuple {
-        self.tuples.get(&tuple).expect(format!("{tuple} does not exist").as_str())
+    fn get_tuple(&self, tuple: &str) -> &Tuple {
+        self.tuples
+            .get(tuple)
+            .expect(format!("{tuple} does not exist").as_str())
     }
 }

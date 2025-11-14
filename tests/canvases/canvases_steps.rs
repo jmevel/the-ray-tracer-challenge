@@ -27,13 +27,13 @@ fn tuple_is_color(world: &mut CanvasWorld, tuple: String, red: f32, green: f32, 
 
 #[when(expr = "write_pixel\\({word}, {int}, {int}, {word})")]
 fn write_pixels(world: &mut CanvasWorld, canvas: String, x: usize, y: usize, color: String) {
-    let color = world.get_tuple(color).to_owned();
-    world.get_mut_canvas(canvas).write_pixel(x, y, color)
+    let color = world.get_tuple(&color).to_owned();
+    world.get_mut_canvas(&canvas).write_pixel(x, y, color)
 }
 
 #[when(expr = "{word} ← canvas_to_ppm\\({word})")]
 fn convert_to_ppm(world: &mut CanvasWorld, ppm: String, canvas: String) {
-    let canvas = world.get_canvas(canvas);
+    let canvas = world.get_canvas(&canvas);
     let result = canvas.convert_to_ppm();
     world.ppms.insert(ppm, result);
 }
@@ -47,18 +47,18 @@ fn every_pixel_of_canvas_is_set_to_color(
     blue: f32,
 ) {
     let color = Tuple::new_color(red, green, blue);
-    let canvas = world.get_mut_canvas(canvas_name);
+    let canvas = world.get_mut_canvas(&canvas_name);
     canvas.write_all_pixels(color);
 }
 
 #[then(expr = "{word}.width = {int}")]
 fn width_equal(world: &mut CanvasWorld, canvas: String, width: usize) {
-    assert_eq!(world.get_canvas(canvas).width(), &width);
+    assert_eq!(world.get_canvas(&canvas).width(), &width);
 }
 
 #[then(expr = "{word}.height = {int}")]
 fn height_equal(world: &mut CanvasWorld, canvas: String, height: usize) {
-    assert_eq!(world.get_canvas(canvas).height(), &height);
+    assert_eq!(world.get_canvas(&canvas).height(), &height);
 }
 
 #[then(expr = "every pixel of {word} is color\\({float}, {float}, {float})")]
@@ -70,7 +70,7 @@ fn every_pixel_of_canvas_is_color(
     blue: f32,
 ) {
     let black = Tuple::new_color(red, green, blue);
-    let canvas_pixels = world.get_canvas(canvas).pixels();
+    let canvas_pixels = world.get_canvas(&canvas).pixels();
     canvas_pixels.iter().for_each(|pixel| {
         assert_eq!(pixel.1, &black);
     })
@@ -78,9 +78,9 @@ fn every_pixel_of_canvas_is_color(
 
 #[then(expr = "pixel_at\\({word}, {int}, {int}) = {word}")]
 fn pixel_at(world: &mut CanvasWorld, canvas: String, x: usize, y: usize, color: String) {
-    let expected = world.get_tuple(color);
+    let expected = world.get_tuple(&color);
     assert_eq!(
-        world.get_canvas(canvas).pixels().get(&(x, y)).unwrap(),
+        world.get_canvas(&canvas).pixels().get(&(x, y)).unwrap(),
         expected
     );
 }
@@ -95,7 +95,7 @@ fn lines_of_ppm_are(
 ) {
     let lines_range = first_line - 1..last_line;
     let lines = world
-        .get_ppm(ppm)
+        .get_ppm(&ppm)
         .lines()
         .enumerate()
         .filter_map(|(i, line)| {
@@ -120,28 +120,28 @@ fn lines_of_ppm_are(
 
 #[then(expr = "{word} ends with a newline character")]
 fn ppm_ends_with_a_new_line_character(world: &mut CanvasWorld, ppm: String) {
-    assert_eq!(world.get_ppm(ppm).chars().last().unwrap(), '\n');
+    assert_eq!(world.get_ppm(&ppm).chars().last().unwrap(), '\n');
 }
 
 impl CanvasWorld {
-    fn get_canvas(&self, canvas: String) -> &Canvas {
+    fn get_canvas(&self, canvas: &str) -> &Canvas {
         self.canvases
-            .get(&canvas)
+            .get(canvas)
             .expect(format!("{canvas} does not exist").as_str())
     }
-    fn get_mut_canvas(&mut self, canvas: String) -> &mut Canvas {
+    fn get_mut_canvas(&mut self, canvas: &str) -> &mut Canvas {
         self.canvases
-            .get_mut(&canvas)
+            .get_mut(canvas)
             .expect(format!("{canvas} does not exist").as_str())
     }
-    fn get_tuple(&self, tuple: String) -> &Tuple {
+    fn get_tuple(&self, tuple: &str) -> &Tuple {
         self.tuples
-            .get(&tuple)
+            .get(tuple)
             .expect(format!("{tuple} does not exist").as_str())
     }
-    fn get_ppm(&self, ppm: String) -> &str {
+    fn get_ppm(&self, ppm: &str) -> &str {
         self.ppms
-            .get(&ppm)
+            .get(ppm)
             .expect(format!("{ppm} does not exist").as_str())
     }
 }

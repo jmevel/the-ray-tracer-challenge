@@ -6,6 +6,17 @@ pub struct Matrix<const ROW_COUNT: usize, const COL_COUNT: usize> {
     pub data: [[f32; COL_COUNT]; ROW_COUNT],
 }
 
+impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT> {
+    pub fn identity_matrix() -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut data: [[f32; COL_COUNT]; ROW_COUNT] = [[0f32; COL_COUNT]; ROW_COUNT];
+        for i in 0..ROW_COUNT {
+            data[i][i] = 1f32;
+        }
+
+        Matrix { data }
+    }
+}
+
 impl Eq for Matrix<4, 4> {}
 
 impl<const ROW_COUNT: usize, const COL_COUNT: usize> PartialEq for Matrix<ROW_COUNT, COL_COUNT> {
@@ -31,31 +42,35 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Mul for &Matrix<ROW_COUNT, 
     }
 }
 
-impl<const ROW_COUNT: usize, const COL_COUNT: usize> Mul<&Tuple> for &Matrix<ROW_COUNT, COL_COUNT> {
+impl Mul<&Tuple> for &Matrix<4, 4> {
     type Output = Tuple;
 
-    fn mul(self, rhs: &Tuple) -> Self::Output {
-        if self.data.iter().count() != 4 {
-            panic!("Matrix must have 4 rows");
-        }
-
-        let x = self.data[0][0] * rhs.x()
-            + self.data[0][1] * rhs.y()
-            + self.data[0][2] * rhs.z()
-            + self.data[0][3] * rhs.w();
-        let y = self.data[1][0] * rhs.x()
-            + self.data[1][1] * rhs.y()
-            + self.data[1][2] * rhs.z()
-            + self.data[1][3] * rhs.w();
-        let z = self.data[2][0] * rhs.x()
-            + self.data[2][1] * rhs.y()
-            + self.data[2][2] * rhs.z()
-            + self.data[2][3] * rhs.w();
-        let w = self.data[3][0] * rhs.x()
-            + self.data[3][1] * rhs.y()
-            + self.data[3][2] * rhs.z()
-            + self.data[3][3] * rhs.w();
+    fn mul(self, other: &Tuple) -> Self::Output {
+        let x = self.data[0][0] * other.x()
+            + self.data[0][1] * other.y()
+            + self.data[0][2] * other.z()
+            + self.data[0][3] * other.w();
+        let y = self.data[1][0] * other.x()
+            + self.data[1][1] * other.y()
+            + self.data[1][2] * other.z()
+            + self.data[1][3] * other.w();
+        let z = self.data[2][0] * other.x()
+            + self.data[2][1] * other.y()
+            + self.data[2][2] * other.z()
+            + self.data[2][3] * other.w();
+        let w = self.data[3][0] * other.x()
+            + self.data[3][1] * other.y()
+            + self.data[3][2] * other.z()
+            + self.data[3][3] * other.w();
 
         Tuple::new(x, y, z, w)
+    }
+}
+
+impl Mul<&Tuple> for Matrix<4,4> {
+    type Output = Tuple;
+
+    fn mul(self, other: &Tuple) -> Self::Output {
+        &self * other
     }
 }

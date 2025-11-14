@@ -26,68 +26,68 @@ fn tuple_is_vector(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32
 
 #[when(expr = "{word} ← normalize\\({word})")]
 fn tuple_is_normalization(world: &mut TupleWorld, tuple2: String, tuple1: String) {
-    let tuple1 = world.get_tuple(tuple1);
+    let tuple1 = world.get_tuple(&tuple1);
     world.tuples.insert(tuple2, tuple1.normalize());
 }
 
 #[then(expr = "{word}.x = {float}")]
 #[then(expr = "{word}.red = {float}")]
 fn x_equal(world: &mut TupleWorld, tuple: String, x: f32) {
-    assert_eq!(world.get_tuple(tuple).x(), &x);
+    assert_eq!(world.get_tuple(&tuple).x(), &x);
 }
 
 #[then(expr = "{word}.y = {float}")]
 #[then(expr = "{word}.green = {float}")]
 fn y_equal(world: &mut TupleWorld, tuple: String, y: f32) {
-    assert_eq!(world.get_tuple(tuple).y(), &y);
+    assert_eq!(world.get_tuple(&tuple).y(), &y);
 }
 
 #[then(expr = "{word}.z = {float}")]
 #[then(expr = "{word}.blue = {float}")]
 fn z_equal(world: &mut TupleWorld, tuple: String, z: f32) {
-    assert_eq!(world.get_tuple(tuple).z(), &z);
+    assert_eq!(world.get_tuple(&tuple).z(), &z);
 }
 
 #[then(expr = "{word}.w = {float}")]
 fn w_equal(world: &mut TupleWorld, tuple: String, w: f32) {
-    assert_eq!(world.get_tuple(tuple).w(), &w);
+    assert_eq!(world.get_tuple(&tuple).w(), &w);
 }
 
 #[then(expr = "{word} is a point")]
 fn is_a_point(world: &mut TupleWorld, tuple: String) {
-    assert!(world.get_tuple(tuple).is_point());
+    assert!(world.get_tuple(&tuple).is_point());
 }
 
 #[then(expr = "{word} is a vector")]
 fn is_a_vector(world: &mut TupleWorld, tuple: String) {
-    assert!(world.get_tuple(tuple).is_vector());
+    assert!(world.get_tuple(&tuple).is_vector());
 }
 
 #[then(expr = "{word} is not a point")]
 fn is_not_a_point(world: &mut TupleWorld, tuple: String) {
-    assert!(!world.get_tuple(tuple).is_point());
+    assert!(!world.get_tuple(&tuple).is_point());
 }
 
 #[then(expr = "{word} is not a vector")]
 fn is_not_a_vector(world: &mut TupleWorld, tuple: String) {
-    assert!(!world.get_tuple(tuple).is_vector());
+    assert!(!world.get_tuple(&tuple).is_vector());
 }
 
 #[then(
     regex = r"^([a-zA-Z0-9]*) = tuple\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
 )]
 fn equals_tuple(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
-    assert_eq!(*world.get_tuple(tuple), Tuple::new(x, y, z, w));
+    assert_eq!(*world.get_tuple(&tuple), Tuple::new(x, y, z, w));
 }
 
 #[then(regex = r"^([a-zA-Z0-9]*) = ([a-zA-Z0-9]*)$")]
 fn tuple_equals_tuple(world: &mut TupleWorld, tuple1: String, tuple2: String) {
-    assert_eq!(world.get_tuple(tuple1), world.get_tuple(tuple2));
+    assert_eq!(world.get_tuple(&tuple1), world.get_tuple(&tuple2));
 }
 
 #[then(expr = "{word} != {word}")]
 fn tuple_does_not_equal_tuple(world: &mut TupleWorld, tuple1: String, tuple2: String) {
-    assert!(!(world.get_tuple(tuple1) == world.get_tuple(tuple2)));
+    assert!(!(world.get_tuple(&tuple1) == world.get_tuple(&tuple2)));
 }
 
 #[then(expr = "{word} + {word} = tuple\\({float}, {float}, {float}, {float})")]
@@ -101,8 +101,8 @@ fn tuple_added_to_tuple_equals_tuple(
     w: f32,
 ) {
     let expected = Tuple::new(x, y, z, w);
-    let tuple1 = world.get_tuple(tuple1);
-    let tuple2 = world.get_tuple(tuple2);
+    let tuple1 = world.get_tuple(&tuple1);
+    let tuple2 = world.get_tuple(&tuple2);
 
     let result = tuple1 + tuple2;
     assert_eq!(result, expected);
@@ -130,8 +130,8 @@ fn point_subtracted_to_point_equals_vector(
     z: f32,
 ) {
     let expected = Tuple::new_vector(x, y, z);
-    let point1 = world.get_tuple(point1);
-    let point2 = world.get_tuple(point2);
+    let point1 = world.get_tuple(&point1);
+    let point2 = world.get_tuple(&point2);
 
     let result = point1 - point2;
     assert_eq!(result, expected);
@@ -147,8 +147,8 @@ fn point_subtracted_to_vector_equals_point(
     z: f32,
 ) {
     let expected = Tuple::new_point(x, y, z);
-    let point = world.get_tuple(point);
-    let vector = world.get_tuple(vector);
+    let point = world.get_tuple(&point);
+    let vector = world.get_tuple(&vector);
 
     let result = point - vector;
     assert_eq!(result, expected);
@@ -176,7 +176,7 @@ fn negated_tuple_equals_tuple(
     w: f32,
 ) {
     let expected = Tuple::new(x, y, z, w);
-    let tuple = world.get_tuple(tuple);
+    let tuple = world.get_tuple(&tuple);
 
     let result = -tuple;
     assert_eq!(result, expected);
@@ -193,7 +193,7 @@ fn multiplied_tuple_by_scalar_equals_tuple(
     w: f32,
 ) {
     let expected = Tuple::new(x, y, z, w);
-    let tuple = world.get_tuple(tuple);
+    let tuple = world.get_tuple(&tuple);
 
     let result = tuple * scalar;
     assert_eq!(result, expected);
@@ -209,7 +209,7 @@ fn multiplied_color_by_color_equals_color(
     blue: f32,
 ) {
     let expected = Tuple::new_color(red, green, blue);
-    let color1 = world.get_tuple(color1);
+    let color1 = world.get_tuple(&color1);
 
     let result = match scalar_or_color.parse::<f32>() {
         Ok(scalar) => color1 * scalar,
@@ -238,7 +238,7 @@ fn divided_tuple_by_fraction_equals_tuple(
 ) {
     let expected = Tuple::new(x, y, z, w);
 
-    let tuple = world.get_tuple(tuple);
+    let tuple = world.get_tuple(&tuple);
 
     let result = tuple / fraction;
     assert_eq!(result, expected);
@@ -246,7 +246,7 @@ fn divided_tuple_by_fraction_equals_tuple(
 
 #[then(expr = "magnitude\\({word}) = {float}")]
 fn magnitude_equals_float(world: &mut TupleWorld, tuple: String, expected: f32) {
-    let tuple = world.get_tuple(tuple);
+    let tuple = world.get_tuple(&tuple);
 
     assert!(float_equals(&tuple.magnitude(), &expected));
 }
@@ -254,7 +254,7 @@ fn magnitude_equals_float(world: &mut TupleWorld, tuple: String, expected: f32) 
 #[then(expr = "magnitude\\({word}) = √{float}")]
 fn magnitude_equals_squareroot_float(world: &mut TupleWorld, tuple: String, expected: f32) {
     let expected = expected.sqrt();
-    let tuple = world.get_tuple(tuple);
+    let tuple = world.get_tuple(&tuple);
 
     assert_eq!(tuple.magnitude(), expected);
 }
@@ -262,7 +262,7 @@ fn magnitude_equals_squareroot_float(world: &mut TupleWorld, tuple: String, expe
 #[then(expr = "normalize\\({word}) = vector\\({float}, {float}, {float})")]
 fn normalize_equals_vector(world: &mut TupleWorld, tuple: String, x: f32, y: f32, z: f32) {
     let expected = Tuple::new_vector(x, y, z);
-    let tuple = world.get_tuple(tuple);
+    let tuple = world.get_tuple(&tuple);
 
     assert_eq!(tuple.normalize(), expected);
 }
@@ -280,8 +280,8 @@ fn normalize_equals_approximately_vector(
 
 #[then(expr = "dot\\({word}, {word}) = {float}")]
 fn dot_two_vectors_equals(world: &mut TupleWorld, tuple1: String, tuple2: String, expected: f32) {
-    let tuple1 = world.get_tuple(tuple1);
-    let tuple2 = world.get_tuple(tuple2);
+    let tuple1 = world.get_tuple(&tuple1);
+    let tuple2 = world.get_tuple(&tuple2);
 
     assert_eq!(tuple1.dot_product(tuple2), expected);
 }
@@ -295,8 +295,8 @@ fn cross_two_vectors_equals_vector(
     y: f32,
     z: f32,
 ) {
-    let tuple1 = world.get_tuple(tuple1);
-    let tuple2 = world.get_tuple(tuple2);
+    let tuple1 = world.get_tuple(&tuple1);
+    let tuple2 = world.get_tuple(&tuple2);
 
     let expected = Tuple::new_vector(x, y, z);
 
@@ -304,9 +304,9 @@ fn cross_two_vectors_equals_vector(
 }
 
 impl TupleWorld {
-    fn get_tuple(&self, tuple: String) -> &Tuple {
+    fn get_tuple(&self, tuple: &str) -> &Tuple {
         self.tuples
-            .get(&tuple)
+            .get(tuple)
             .expect(format!("{tuple} does not exist").as_str())
     }
 }
