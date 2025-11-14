@@ -15,6 +15,19 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
 
         Matrix { data }
     }
+    
+    pub fn transpose(&self) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut data = self.data.clone();
+        for idx in 0..ROW_COUNT {
+            data[idx] = self.get_column(idx);
+        }
+        
+        Matrix {data}
+    }
+    
+    fn get_column(&self, col_idx: usize) -> [f32; COL_COUNT] {
+        self.data.iter().map(|row: &[f32; COL_COUNT]| row[col_idx]).collect::<Vec<f32>>().try_into().unwrap()
+    }
 }
 
 impl Eq for Matrix<4, 4> {}

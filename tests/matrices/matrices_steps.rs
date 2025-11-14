@@ -67,6 +67,12 @@ fn tuple_is(world: &mut MatrixWorld, tuple: String, x: f32, y: f32, z: f32, w: f
     world.tuples.insert(tuple, Tuple::new(x, y, z, w));
 }
 
+#[given(expr = "{word} ← transpose\\(identity_matrix)")]
+fn transpose_identity_matrix(world: &mut MatrixWorld, matrix: String) {
+    let transposed_identity_matrix: Matrix<4, 4> = Matrix::identity_matrix().transpose();
+    world.matrices4x4.insert(matrix, transposed_identity_matrix);
+}
+
 #[then(expr = "{word}[{int},{int}] = {float}")]
 fn matrix_index_equals(
     world: &mut MatrixWorld,
@@ -157,7 +163,7 @@ fn matrix_multiplied_by_tuple_equals_tuple(
         .get(&matrix)
         .expect(format!("{matrix} does not exist").as_str())
     {
-        (2, 2) | (3,3) => panic!("not supported"),
+        (2, 2) | (3, 3) => panic!("not supported"),
         (4, 4) => assert_eq!(world.get_matrix4x4(&matrix) * tuple, expected),
         _ => panic!("no matrix with given size"),
     }
@@ -174,9 +180,18 @@ fn matrix_multiplied_by_identity_matrix_equals_matrix(
         .get(&matrix)
         .expect(format!("{matrix} does not exist").as_str())
     {
-        (2, 2) => assert_eq!(world.get_matrix2x2(&matrix) * &Matrix::identity_matrix(), *world.get_matrix2x2(&matrix)),
-        (3, 3) => assert_eq!(world.get_matrix3x3(&matrix) * &Matrix::identity_matrix(), *world.get_matrix3x3(&matrix)),
-        (4, 4) => assert_eq!(world.get_matrix4x4(&matrix) * &Matrix::identity_matrix(), *world.get_matrix4x4(&matrix)),
+        (2, 2) => assert_eq!(
+            world.get_matrix2x2(&matrix) * &Matrix::identity_matrix(),
+            *world.get_matrix2x2(&matrix)
+        ),
+        (3, 3) => assert_eq!(
+            world.get_matrix3x3(&matrix) * &Matrix::identity_matrix(),
+            *world.get_matrix3x3(&matrix)
+        ),
+        (4, 4) => assert_eq!(
+            world.get_matrix4x4(&matrix) * &Matrix::identity_matrix(),
+            *world.get_matrix4x4(&matrix)
+        ),
         _ => panic!("no matrix with given size"),
     }
 }
@@ -188,8 +203,38 @@ fn identity_matrix_multiplied_by_tuple_equals_tuple(
     _tuple: String,
 ) {
     let tuple = world.get_tuple(&tuple);
-    let identity_matrix: Matrix<4,4> = Matrix::identity_matrix();
+    let identity_matrix: Matrix<4, 4> = Matrix::identity_matrix();
     assert_eq!(&identity_matrix * tuple, *tuple);
+}
+
+#[then(expr = "transpose\\({word}) is the following matrix:")]
+fn transpose_matrix_is_the_following_matrix(world: &mut MatrixWorld, matrix: String, step: &Step) {
+    match world
+        .matrices
+        .get(&matrix)
+        .expect(format!("{matrix} does not exist").as_str())
+    {
+        (2, 2) => assert_eq!(
+            world.get_matrix2x2(&matrix).transpose(),
+            get_matrix::<2, 2>(step)
+        ),
+        (3, 3) => assert_eq!(
+            world.get_matrix3x3(&matrix).transpose(),
+            get_matrix::<3, 3>(step)
+        ),
+        (4, 4) => assert_eq!(
+            world.get_matrix4x4(&matrix).transpose(),
+            get_matrix::<4, 4>(step)
+        ),
+        _ => panic!("no matrix with given size"),
+    }
+}
+
+#[then(expr = "{word} = identity_matrix")]
+fn matrix_equals_identity_matrix(world: &mut MatrixWorld, matrix: String) {
+    let matrix = world.get_matrix4x4(&matrix);
+    let identity_matrix: Matrix<4, 4> = Matrix::identity_matrix();
+    assert_eq!(&identity_matrix, matrix);
 }
 
 fn get_matrix<const ROW_COUNT: usize, const COL_COUNT: usize>(
