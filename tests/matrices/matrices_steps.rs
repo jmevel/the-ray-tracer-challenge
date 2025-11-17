@@ -1,8 +1,8 @@
 use cucumber::gherkin::Step;
-use cucumber::{World, given, then};
+use cucumber::{given, then, World};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::Tuple;
 use the_ray_tracer_challenge::matrix::Matrix;
+use the_ray_tracer_challenge::Tuple;
 
 #[derive(Debug, Default, World)]
 pub struct MatrixWorld {
@@ -235,6 +235,22 @@ fn matrix_equals_identity_matrix(world: &mut MatrixWorld, matrix: String) {
     let matrix = world.get_matrix4x4(&matrix);
     let identity_matrix: Matrix<4, 4> = Matrix::identity_matrix();
     assert_eq!(&identity_matrix, matrix);
+}
+
+#[then(expr = "determinant\\({word}) = {int}")]
+fn determinant_equals(world: &mut MatrixWorld, matrix: String, determinant: f32) {
+    match world
+        .matrices
+        .get(&matrix)
+        .expect(format!("{matrix} does not exist").as_str())
+    {
+        (2, 2) => assert_eq!(
+            world.get_matrix2x2(&matrix).determinant(),
+            f32::from(determinant)
+        ),
+        (3, 3) | (4, 4) => panic!("determinant is only supported on 2x2 matrices"),
+        _ => panic!("no matrix with given size"),
+    }
 }
 
 fn get_matrix<const ROW_COUNT: usize, const COL_COUNT: usize>(

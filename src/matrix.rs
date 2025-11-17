@@ -21,12 +21,27 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
         for idx in 0..ROW_COUNT {
             data[idx] = self.get_column(idx);
         }
-        
-        Matrix {data}
+
+        Matrix { data }
     }
-    
+
+        
+        Matrix { data }
+    }
+
     fn get_column(&self, col_idx: usize) -> [f32; COL_COUNT] {
-        self.data.iter().map(|row: &[f32; COL_COUNT]| row[col_idx]).collect::<Vec<f32>>().try_into().unwrap()
+        self.data
+            .iter()
+            .map(|row: &[f32; COL_COUNT]| row[col_idx])
+            .collect::<Vec<f32>>()
+            .try_into()
+            .unwrap()
+    }
+}
+
+impl Matrix<2, 2> {
+    pub fn determinant(&self) -> f32 {
+        self.data[0][0] * self.data[1][1] - self.data[0][1] * self.data[1][0]
     }
 }
 
@@ -80,7 +95,7 @@ impl Mul<&Tuple> for &Matrix<4, 4> {
     }
 }
 
-impl Mul<&Tuple> for Matrix<4,4> {
+impl Mul<&Tuple> for Matrix<4, 4> {
     type Output = Tuple;
 
     fn mul(self, other: &Tuple) -> Self::Output {
