@@ -1,0 +1,2 @@
+[toolchain]
+channel = "nightly-2025-11-17" # needed for `pub fn submatrix(&self, row_idx: usize, col_idx: usize) -> Matrix<{ ROW_COUNT - 1 }, { COL_COUNT - 1 }>`

@@ -1,8 +1,8 @@
 use cucumber::gherkin::Step;
-use cucumber::{given, then, World};
+use cucumber::{World, given, then};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::matrix::Matrix;
 use the_ray_tracer_challenge::Tuple;
+use the_ray_tracer_challenge::matrix::Matrix;
 
 #[derive(Debug, Default, World)]
 pub struct MatrixWorld {
@@ -249,6 +249,34 @@ fn determinant_equals(world: &mut MatrixWorld, matrix: String, determinant: f32)
             f32::from(determinant)
         ),
         (3, 3) | (4, 4) => panic!("determinant is only supported on 2x2 matrices"),
+        _ => panic!("no matrix with given size"),
+    }
+}
+
+#[then(expr = "submatrix\\({word}, {int}, {int}) is the following {int}x{int} matrix:")]
+fn submatrix_is_the_following_matrix(
+    world: &mut MatrixWorld,
+    matrix: String,
+    row_idx: usize,
+    col_idx: usize,
+    _row_size: usize,
+    _col_size: usize,
+    step: &Step,
+) {
+    match world
+        .matrices
+        .get(&matrix)
+        .expect(format!("{matrix} does not exist").as_str())
+    {
+        (2, 2) => panic!("can't make a submatrix of a 2x2 matrix"),
+        (3, 3) => assert_eq!(
+            world.get_matrix3x3(&matrix).submatrix(row_idx, col_idx),
+            get_matrix::<2, 2>(step)
+        ),
+        (4, 4) => assert_eq!(
+            world.get_matrix4x4(&matrix).submatrix(row_idx, col_idx),
+            get_matrix::<3, 3>(step)
+        ),
         _ => panic!("no matrix with given size"),
     }
 }

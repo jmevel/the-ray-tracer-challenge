@@ -15,7 +15,7 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
 
         Matrix { data }
     }
-    
+
     pub fn transpose(&self) -> Matrix<ROW_COUNT, COL_COUNT> {
         let mut data = self.data.clone();
         for idx in 0..ROW_COUNT {
@@ -25,7 +25,29 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
         Matrix { data }
     }
 
-        
+    pub fn submatrix(
+        &self,
+        row_idx: usize,
+        col_idx: usize,
+    ) -> Matrix<{ ROW_COUNT - 1 }, { COL_COUNT - 1 }> {
+        let data: [[f32; COL_COUNT - 1]; ROW_COUNT - 1] = self
+            .data
+            .iter()
+            .enumerate()
+            .filter(|(idx, _)| idx != &row_idx)
+            .map(|(_, row)| {
+                let filtered_row: Vec<f32> = row
+                    .iter()
+                    .enumerate()
+                    .filter(|(idx, _)| idx != &col_idx)
+                    .map(|(_, &value)| value)
+                    .collect();
+                filtered_row.try_into().unwrap()
+            })
+            .collect::<Vec<[f32; COL_COUNT - 1]>>()
+            .try_into()
+            .unwrap();
+
         Matrix { data }
     }
 
