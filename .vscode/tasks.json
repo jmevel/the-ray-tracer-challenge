@@ -7,7 +7,7 @@
             "label": "Test",
             "type": "shell",
             "command": "cargo test --test example"
-        }
+        },
         {
             "label": "Test (disabled concurency)",
             "type": "shell",
