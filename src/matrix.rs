@@ -67,6 +67,13 @@ impl Matrix<2, 2> {
     }
 }
 
+impl Matrix<3, 3> {
+    pub fn minor(&self, row_idx: usize, col_idx: usize) -> f32 {
+        let submatrix = self.submatrix(row_idx, col_idx);
+        submatrix.determinant()
+    }
+}
+
 impl Eq for Matrix<4, 4> {}
 
 impl<const ROW_COUNT: usize, const COL_COUNT: usize> PartialEq for Matrix<ROW_COUNT, COL_COUNT> {

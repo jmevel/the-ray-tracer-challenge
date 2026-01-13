@@ -1,8 +1,8 @@
 use cucumber::gherkin::Step;
-use cucumber::{World, given, then};
+use cucumber::{given, then, World};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::Tuple;
 use the_ray_tracer_challenge::matrix::Matrix;
+use the_ray_tracer_challenge::Tuple;
 
 #[derive(Debug, Default, World)]
 pub struct MatrixWorld {
@@ -71,6 +71,25 @@ fn tuple_is(world: &mut MatrixWorld, tuple: String, x: f32, y: f32, z: f32, w: f
 fn transpose_identity_matrix(world: &mut MatrixWorld, matrix: String) {
     let transposed_identity_matrix: Matrix<4, 4> = Matrix::identity_matrix().transpose();
     world.matrices4x4.insert(matrix, transposed_identity_matrix);
+}
+
+#[given(expr = "{word} ← submatrix\\({word}, {int}, {int})")]
+fn matrix_is_submatrix(world: &mut MatrixWorld, new_matrix_name: String, initial_matrix_name: String, row_idx: usize, col_idx: usize) {
+    let initial_matrix = match world
+        .matrices
+        .get(&initial_matrix_name)
+        .expect(format!("{initial_matrix_name} does not exist").as_str())
+    {
+        (3, 3) => world.get_matrix3x3(&initial_matrix_name),
+        (2, 2) | (4, 4) => panic!("Only supported on 3x3 matrices"),
+        _ => panic!("no matrix with given size"),
+    };
+    
+    let new_matrix: Matrix<2,2> = initial_matrix.submatrix(row_idx, col_idx);
+    world
+        .matrices2x2
+        .insert(new_matrix_name.clone(), new_matrix);
+    world.matrices.insert(new_matrix_name, (2, 2));
 }
 
 #[then(expr = "{word}[{int},{int}] = {float}")]
@@ -277,6 +296,22 @@ fn submatrix_is_the_following_matrix(
             world.get_matrix4x4(&matrix).submatrix(row_idx, col_idx),
             get_matrix::<3, 3>(step)
         ),
+        _ => panic!("no matrix with given size"),
+    }
+}
+
+#[then(expr = "minor\\({word}, {int}, {int}) = {int}")]
+fn minor_equals(world: &mut MatrixWorld, matrix: String, row_idx: usize, col_idx: usize, minor_value: f32) {
+    match world
+        .matrices
+        .get(&matrix)
+        .expect(format!("{matrix} does not exist").as_str())
+    {
+        (3, 3)  => assert_eq!(
+            world.get_matrix3x3(&matrix).minor(row_idx, col_idx),
+            minor_value
+        ),
+        (2,2) | (4, 4) => panic!("Only supported on 3x3 matrices"),
         _ => panic!("no matrix with given size"),
     }
 }

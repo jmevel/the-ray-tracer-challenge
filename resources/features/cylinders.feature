@@ -67,7 +67,8 @@ Scenario: The default closed value for a cylinder
   Given cyl ← cylinder()
   Then cyl.closed = false
 
-Scenario Outline: Intersecting the caps of a closed cylinder
+#noinspection GherkinBrokenTableInspection
+  Scenario Outline: Intersecting the caps of a closed cylinder
   Given cyl ← cylinder()
     And cyl.minimum ← 1
     And cyl.maximum ← 2
