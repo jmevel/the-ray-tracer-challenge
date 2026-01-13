@@ -72,6 +72,11 @@ impl Matrix<3, 3> {
         let submatrix = self.submatrix(row_idx, col_idx);
         submatrix.determinant()
     }
+
+    pub fn cofactor(&self, row_idx: usize, col_idx: usize) -> f32 {
+        let minor = self.minor(row_idx, col_idx);
+        (-1i32).pow((row_idx + col_idx) as u32) as f32 * minor
+    }
 }
 
 impl Eq for Matrix<4, 4> {}

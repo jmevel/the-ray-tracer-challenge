@@ -1,8 +1,8 @@
 use cucumber::gherkin::Step;
-use cucumber::{given, then, World};
+use cucumber::{World, given, then};
 use std::collections::HashMap;
-use the_ray_tracer_challenge::matrix::Matrix;
 use the_ray_tracer_challenge::Tuple;
+use the_ray_tracer_challenge::matrix::Matrix;
 
 #[derive(Debug, Default, World)]
 pub struct MatrixWorld {
@@ -74,7 +74,13 @@ fn transpose_identity_matrix(world: &mut MatrixWorld, matrix: String) {
 }
 
 #[given(expr = "{word} ← submatrix\\({word}, {int}, {int})")]
-fn matrix_is_submatrix(world: &mut MatrixWorld, new_matrix_name: String, initial_matrix_name: String, row_idx: usize, col_idx: usize) {
+fn matrix_is_submatrix(
+    world: &mut MatrixWorld,
+    new_matrix_name: String,
+    initial_matrix_name: String,
+    row_idx: usize,
+    col_idx: usize,
+) {
     let initial_matrix = match world
         .matrices
         .get(&initial_matrix_name)
@@ -84,8 +90,8 @@ fn matrix_is_submatrix(world: &mut MatrixWorld, new_matrix_name: String, initial
         (2, 2) | (4, 4) => panic!("Only supported on 3x3 matrices"),
         _ => panic!("no matrix with given size"),
     };
-    
-    let new_matrix: Matrix<2,2> = initial_matrix.submatrix(row_idx, col_idx);
+
+    let new_matrix: Matrix<2, 2> = initial_matrix.submatrix(row_idx, col_idx);
     world
         .matrices2x2
         .insert(new_matrix_name.clone(), new_matrix);
@@ -301,17 +307,45 @@ fn submatrix_is_the_following_matrix(
 }
 
 #[then(expr = "minor\\({word}, {int}, {int}) = {int}")]
-fn minor_equals(world: &mut MatrixWorld, matrix: String, row_idx: usize, col_idx: usize, minor_value: f32) {
+fn minor_equals(
+    world: &mut MatrixWorld,
+    matrix: String,
+    row_idx: usize,
+    col_idx: usize,
+    minor_value: f32,
+) {
     match world
         .matrices
         .get(&matrix)
         .expect(format!("{matrix} does not exist").as_str())
     {
-        (3, 3)  => assert_eq!(
+        (3, 3) => assert_eq!(
             world.get_matrix3x3(&matrix).minor(row_idx, col_idx),
             minor_value
         ),
-        (2,2) | (4, 4) => panic!("Only supported on 3x3 matrices"),
+        (2, 2) | (4, 4) => panic!("Only supported on 3x3 matrices"),
+        _ => panic!("no matrix with given size"),
+    }
+}
+
+#[then(expr = "cofactor\\({word}, {int}, {int}) = {int}")]
+fn cofactor_equals(
+    world: &mut MatrixWorld,
+    matrix: String,
+    row_idx: usize,
+    col_idx: usize,
+    cofactor_value: f32,
+) {
+    match world
+        .matrices
+        .get(&matrix)
+        .expect(format!("{matrix} does not exist").as_str())
+    {
+        (3, 3) => assert_eq!(
+            world.get_matrix3x3(&matrix).cofactor(row_idx, col_idx),
+            cofactor_value
+        ),
+        (2, 2) | (4, 4) => panic!("Only supported on 3x3 matrices"),
         _ => panic!("no matrix with given size"),
     }
 }
