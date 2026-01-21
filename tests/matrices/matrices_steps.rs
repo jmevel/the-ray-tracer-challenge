@@ -273,7 +273,14 @@ fn determinant_equals(world: &mut MatrixWorld, matrix: String, determinant: f32)
             world.get_matrix2x2(&matrix).determinant(),
             f32::from(determinant)
         ),
-        (3, 3) | (4, 4) => panic!("determinant is only supported on 2x2 matrices"),
+        (3, 3) => assert_eq!(
+            world.get_matrix3x3(&matrix).determinant(),
+            f32::from(determinant)
+        ),
+        (4,4) => assert_eq!(
+            world.get_matrix4x4(&matrix).determinant(),
+            f32::from(determinant)
+        ),
         _ => panic!("no matrix with given size"),
     }
 }
@@ -345,7 +352,11 @@ fn cofactor_equals(
             world.get_matrix3x3(&matrix).cofactor(row_idx, col_idx),
             cofactor_value
         ),
-        (2, 2) | (4, 4) => panic!("Only supported on 3x3 matrices"),
+        (4, 4)=> assert_eq!(
+            world.get_matrix4x4(&matrix).cofactor(row_idx, col_idx),
+            cofactor_value
+        ),
+        (2, 2) => panic!("Only supported on 3x3 matrices"),
         _ => panic!("no matrix with given size"),
     }
 }
