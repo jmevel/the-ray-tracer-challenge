@@ -65,6 +65,10 @@ impl Matrix<2, 2> {
     pub fn determinant(&self) -> f32 {
         self.data[0][0] * self.data[1][1] - self.data[0][1] * self.data[1][0]
     }
+    
+    pub fn is_invertible(&self) -> bool {
+        self.determinant() != 0f32
+    }
 }
 
 impl Matrix<3, 3> {
@@ -87,6 +91,10 @@ impl Matrix<3, 3> {
         let minor = self.minor(row_idx, col_idx);
         (-1i32).pow((row_idx + col_idx) as u32) as f32 * minor
     }
+
+    pub fn is_invertible(&self) -> bool {
+        self.determinant() != 0f32
+    }
 }
 
 impl Matrix<4, 4> {
@@ -108,6 +116,10 @@ impl Matrix<4, 4> {
     pub fn cofactor(&self, row_idx: usize, col_idx: usize) -> f32 {
         let minor = self.minor(row_idx, col_idx);
         (-1i32).pow((row_idx + col_idx) as u32) as f32 * minor
+    }
+
+    pub fn is_invertible(&self) -> bool {
+        self.determinant() != 0f32
     }
 }
 

@@ -178,3 +178,21 @@ Feature: Matrices
     And cofactor(A, 0, 2) = 210
     And cofactor(A, 0, 3) = 51
     And determinant(A) = -4071
+
+  Scenario: Testing an invertible matrix for invertibility
+    Given the following 4x4 matrix A:
+      |  6 |  4 |  4 |  4 |
+      |  5 |  5 |  7 |  6 |
+      |  4 | -9 |  3 | -7 |
+      |  9 |  1 |  7 | -6 |
+    Then determinant(A) = -2120
+    And A is invertible
+
+  Scenario: Testing a noninvertible matrix for invertibility
+    Given the following 4x4 matrix A:
+      | -4 |  2 | -2 | -3 |
+      |  9 |  6 |  2 |  6 |
+      |  0 | -5 |  1 | -5 |
+      |  0 |  0 |  0 |  0 |
+    Then determinant(A) = 0
+    And A is not invertible

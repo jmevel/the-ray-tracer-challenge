@@ -361,6 +361,42 @@ fn cofactor_equals(
     }
 }
 
+#[then(expr = "{word} is invertible")]
+fn matrix_is_invertible(
+    world: &mut MatrixWorld,
+    matrix: String
+) {
+    assert!(is_invertible(world, matrix));
+}
+
+#[then(expr = "{word} is not invertible")]
+fn matrix_is_not_invertible(
+    world: &mut MatrixWorld,
+    matrix: String
+) {
+    assert!(!is_invertible(world, matrix));
+}
+
+fn is_invertible(
+    world: &mut MatrixWorld,
+    matrix: String
+) -> bool {
+    match world
+        .matrices
+        .get(&matrix)
+        .expect(format!("{matrix} does not exist").as_str())
+    {
+        (2, 2) => 
+            world.get_matrix2x2(&matrix).is_invertible(),
+        
+        (3, 3) =>
+            world.get_matrix3x3(&matrix).is_invertible(),
+        (4, 4)=> 
+            world.get_matrix4x4(&matrix).is_invertible(),
+        _ => panic!("no matrix with given size")
+    }
+}
+
 fn get_matrix<const ROW_COUNT: usize, const COL_COUNT: usize>(
     step: &Step,
 ) -> Matrix<ROW_COUNT, COL_COUNT> {
