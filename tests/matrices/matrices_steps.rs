@@ -98,6 +98,36 @@ fn matrix_is_submatrix(
     world.matrices.insert(new_matrix_name, (2, 2));
 }
 
+#[given(expr = "{word} ← inverse\\({word})")]
+fn matrix_is_inverse_of_matrix(
+    world: &mut MatrixWorld,
+    new_matrix_name: String,
+    initial_matrix_name: String,
+) {
+    match world
+        .matrices
+        .get(&initial_matrix_name)
+        .expect(format!("{initial_matrix_name} does not exist").as_str())
+    {
+        (2, 2) => panic!("can't invert a 2x2 matrix"),
+        (3, 3) => {
+            let initial_matrix = world.get_matrix3x3(&initial_matrix_name);
+            world
+                .matrices3x3
+                .insert(new_matrix_name.clone(), initial_matrix.invert().unwrap());
+            world.matrices.insert(new_matrix_name, (3, 3));
+        }
+        (4, 4) => {
+            let initial_matrix = world.get_matrix4x4(&initial_matrix_name);
+            world
+                .matrices4x4
+                .insert(new_matrix_name.clone(), initial_matrix.invert().unwrap());
+            world.matrices.insert(new_matrix_name, (4, 4));
+        }
+        _ => panic!("no matrix with given size"),
+    }
+}
+
 #[then(expr = "{word}[{int},{int}] = {float}")]
 fn matrix_index_equals(
     world: &mut MatrixWorld,
@@ -165,6 +195,30 @@ fn matrix_multiplied_by_matrix_is_the_following_matrix(
             let actual = matrix1 * matrix2;
 
             assert_eq!(actual, expected);
+        }
+        _ => panic!("no matrix with given size"),
+    }
+}
+
+#[then(expr = "{word} is the following {int}x{int} matrix:")]
+fn matrix_is_the_following_matrix(
+    world: &mut MatrixWorld,
+    matrix: String,
+    row_size: usize,
+    col_size: usize,
+    step: &Step,
+) {
+    match (row_size, col_size) {
+        (2, 2) => panic!("step definition not implemented (not needed)"),
+        (3, 3) => {
+            let matrix = world.matrices3x3.get(&matrix).unwrap();
+            let expected = get_matrix::<3, 3>(step);
+            assert_eq!(matrix, &expected);
+        }
+        (4, 4) => {
+            let matrix = world.matrices4x4.get(&matrix).unwrap();
+            let expected = get_matrix::<4, 4>(step);
+            assert_eq!(matrix, &expected);
         }
         _ => panic!("no matrix with given size"),
     }
@@ -277,7 +331,7 @@ fn determinant_equals(world: &mut MatrixWorld, matrix: String, determinant: f32)
             world.get_matrix3x3(&matrix).determinant(),
             f32::from(determinant)
         ),
-        (4,4) => assert_eq!(
+        (4, 4) => assert_eq!(
             world.get_matrix4x4(&matrix).determinant(),
             f32::from(determinant)
         ),
@@ -352,7 +406,7 @@ fn cofactor_equals(
             world.get_matrix3x3(&matrix).cofactor(row_idx, col_idx),
             cofactor_value
         ),
-        (4, 4)=> assert_eq!(
+        (4, 4) => assert_eq!(
             world.get_matrix4x4(&matrix).cofactor(row_idx, col_idx),
             cofactor_value
         ),
@@ -362,38 +416,48 @@ fn cofactor_equals(
 }
 
 #[then(expr = "{word} is invertible")]
-fn matrix_is_invertible(
-    world: &mut MatrixWorld,
-    matrix: String
-) {
+fn matrix_is_invertible(world: &mut MatrixWorld, matrix: String) {
     assert!(is_invertible(world, matrix));
 }
 
 #[then(expr = "{word} is not invertible")]
-fn matrix_is_not_invertible(
-    world: &mut MatrixWorld,
-    matrix: String
-) {
+fn matrix_is_not_invertible(world: &mut MatrixWorld, matrix: String) {
     assert!(!is_invertible(world, matrix));
 }
 
-fn is_invertible(
-    world: &mut MatrixWorld,
-    matrix: String
-) -> bool {
+fn is_invertible(world: &mut MatrixWorld, matrix: String) -> bool {
     match world
         .matrices
         .get(&matrix)
         .expect(format!("{matrix} does not exist").as_str())
     {
-        (2, 2) => 
-            world.get_matrix2x2(&matrix).is_invertible(),
-        
-        (3, 3) =>
-            world.get_matrix3x3(&matrix).is_invertible(),
-        (4, 4)=> 
-            world.get_matrix4x4(&matrix).is_invertible(),
-        _ => panic!("no matrix with given size")
+        (2, 2) => world.get_matrix2x2(&matrix).is_invertible(),
+        (3, 3) => world.get_matrix3x3(&matrix).is_invertible(),
+        (4, 4) => world.get_matrix4x4(&matrix).is_invertible(),
+        _ => panic!("no matrix with given size"),
+    }
+}
+
+#[then(expr = "{word}[{int},{int}] = {float}\\/{float}")]
+fn value_in_matrix_equals_fraction(
+    world: &mut MatrixWorld,
+    matrix: String,
+    row_idx: usize,
+    col_idx: usize,
+    numerator: f32,
+    denominator: f32,
+) {
+    let result = numerator / denominator;
+
+    match world
+        .matrices
+        .get(&matrix)
+        .expect(format!("{matrix} does not exist").as_str())
+    {
+        (2, 2) => assert_eq!(world.get_matrix2x2(&matrix).data[row_idx][col_idx], result),
+        (3, 3) => assert_eq!(world.get_matrix3x3(&matrix).data[row_idx][col_idx], result),
+        (4, 4) => assert_eq!(world.get_matrix4x4(&matrix).data[row_idx][col_idx], result),
+        _ => panic!("no matrix with given size"),
     }
 }
 
