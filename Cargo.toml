@@ -21,3 +21,6 @@ harness = false
 name = "matrices"
 path = "tests/matrices/matrices.rs"
 harness = false
+
+[dependencies]
+duplicate = "2.0.1"

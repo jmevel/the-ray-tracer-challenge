@@ -1,6 +1,7 @@
 use crate::Tuple;
 use crate::float::float_equals;
 use std::ops::Mul;
+use duplicate::duplicate_item;
 
 #[derive(Debug)]
 pub struct Matrix<const ROW_COUNT: usize, const COL_COUNT: usize> {
@@ -72,7 +73,12 @@ impl Matrix<2, 2> {
     }
 }
 
-impl Matrix<3, 3> {
+#[duplicate_item(
+  row_count  col_count;
+  [ 3 ]    [ 3 ];
+  [ 4 ]    [ 4 ];
+)]
+impl Matrix<row_count, col_count> {
     pub fn determinant(&self) -> f32 {
         let row_idx = 0; // we take any row or column, it doesn't really matter
         self.data[row_idx]
@@ -97,12 +103,12 @@ impl Matrix<3, 3> {
         self.determinant() != 0f32
     }
 
-    pub fn invert(&self) -> Result<Matrix<3, 3>, String> {
+    pub fn invert(&self) -> Result<Matrix<row_count, col_count>, String> {
         if !self.is_invertible() {
             return Err("Matrix is not revertible".to_string());
         }
 
-        let data: [[f32; 3]; 3] = self
+        let data: [[f32; row_count]; col_count] = self
             .data
             .iter()
             .enumerate()
@@ -114,7 +120,7 @@ impl Matrix<3, 3> {
                     .try_into()
                     .unwrap()
             })
-            .collect::<Vec<[f32; 3]>>()
+            .collect::<Vec<[f32; row_count]>>()
             .try_into()
             .unwrap();
 
@@ -122,57 +128,7 @@ impl Matrix<3, 3> {
     }
 }
 
-impl Matrix<4, 4> {
-    pub fn determinant(&self) -> f32 {
-        let row_idx = 0; // we take any row or column, it doesn't really matter
-        self.data[row_idx]
-            .iter()
-            .enumerate()
-            .fold(0f32, |acc, (col_idx, &value)| {
-                acc + value * self.cofactor(row_idx, col_idx)
-            })
-    }
-
-    pub fn minor(&self, row_idx: usize, col_idx: usize) -> f32 {
-        let submatrix = self.submatrix(row_idx, col_idx);
-        submatrix.determinant()
-    }
-
-    pub fn cofactor(&self, row_idx: usize, col_idx: usize) -> f32 {
-        let minor = self.minor(row_idx, col_idx);
-        (-1i32).pow((row_idx + col_idx) as u32) as f32 * minor
-    }
-
-    pub fn is_invertible(&self) -> bool {
-        self.determinant() != 0f32
-    }
-
-    pub fn invert(&self) -> Result<Matrix<4, 4>, String> {
-        if !self.is_invertible() {
-            return Err("Matrix is not revertible".to_string());
-        }
-
-        let data: [[f32; 4]; 4] = self
-            .data
-            .iter()
-            .enumerate()
-            .map(|(row_idx, row)| {
-                row.iter()
-                    .enumerate()
-                    .map(|(col_idx, _)| self.cofactor(row_idx, col_idx) / self.determinant())
-                    .collect::<Vec<f32>>()
-                    .try_into()
-                    .unwrap()
-            })
-            .collect::<Vec<[f32; 4]>>()
-            .try_into()
-            .unwrap();
-
-        Ok(Matrix { data }.transpose())
-    }
-}
-
-impl Eq for Matrix<4, 4> {}
+impl<const ROW_COUNT: usize, const COL_COUNT: usize> Eq for Matrix<ROW_COUNT, COL_COUNT> {}
 
 impl<const ROW_COUNT: usize, const COL_COUNT: usize> PartialEq for Matrix<ROW_COUNT, COL_COUNT> {
     fn eq(&self, other: &Self) -> bool {
