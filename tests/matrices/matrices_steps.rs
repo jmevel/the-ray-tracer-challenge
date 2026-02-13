@@ -128,6 +128,43 @@ fn matrix_is_inverse_of_matrix(
     }
 }
 
+#[given(expr = "{word} ← {word} * {word}")]
+fn matrix_is_matrix_multiplied_by_matrix(
+    world: &mut MatrixWorld,
+    product_matrix: String,
+    matrix1: String,
+    matrix2: String,
+) {
+    match world
+        .matrices
+        .get(&matrix1)
+        .expect(format!("{matrix1} does not exist").as_str())
+    {
+        (2, 2) => {
+            world.matrices2x2.insert(
+                product_matrix.clone(),
+                world.get_matrix2x2(&matrix1) * world.get_matrix2x2(&matrix2),
+            );
+            world.matrices.insert(product_matrix, (2, 2));
+        }
+        (3, 3) => {
+            world.matrices3x3.insert(
+                product_matrix.clone(),
+                world.get_matrix3x3(&matrix1) * world.get_matrix3x3(&matrix2),
+            );
+            world.matrices.insert(product_matrix, (3, 3));
+        }
+        (4, 4) => {
+            world.matrices4x4.insert(
+                product_matrix.clone(),
+                world.get_matrix4x4(&matrix1) * world.get_matrix4x4(&matrix2),
+            );
+            world.matrices.insert(product_matrix, (4, 4));
+        }
+        _ => panic!("no matrix with given size"),
+    };
+}
+
 #[then(expr = "{word}[{int},{int}] = {float}")]
 fn matrix_index_equals(
     world: &mut MatrixWorld,
@@ -200,7 +237,9 @@ fn matrix_multiplied_by_matrix_is_the_following_matrix(
     }
 }
 
-#[then(expr = "{word} is the following {int}x{int} matrix:")]
+#[then(
+    regex = r"^([a-zA-Z0-9]*) is the following ((?:-?\d+)|(?:\d+))x((?:-?\d+)|(?:\d+)) matrix:$"
+)]
 fn matrix_is_the_following_matrix(
     world: &mut MatrixWorld,
     matrix: String,
@@ -457,6 +496,57 @@ fn value_in_matrix_equals_fraction(
         (2, 2) => assert_eq!(world.get_matrix2x2(&matrix).data[row_idx][col_idx], result),
         (3, 3) => assert_eq!(world.get_matrix3x3(&matrix).data[row_idx][col_idx], result),
         (4, 4) => assert_eq!(world.get_matrix4x4(&matrix).data[row_idx][col_idx], result),
+        _ => panic!("no matrix with given size"),
+    }
+}
+
+#[then(expr = "inverse\\({word}) is the following {int}x{int} matrix:")]
+fn inverse_of_matrix_is_the_following_matrix(
+    world: &mut MatrixWorld,
+    matrix: String,
+    _row_idx: usize,
+    _col_idx: usize,
+    step: &Step,
+) {
+    match world
+        .matrices
+        .get(&matrix)
+        .expect(format!("{matrix} does not exist").as_str())
+    {
+        (2, 2) => panic!("not implemented"),
+        (3, 3) => assert_eq!(
+            world.get_matrix3x3(&matrix).invert(),
+            Ok(get_matrix::<3, 3>(step))
+        ),
+        (4, 4) => assert_eq!(
+            world.get_matrix4x4(&matrix).invert(),
+            Ok(get_matrix::<4, 4>(step))
+        ),
+        _ => panic!("no matrix with given size"),
+    }
+}
+
+#[then(expr = "{word} * inverse\\({word}) = {word}")]
+fn matrix_multiplied_by_inverse_of_matrix_equals_matrix(
+    world: &mut MatrixWorld,
+    matrix1: String,
+    matrix2: String,
+    result_matrix: String,
+) {
+    match world
+        .matrices
+        .get(&matrix1)
+        .expect(format!("{matrix1} does not exist").as_str())
+    {
+        (2, 2) =>  panic!("not implemented"),
+        (3, 3) => assert_eq!(
+            world.get_matrix3x3(&matrix1) * &world.get_matrix3x3(&matrix2).invert().unwrap(),
+            *world.get_matrix3x3(&result_matrix)
+        ),
+        (4, 4) => assert_eq!(
+            world.get_matrix4x4(&matrix1) * &world.get_matrix4x4(&matrix2).invert().unwrap(),
+            *world.get_matrix4x4(&result_matrix)
+        ),
         _ => panic!("no matrix with given size"),
     }
 }

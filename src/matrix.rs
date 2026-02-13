@@ -1,7 +1,7 @@
 use crate::Tuple;
 use crate::float::float_equals;
-use std::ops::Mul;
 use duplicate::duplicate_item;
+use std::ops::Mul;
 
 #[derive(Debug)]
 pub struct Matrix<const ROW_COUNT: usize, const COL_COUNT: usize> {
