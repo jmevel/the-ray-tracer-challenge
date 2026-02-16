@@ -538,7 +538,7 @@ fn matrix_multiplied_by_inverse_of_matrix_equals_matrix(
         .get(&matrix1)
         .expect(format!("{matrix1} does not exist").as_str())
     {
-        (2, 2) =>  panic!("not implemented"),
+        (2, 2) => panic!("not implemented"),
         (3, 3) => assert_eq!(
             world.get_matrix3x3(&matrix1) * &world.get_matrix3x3(&matrix2).invert().unwrap(),
             *world.get_matrix3x3(&result_matrix)

@@ -140,7 +140,17 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> PartialEq for Matrix<ROW_CO
     }
 }
 
-impl<const ROW_COUNT: usize, const COL_COUNT: usize> Mul for &Matrix<ROW_COUNT, COL_COUNT> {
+impl<const ROW_COUNT: usize, const COL_COUNT: usize> Mul for Matrix<ROW_COUNT, COL_COUNT> {
+    type Output = Matrix<ROW_COUNT, COL_COUNT>;
+
+    fn mul(self, rhs: Matrix<ROW_COUNT, COL_COUNT>) -> Self::Output {
+        &self * &rhs
+    }
+}
+
+impl<const ROW_COUNT: usize, const COL_COUNT: usize> Mul<&Matrix<ROW_COUNT, COL_COUNT>>
+    for &Matrix<ROW_COUNT, COL_COUNT>
+{
     type Output = Matrix<ROW_COUNT, COL_COUNT>;
 
     fn mul(self, rhs: &Matrix<ROW_COUNT, COL_COUNT>) -> Self::Output {
@@ -187,5 +197,13 @@ impl Mul<&Tuple> for Matrix<4, 4> {
 
     fn mul(self, other: &Tuple) -> Self::Output {
         &self * other
+    }
+}
+
+impl Mul<&Matrix<4, 4>> for &Tuple {
+    type Output = Tuple;
+
+    fn mul(self, other: &Matrix<4, 4>) -> Self::Output {
+        other * self
     }
 }
