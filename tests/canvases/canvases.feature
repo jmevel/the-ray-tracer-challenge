@@ -1,5 +1,5 @@
-@canvas
 #noinspection CucumberUndefinedStep
+@canvas
 Feature: Canvas
 
   Scenario: Creating a canvas
