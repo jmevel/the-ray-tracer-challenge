@@ -61,6 +61,14 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
             .try_into()
             .unwrap()
     }
+
+    pub fn translation(x: f32, y: f32, z: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[0][3] = result.data[0][3] + x;
+        result.data[1][3] = result.data[1][3] + y;
+        result.data[2][3] = result.data[2][3] + z;
+        result
+    }
 }
 
 impl Matrix<2, 2> {

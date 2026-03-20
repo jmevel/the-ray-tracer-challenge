@@ -18,5 +18,10 @@
       "type": "shell",
       "command": "cargo test --test matrices",
     },
+    {
+      "label": "Test transformations",
+      "type": "shell",
+      "command": "cargo test --test transformations",
+    },
   ],
 }

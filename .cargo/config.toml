@@ -2,3 +2,4 @@
 test_tuples = "test --test tuples -- --fail-fast"
 test_canvases = "test --test canvases -- --fail-fast"
 test_matrices = "test --test matrices -- --fail-fast"
+test_transformations = "test --test transformations -- --fail-fast"
