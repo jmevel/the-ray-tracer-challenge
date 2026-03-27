@@ -27,19 +27,40 @@ fn p_is_point(world: &mut TransformationWorld, point_name: String, x: f32, y: f3
     world.tuples.insert(point_name, point);
 }
 
+#[given(expr = "{word} ← inverse\\({word})")]
+fn matrix_is_inverse_of_matrix(
+    world: &mut TransformationWorld,
+    new_matrix_name: String,
+    initial_matrix_name: String,
+) {
+    let initial_matrix = world
+        .transformations
+        .get(&initial_matrix_name)
+        .expect(format!("{initial_matrix_name} does not exist").as_str());
+
+    world
+        .transformations
+        .insert(new_matrix_name.clone(), initial_matrix.invert().unwrap());
+}
+
+#[given(expr = "{word} ← vector\\({float}, {float}, {float})")]
+fn tuple_is_vector(world: &mut TransformationWorld, tuple: String, x: f32, y: f32, z: f32) {
+    world.tuples.insert(tuple, Tuple::new_vector(x, y, z));
+}
+
 #[then(expr = "{word} * {word} = point\\({int}, {int}, {int})")]
 fn transform_multiplied_by_point_equals_point(
     world: &mut TransformationWorld,
-    transform_name: String,
+    transformation: String,
     point_name: String,
     x: f32,
     y: f32,
     z: f32,
 ) {
-    let transform = world
+    let transformation = world
         .transformations
-        .get(&transform_name)
-        .expect(format!("{transform_name} does not exist").as_str());
+        .get(&transformation)
+        .expect(format!("{transformation} does not exist").as_str());
 
     let point = world
         .tuples
@@ -47,5 +68,27 @@ fn transform_multiplied_by_point_equals_point(
         .expect(format!("{point_name} does not exist").as_str());
 
     let expected = Tuple::new_point(x, y, z);
-    assert_eq!(transform * point, expected);
+    assert_eq!(transformation * point, expected);
+}
+
+#[then(expr = "{word} * {word} = {word}")]
+fn transformation_multiplied_by_vector_equals_same_vector(
+    world: &mut TransformationWorld,
+    transformation: String,
+    vector: String,
+    _same_vector: String,
+) {
+    let transformation = world
+        .transformations
+        .get(&transformation)
+        .expect(format!("{transformation} does not exist").as_str());
+
+    let vector = world
+        .tuples
+        .get(&vector)
+        .expect(format!("{vector} does not exist").as_str());
+
+    let actual = transformation * vector;
+
+    assert_eq!(&actual, vector);
 }
