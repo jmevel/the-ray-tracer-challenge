@@ -1,0 +1,15 @@
+{
+  "languages": {
+    "Gherkin": {
+      "enable_language_server": true,
+    },
+  },
+  "lsp": {
+    "cucumber": {
+      "settings": {
+        "features": ["tests/**/*.feature"],
+        "glue": ["tests/**/*_steps.rs"],
+      },
+    },
+  },
+}
