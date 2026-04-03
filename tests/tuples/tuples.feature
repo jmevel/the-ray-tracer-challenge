@@ -1,4 +1,3 @@
-#noinspection CucumberUndefinedStep
 @tuples
 Feature: Tuples, Vectors, and Points
 

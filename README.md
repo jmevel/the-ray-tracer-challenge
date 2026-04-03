@@ -10,23 +10,11 @@ You can get full support by simply installing [this extension](https://marketpla
 
 #### Zed
 
-You can install [this extension](https://zed.dev/extensions/cucumber) but this is only a client. In order to get it to work you must also install the [Cucumber LSP](https://github.com/cucumber/language-server)
-
-As of today, the Zed Cucumber extension requires the Cucumber LSP to be installed *globally* with Node 18 (or lower)
-
-1. Install [the Zed cucumber extension](https://zed.dev/extensions/cucumber) then close Zed 
-2. Install [nvm](https://github.com/nvm-sh/nvm)
-3. Install the latest LTS of Node 18: 
-    ```sh
-    nvm install 18.20.8
-    ```
-4. Make sure Node 18 is now the default version
-    ```sh
-    node -v
-    nvm ls
-    ```
-5. Install the Cucumber LSP globally
+1. Close Zed
+2. Install the Cucumber Language Server *globally* (with Node version > 18)
     ```sh
     npm install -g @cucumber/language-server
     ```
-6. Reopen Zed and wait the LSP is loaded and started. The extension should now work and you should now be able to navigate from steps in your `.feature` files to your step definitions for example
+3. Clone [this fork](https://github.com/alistairstead/zed-extension-cucumber)
+4. Reopen Zed then `Extensions` -> `Install Dev Extension` -> Select the root path of `zed-extension-cucumber`
+5. Cucumber should be fully working now, giving you Gherkin syntax highliting, `Go to definition`, `Define in ...` and other nice features
