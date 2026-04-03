@@ -7,8 +7,8 @@
   "lsp": {
     "cucumber": {
       "settings": {
-        "features": ["tests/**/*.feature"],
-        "glue": ["tests/**/*_steps.rs"],
+        "features": ["tests/features/*.feature"],
+        "glue": ["tests/steps/*_steps.rs"],
       },
     },
   },

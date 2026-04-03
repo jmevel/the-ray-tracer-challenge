@@ -1,6 +1,4 @@
 {
-    "cucumberautocomplete.steps": [
-        "tests/features/*.rs"
-    ],
-    "cucumberautocomplete.strictGherkinCompletion": true
+  "cucumberautocomplete.steps": ["tests/features/*.rs"],
+  "cucumberautocomplete.strictGherkinCompletion": true,
 }
