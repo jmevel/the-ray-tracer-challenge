@@ -69,6 +69,14 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
         result.data[2][3] = result.data[2][3] + z;
         result
     }
+
+    pub fn scaling(x: f32, y: f32, z: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[0][0] = result.data[0][0] * x;
+        result.data[1][1] = result.data[1][1] * y;
+        result.data[2][2] = result.data[2][2] * z;
+        result
+    }
 }
 
 impl Matrix<2, 2> {

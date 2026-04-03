@@ -48,6 +48,12 @@ fn tuple_is_vector(world: &mut TransformationWorld, tuple: String, x: f32, y: f3
     world.tuples.insert(tuple, Tuple::new_vector(x, y, z));
 }
 
+#[given(expr = "{word} ← scaling\\({float}, {float}, {float})")]
+fn transform_is_scaling(world: &mut TransformationWorld, scaling: String, x: f32, y: f32, z: f32) {
+    let transform = Matrix::scaling(x, y, z);
+    world.transformations.insert(scaling.clone(), transform);
+}
+
 #[then(expr = "{word} * {word} = point\\({int}, {int}, {int})")]
 fn transform_multiplied_by_point_equals_point(
     world: &mut TransformationWorld,
@@ -91,4 +97,30 @@ fn transformation_multiplied_by_vector_equals_same_vector(
     let actual = transformation * vector;
 
     assert_eq!(&actual, vector);
+}
+
+#[then(expr = "{word} * {word} = vector\\({int}, {int}, {int})")]
+fn transformation_multiplied_by_vector_equals_vector(
+    world: &mut TransformationWorld,
+    transformation: String,
+    vector: String,
+    x: f32,
+    y: f32,
+    z: f32,
+) {
+    let transformation = world
+        .transformations
+        .get(&transformation)
+        .expect(format!("{transformation} does not exist").as_str());
+
+    let vector = world
+        .tuples
+        .get(&vector)
+        .expect(format!("{vector} does not exist").as_str());
+
+    let expected = Tuple::new_vector(x, y, z);
+
+    let actual = transformation * vector;
+
+    assert_eq!(actual, expected);
 }
