@@ -1,3 +1,4 @@
+@transformations
 Feature: Matrix Transformations
 
   Scenario: Multiplying by a translation matrix

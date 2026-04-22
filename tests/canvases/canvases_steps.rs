@@ -1,35 +1,38 @@
-#[path = "../common/mod.rs"]
-mod common;
-
-use common::ray_tracer_world::RayTracerWorld;
-
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
+use std::collections::HashMap;
 use the_ray_tracer_challenge::Tuple;
 use the_ray_tracer_challenge::canvas::Canvas;
 
+#[derive(Debug, Default, World)]
+pub struct CanvasWorld {
+    canvases: HashMap<String, Canvas>,
+    tuples: HashMap<String, Tuple>,
+    ppms: HashMap<String, String>,
+}
+
 #[given(expr = "{word} ← canvas\\({int}, {int})")]
-fn canvas_is(world: &mut RayTracerWorld, canvas: String, width: usize, height: usize) {
+fn canvas_is(world: &mut CanvasWorld, canvas: String, width: usize, height: usize) {
     world
         .canvases
         .insert(canvas, Canvas::new(width, height, None));
 }
 
 #[given(expr = "{word} ← color\\({float}, {float}, {float})")]
-fn tuple_is_color(world: &mut RayTracerWorld, tuple: String, red: f32, green: f32, blue: f32) {
+fn tuple_is_color(world: &mut CanvasWorld, tuple: String, red: f32, green: f32, blue: f32) {
     world
         .tuples
         .insert(tuple, Tuple::new_color(red, green, blue));
 }
 
 #[when(expr = "write_pixel\\({word}, {int}, {int}, {word})")]
-fn write_pixels(world: &mut RayTracerWorld, canvas: String, x: usize, y: usize, color: String) {
+fn write_pixels(world: &mut CanvasWorld, canvas: String, x: usize, y: usize, color: String) {
     let color = world.get_tuple(&color).to_owned();
     world.get_mut_canvas(&canvas).write_pixel(x, y, color)
 }
 
 #[when(expr = "{word} ← canvas_to_ppm\\({word})")]
-fn convert_to_ppm(world: &mut RayTracerWorld, ppm: String, canvas: String) {
+fn convert_to_ppm(world: &mut CanvasWorld, ppm: String, canvas: String) {
     let canvas = world.get_canvas(&canvas);
     let result = canvas.convert_to_ppm();
     world.ppms.insert(ppm, result);
@@ -37,7 +40,7 @@ fn convert_to_ppm(world: &mut RayTracerWorld, ppm: String, canvas: String) {
 
 #[when(expr = "every pixel of {word} is set to color\\({float}, {float}, {float})")]
 fn every_pixel_of_canvas_is_set_to_color(
-    world: &mut RayTracerWorld,
+    world: &mut CanvasWorld,
     canvas_name: String,
     red: f32,
     green: f32,
@@ -49,18 +52,18 @@ fn every_pixel_of_canvas_is_set_to_color(
 }
 
 #[then(expr = "{word}.width = {int}")]
-fn width_equal(world: &mut RayTracerWorld, canvas: String, width: usize) {
+fn width_equal(world: &mut CanvasWorld, canvas: String, width: usize) {
     assert_eq!(world.get_canvas(&canvas).width(), &width);
 }
 
 #[then(expr = "{word}.height = {int}")]
-fn height_equal(world: &mut RayTracerWorld, canvas: String, height: usize) {
+fn height_equal(world: &mut CanvasWorld, canvas: String, height: usize) {
     assert_eq!(world.get_canvas(&canvas).height(), &height);
 }
 
 #[then(expr = "every pixel of {word} is color\\({float}, {float}, {float})")]
 fn every_pixel_of_canvas_is_color(
-    world: &mut RayTracerWorld,
+    world: &mut CanvasWorld,
     canvas: String,
     red: f32,
     green: f32,
@@ -74,7 +77,7 @@ fn every_pixel_of_canvas_is_color(
 }
 
 #[then(expr = "pixel_at\\({word}, {int}, {int}) = {word}")]
-fn pixel_at(world: &mut RayTracerWorld, canvas: String, x: usize, y: usize, color: String) {
+fn pixel_at(world: &mut CanvasWorld, canvas: String, x: usize, y: usize, color: String) {
     let expected = world.get_tuple(&color);
     assert_eq!(
         world.get_canvas(&canvas).pixels().get(&(x, y)).unwrap(),
@@ -84,7 +87,7 @@ fn pixel_at(world: &mut RayTracerWorld, canvas: String, x: usize, y: usize, colo
 
 #[then(expr = "lines {int}-{int} of {word} are")]
 fn lines_of_ppm_are(
-    world: &mut RayTracerWorld,
+    world: &mut CanvasWorld,
     first_line: usize,
     last_line: usize,
     ppm: String,
@@ -116,11 +119,29 @@ fn lines_of_ppm_are(
 }
 
 #[then(expr = "{word} ends with a newline character")]
-fn ppm_ends_with_a_new_line_character(world: &mut RayTracerWorld, ppm: String) {
+fn ppm_ends_with_a_new_line_character(world: &mut CanvasWorld, ppm: String) {
     assert_eq!(world.get_ppm(&ppm).chars().last().unwrap(), '\n');
 }
 
-#[tokio::main]
-async fn main() {
-    RayTracerWorld::run("tests/features/canvases.feature").await;
+impl CanvasWorld {
+    fn get_canvas(&self, canvas: &str) -> &Canvas {
+        self.canvases
+            .get(canvas)
+            .expect(format!("{canvas} does not exist").as_str())
+    }
+    fn get_mut_canvas(&mut self, canvas: &str) -> &mut Canvas {
+        self.canvases
+            .get_mut(canvas)
+            .expect(format!("{canvas} does not exist").as_str())
+    }
+    fn get_tuple(&self, tuple: &str) -> &Tuple {
+        self.tuples
+            .get(tuple)
+            .expect(format!("{tuple} does not exist").as_str())
+    }
+    fn get_ppm(&self, ppm: &str) -> &str {
+        self.ppms
+            .get(ppm)
+            .expect(format!("{ppm} does not exist").as_str())
+    }
 }

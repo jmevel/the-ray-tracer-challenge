@@ -81,7 +81,7 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
     pub fn rotation_x(radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
         let mut result = Matrix::identity_matrix();
         result.data[1][1] = radians.cos();
-        result.data[2][1] = radians.sin();
+        result.data[2][1] = -radians.sin();
         result.data[1][2] = radians.sin();
         result.data[2][2] = radians.cos();
         result

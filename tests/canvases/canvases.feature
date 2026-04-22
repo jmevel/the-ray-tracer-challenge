@@ -1,3 +1,4 @@
+@canvas
 Feature: Canvas
 
   Scenario: Creating a canvas
