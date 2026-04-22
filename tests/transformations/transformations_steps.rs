@@ -34,7 +34,6 @@ fn matrix_is_inverse_of_matrix(
     new_matrix_name: String,
     initial_matrix_name: String,
 ) {
-    println!("transformations !!!!!!!");
     let initial_matrix = world
         .transformations
         .get(&initial_matrix_name)
@@ -60,6 +59,7 @@ fn transform_is_scaling(world: &mut TransformationWorld, scaling: String, x: f32
 fn rotation_is(world: &mut TransformationWorld, rotation: String, denominator: f32) {
     let fraction = f32::consts::PI / denominator;
     let transform = Matrix::rotation_x(fraction);
+    println!("{:?}", transform);
     world.transformations.insert(rotation.clone(), transform);
 }
 
@@ -166,7 +166,6 @@ fn inverse_of_rotation_multiplied_by_point_equals_point(
     let y = f32::sqrt(y_numerator as f32) / y_denominator as f32;
     let z = -f32::sqrt(z_numerator as f32) / z_denominator as f32;
     let expected = Tuple::new_point(x, y, z);
-    println!("expected: {}", z);
 
     point_multiplied_by_transformation_equals_expected(world, point, rotation, expected);
 }

@@ -1,4 +1,7 @@
 {
+  // As of now, Zed can't only exclude a file/directory from being analyzed by language servers
+  // enabling file_scan_exclusions also completely removes the target from the file tree, search and so on
+  // "file_scan_exclusions": ["resources/features", "resources/code"],
   "languages": {
     "Gherkin": {
       "enable_language_server": true,
