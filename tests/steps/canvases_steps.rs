@@ -1,25 +1,12 @@
-#[path = "../common/mod.rs"]
-mod common;
-
-use common::ray_tracer_world::RayTracerWorld;
-
+use crate::RayTracerWorld;
 use cucumber::gherkin::Step;
-use cucumber::{World, given, then, when};
+use cucumber::{given, then, when};
 use the_ray_tracer_challenge::Tuple;
 use the_ray_tracer_challenge::canvas::Canvas;
 
 #[given(expr = "{word} ← canvas\\({int}, {int})")]
 fn canvas_is(world: &mut RayTracerWorld, canvas: String, width: usize, height: usize) {
-    world
-        .canvases
-        .insert(canvas, Canvas::new(width, height, None));
-}
-
-#[given(expr = "{word} ← color\\({float}, {float}, {float})")]
-fn tuple_is_color(world: &mut RayTracerWorld, tuple: String, red: f32, green: f32, blue: f32) {
-    world
-        .tuples
-        .insert(tuple, Tuple::new_color(red, green, blue));
+    world.add_canvas(canvas, Canvas::new(width, height, None));
 }
 
 #[when(expr = "write_pixel\\({word}, {int}, {int}, {word})")]
@@ -32,7 +19,7 @@ fn write_pixels(world: &mut RayTracerWorld, canvas: String, x: usize, y: usize, 
 fn convert_to_ppm(world: &mut RayTracerWorld, ppm: String, canvas: String) {
     let canvas = world.get_canvas(&canvas);
     let result = canvas.convert_to_ppm();
-    world.ppms.insert(ppm, result);
+    world.add_ppm(ppm, result);
 }
 
 #[when(expr = "every pixel of {word} is set to color\\({float}, {float}, {float})")]
@@ -118,9 +105,4 @@ fn lines_of_ppm_are(
 #[then(expr = "{word} ends with a newline character")]
 fn ppm_ends_with_a_new_line_character(world: &mut RayTracerWorld, ppm: String) {
     assert_eq!(world.get_ppm(&ppm).chars().last().unwrap(), '\n');
-}
-
-#[tokio::main]
-async fn main() {
-    RayTracerWorld::run("tests/features/canvases.feature").await;
 }

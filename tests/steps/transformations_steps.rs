@@ -1,16 +1,7 @@
-#[path = "../common/mod.rs"]
-mod common;
-
-use common::ray_tracer_world::RayTracerWorld;
-
-use cucumber::{World, given, then};
+use crate::RayTracerWorld;
+use cucumber::{given, then};
 use std::f32;
 use the_ray_tracer_challenge::{Matrix, Tuple};
-
-#[given(expr = "{word} ← vector\\({float}, {float}, {float})")]
-pub fn tuple_is_vector(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32) {
-    world.tuples.insert(tuple, Tuple::new_vector(x, y, z));
-}
 
 #[given(expr = "{word} ← translation\\({int}, {int}, {int})")]
 fn transform_is_translation(
@@ -21,13 +12,7 @@ fn transform_is_translation(
     z: f32,
 ) {
     let transform = Matrix::translation(x, y, z);
-    world.matrices4x4.insert(translation.clone(), transform);
-}
-
-#[given(expr = "{word} ← point\\({int}, {int}, {int})")]
-fn p_is_point(world: &mut RayTracerWorld, point_name: String, x: f32, y: f32, z: f32) {
-    let point = Tuple::new_point(x, y, z);
-    world.tuples.insert(point_name, point);
+    world.add_matrix4x4(translation.clone(), transform);
 }
 
 #[given(expr = "{word} ← scaling\\({float}, {float}, {float})")]
@@ -41,30 +26,6 @@ fn rotation_is(world: &mut RayTracerWorld, rotation: String, denominator: f32) {
     let fraction = f32::consts::PI / denominator;
     let transform = Matrix::rotation_x(fraction);
     world.add_matrix4x4(rotation.clone(), transform);
-}
-
-#[given(expr = "{word} ← inverse\\({word})")]
-fn matrix_is_inverse_of_matrix(
-    world: &mut RayTracerWorld,
-    new_matrix_name: String,
-    initial_matrix_name: String,
-) {
-    match world
-        .matrices
-        .get(&initial_matrix_name)
-        .expect(format!("{initial_matrix_name} does not exist").as_str())
-    {
-        (2, 2) => panic!("can't invert a 2x2 matrix"),
-        (3, 3) => {
-            let initial_matrix = world.get_matrix3x3(&initial_matrix_name);
-            world.add_matrix3x3(new_matrix_name, initial_matrix.invert().unwrap());
-        }
-        (4, 4) => {
-            let initial_matrix = world.get_matrix4x4(&initial_matrix_name);
-            world.add_matrix4x4(new_matrix_name, initial_matrix.invert().unwrap());
-        }
-        _ => panic!("no matrix with given size"),
-    }
 }
 
 #[then(expr = "{word} * {word} = point\\({int}, {int}, {int})")]
@@ -81,20 +42,6 @@ fn transform_multiplied_by_point_equals_point(
     let expected = Tuple::new_point(x, y, z);
 
     assert_eq!(transformation * point, expected);
-}
-
-#[then(expr = "{word} * {word} = {word}")]
-fn transformation_multiplied_by_vector_equals_same_vector(
-    world: &mut RayTracerWorld,
-    transformation: String,
-    vector: String,
-    _same_vector: String,
-) {
-    let transformation = world.get_matrix4x4(&transformation);
-    let vector = world.get_tuple(&vector);
-    let actual = transformation * vector;
-
-    assert_eq!(&actual, vector);
 }
 
 #[then(expr = "{word} * {word} = vector\\({int}, {int}, {int})")]
@@ -160,9 +107,4 @@ fn point_multiplied_by_transformation_equals_expected(
     let point = world.get_tuple(&point);
 
     assert_eq!(transformation * point, expected);
-}
-
-#[tokio::main]
-async fn main() {
-    RayTracerWorld::run("tests/features/transformations.feature").await;
 }

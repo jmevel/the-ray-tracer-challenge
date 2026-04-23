@@ -1,13 +1,8 @@
-#[path = "../common/mod.rs"]
-mod common;
-
-use common::ray_tracer_world::RayTracerWorld;
-
+use crate::RayTracerWorld;
+use crate::steps::ray_tracer_world::Type;
 use cucumber::gherkin::Step;
-use cucumber::{World, given, then};
-
-use the_ray_tracer_challenge::Tuple;
-use the_ray_tracer_challenge::matrix::Matrix;
+use cucumber::{given, then};
+use the_ray_tracer_challenge::Matrix;
 
 #[given(expr = "the following 2x2 matrix {word}:")]
 fn the_following_2x2_matrix(world: &mut RayTracerWorld, matrix_name: String, step: &Step) {
@@ -43,7 +38,7 @@ fn the_following_matrix(world: &mut RayTracerWorld, matrix: String, step: &Step)
 #[given(expr = "{word} ← transpose\\(identity_matrix)")]
 fn transpose_identity_matrix(world: &mut RayTracerWorld, matrix: String) {
     let transposed_identity_matrix: Matrix<4, 4> = Matrix::identity_matrix().transpose();
-    world.matrices4x4.insert(matrix, transposed_identity_matrix);
+    world.add_matrix4x4(matrix, transposed_identity_matrix);
 }
 
 #[given(expr = "{word} ← submatrix\\({word}, {int}, {int})")]
@@ -54,13 +49,9 @@ fn matrix_is_submatrix(
     row_idx: usize,
     col_idx: usize,
 ) {
-    let initial_matrix = match world
-        .matrices
-        .get(&initial_matrix_name)
-        .expect(format!("{initial_matrix_name} does not exist").as_str())
-    {
-        (3, 3) => world.get_matrix3x3(&initial_matrix_name),
-        (2, 2) | (4, 4) => panic!("Only supported on 3x3 matrices"),
+    let initial_matrix = match world.get_element_type(&initial_matrix_name) {
+        Type::Matrix((3, 3)) => world.get_matrix3x3(&initial_matrix_name),
+        Type::Matrix((2, 2)) | Type::Matrix((4, 4)) => panic!("Only supported on 3x3 matrices"),
         _ => panic!("no matrix with given size"),
     };
 
@@ -74,17 +65,13 @@ fn matrix_is_inverse_of_matrix(
     new_matrix_name: String,
     initial_matrix_name: String,
 ) {
-    match world
-        .matrices
-        .get(&initial_matrix_name)
-        .expect(format!("{initial_matrix_name} does not exist").as_str())
-    {
-        (2, 2) => panic!("can't invert a 2x2 matrix"),
-        (3, 3) => {
+    match world.get_element_type(&initial_matrix_name) {
+        Type::Matrix((2, 2)) => panic!("can't invert a 2x2 matrix"),
+        Type::Matrix((3, 3)) => {
             let initial_matrix = world.get_matrix3x3(&initial_matrix_name);
             world.add_matrix3x3(new_matrix_name, initial_matrix.invert().unwrap());
         }
-        (4, 4) => {
+        Type::Matrix((4, 4)) => {
             let initial_matrix = world.get_matrix4x4(&initial_matrix_name);
             world.add_matrix4x4(new_matrix_name, initial_matrix.invert().unwrap());
         }
@@ -99,24 +86,20 @@ fn matrix_is_matrix_multiplied_by_matrix(
     matrix1: String,
     matrix2: String,
 ) {
-    match world
-        .matrices
-        .get(&matrix1)
-        .expect(format!("{matrix1} does not exist").as_str())
-    {
-        (2, 2) => {
+    match world.get_element_type(&matrix1) {
+        Type::Matrix((2, 2)) => {
             world.add_matrix2x2(
                 product_matrix.clone(),
                 world.get_matrix2x2(&matrix1) * world.get_matrix2x2(&matrix2),
             );
         }
-        (3, 3) => {
+        Type::Matrix((3, 3)) => {
             world.add_matrix3x3(
                 product_matrix.clone(),
                 world.get_matrix3x3(&matrix1) * world.get_matrix3x3(&matrix2),
             );
         }
-        (4, 4) => {
+        Type::Matrix((4, 4)) => {
             world.add_matrix4x4(
                 product_matrix.clone(),
                 world.get_matrix4x4(&matrix1) * world.get_matrix4x4(&matrix2),
@@ -134,42 +117,16 @@ fn matrix_index_equals(
     col_idx: usize,
     value: f32,
 ) {
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (2, 2) => assert_eq!(world.get_matrix2x2(&matrix).data[row_idx][col_idx], value),
-        (3, 3) => assert_eq!(world.get_matrix3x3(&matrix).data[row_idx][col_idx], value),
-        (4, 4) => assert_eq!(world.get_matrix4x4(&matrix).data[row_idx][col_idx], value),
-        _ => panic!("no matrix with given size"),
-    }
-}
-
-#[then(regex = r"^([a-zA-Z0-9]*) = ([a-zA-Z0-9]*)$")]
-fn matrix_equals_matrix(world: &mut RayTracerWorld, matrix1: String, matrix2: String) {
-    match world
-        .matrices
-        .get(&matrix1)
-        .expect(format!("{matrix1} does not exist").as_str())
-    {
-        (2, 2) => assert_eq!(world.get_matrix2x2(&matrix1), world.get_matrix2x2(&matrix2)),
-        (3, 3) => assert_eq!(world.get_matrix3x3(&matrix1), world.get_matrix3x3(&matrix2)),
-        (4, 4) => assert_eq!(world.get_matrix4x4(&matrix1), world.get_matrix4x4(&matrix2)),
-        _ => panic!("no matrix with given size"),
-    }
-}
-
-#[then(regex = r"^([a-zA-Z0-9]*) != ([a-zA-Z0-9]*)$")]
-fn matrix_does_not_equal_matrix(world: &mut RayTracerWorld, matrix1: String, matrix2: String) {
-    match world
-        .matrices
-        .get(&matrix1)
-        .expect(format!("{matrix1} does not exist").as_str())
-    {
-        (2, 2) => assert_ne!(world.get_matrix2x2(&matrix1), world.get_matrix2x2(&matrix2)),
-        (3, 3) => assert_ne!(world.get_matrix3x3(&matrix1), world.get_matrix3x3(&matrix2)),
-        (4, 4) => assert_ne!(world.get_matrix4x4(&matrix1), world.get_matrix4x4(&matrix2)),
+    match world.get_element_type(&matrix) {
+        Type::Matrix((2, 2)) => {
+            assert_eq!(world.get_matrix2x2(&matrix).data[row_idx][col_idx], value)
+        }
+        Type::Matrix((3, 3)) => {
+            assert_eq!(world.get_matrix3x3(&matrix).data[row_idx][col_idx], value)
+        }
+        Type::Matrix((4, 4)) => {
+            assert_eq!(world.get_matrix4x4(&matrix).data[row_idx][col_idx], value)
+        }
         _ => panic!("no matrix with given size"),
     }
 }
@@ -186,8 +143,8 @@ fn matrix_multiplied_by_matrix_is_the_following_matrix(
     match (row_size, col_size) {
         (2, 2) | (3, 3) => panic!("step definition not implemented (not needed)"),
         (4, 4) => {
-            let matrix1 = world.matrices4x4.get(&matrix1).unwrap();
-            let matrix2 = world.matrices4x4.get(&matrix2).unwrap();
+            let matrix1 = world.get_matrix4x4(&matrix1);
+            let matrix2 = world.get_matrix4x4(&matrix2);
 
             let expected = get_matrix::<4, 4>(step);
             let actual = matrix1 * matrix2;
@@ -198,6 +155,7 @@ fn matrix_multiplied_by_matrix_is_the_following_matrix(
     }
 }
 
+// Then A * B is the following 4x4 matrix:
 #[then(
     regex = r"^([a-zA-Z0-9]*) is the following ((?:-?\d+)|(?:\d+))x((?:-?\d+)|(?:\d+)) matrix:$"
 )]
@@ -211,66 +169,15 @@ fn matrix_is_the_following_matrix(
     match (row_size, col_size) {
         (2, 2) => panic!("step definition not implemented (not needed)"),
         (3, 3) => {
-            let matrix = world.matrices3x3.get(&matrix).unwrap();
+            let matrix = world.get_matrix3x3(&matrix);
             let expected = get_matrix::<3, 3>(step);
             assert_eq!(matrix, &expected);
         }
         (4, 4) => {
-            let matrix = world.matrices4x4.get(&matrix).unwrap();
+            let matrix = world.get_matrix4x4(&matrix);
             let expected = get_matrix::<4, 4>(step);
             assert_eq!(matrix, &expected);
         }
-        _ => panic!("no matrix with given size"),
-    }
-}
-
-#[then(expr = "{word} * {word} = tuple\\({float}, {float}, {float}, {float})")]
-fn matrix_multiplied_by_tuple_equals_tuple(
-    world: &mut RayTracerWorld,
-    matrix: String,
-    tuple: String,
-    x: f32,
-    y: f32,
-    z: f32,
-    w: f32,
-) {
-    let tuple = world.get_tuple(&tuple);
-    let expected = Tuple::new(x, y, z, w);
-
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (2, 2) | (3, 3) => panic!("not supported"),
-        (4, 4) => assert_eq!(world.get_matrix4x4(&matrix) * tuple, expected),
-        _ => panic!("no matrix with given size"),
-    }
-}
-
-#[then(expr = "{word} * identity_matrix = {word}")]
-fn matrix_multiplied_by_identity_matrix_equals_matrix(
-    world: &mut RayTracerWorld,
-    matrix: String,
-    _matrix: String,
-) {
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (2, 2) => assert_eq!(
-            world.get_matrix2x2(&matrix) * &Matrix::identity_matrix(),
-            *world.get_matrix2x2(&matrix)
-        ),
-        (3, 3) => assert_eq!(
-            world.get_matrix3x3(&matrix) * &Matrix::identity_matrix(),
-            *world.get_matrix3x3(&matrix)
-        ),
-        (4, 4) => assert_eq!(
-            world.get_matrix4x4(&matrix) * &Matrix::identity_matrix(),
-            *world.get_matrix4x4(&matrix)
-        ),
         _ => panic!("no matrix with given size"),
     }
 }
@@ -292,20 +199,16 @@ fn transpose_matrix_is_the_following_matrix(
     matrix: String,
     step: &Step,
 ) {
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (2, 2) => assert_eq!(
+    match world.get_element_type(&matrix) {
+        Type::Matrix((2, 2)) => assert_eq!(
             world.get_matrix2x2(&matrix).transpose(),
             get_matrix::<2, 2>(step)
         ),
-        (3, 3) => assert_eq!(
+        Type::Matrix((3, 3)) => assert_eq!(
             world.get_matrix3x3(&matrix).transpose(),
             get_matrix::<3, 3>(step)
         ),
-        (4, 4) => assert_eq!(
+        Type::Matrix((4, 4)) => assert_eq!(
             world.get_matrix4x4(&matrix).transpose(),
             get_matrix::<4, 4>(step)
         ),
@@ -322,20 +225,16 @@ fn matrix_equals_identity_matrix(world: &mut RayTracerWorld, matrix: String) {
 
 #[then(expr = "determinant\\({word}) = {int}")]
 fn determinant_equals(world: &mut RayTracerWorld, matrix: String, determinant: f32) {
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (2, 2) => assert_eq!(
+    match world.get_element_type(&matrix) {
+        Type::Matrix((2, 2)) => assert_eq!(
             world.get_matrix2x2(&matrix).determinant(),
             f32::from(determinant)
         ),
-        (3, 3) => assert_eq!(
+        Type::Matrix((3, 3)) => assert_eq!(
             world.get_matrix3x3(&matrix).determinant(),
             f32::from(determinant)
         ),
-        (4, 4) => assert_eq!(
+        Type::Matrix((4, 4)) => assert_eq!(
             world.get_matrix4x4(&matrix).determinant(),
             f32::from(determinant)
         ),
@@ -353,17 +252,13 @@ fn submatrix_is_the_following_matrix(
     _col_size: usize,
     step: &Step,
 ) {
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (2, 2) => panic!("can't make a submatrix of a 2x2 matrix"),
-        (3, 3) => assert_eq!(
+    match world.get_element_type(&matrix) {
+        Type::Matrix((2, 2)) => panic!("can't make a submatrix of a 2x2 matrix"),
+        Type::Matrix((3, 3)) => assert_eq!(
             world.get_matrix3x3(&matrix).submatrix(row_idx, col_idx),
             get_matrix::<2, 2>(step)
         ),
-        (4, 4) => assert_eq!(
+        Type::Matrix((4, 4)) => assert_eq!(
             world.get_matrix4x4(&matrix).submatrix(row_idx, col_idx),
             get_matrix::<3, 3>(step)
         ),
@@ -379,16 +274,12 @@ fn minor_equals(
     col_idx: usize,
     minor_value: f32,
 ) {
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (3, 3) => assert_eq!(
+    match world.get_element_type(&matrix) {
+        Type::Matrix((3, 3)) => assert_eq!(
             world.get_matrix3x3(&matrix).minor(row_idx, col_idx),
             minor_value
         ),
-        (2, 2) | (4, 4) => panic!("Only supported on 3x3 matrices"),
+        Type::Matrix((2, 2)) | Type::Matrix((4, 4)) => panic!("Only supported on 3x3 matrices"),
         _ => panic!("no matrix with given size"),
     }
 }
@@ -401,20 +292,16 @@ fn cofactor_equals(
     col_idx: usize,
     cofactor_value: f32,
 ) {
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (3, 3) => assert_eq!(
+    match world.get_element_type(&matrix) {
+        Type::Matrix((3, 3)) => assert_eq!(
             world.get_matrix3x3(&matrix).cofactor(row_idx, col_idx),
             cofactor_value
         ),
-        (4, 4) => assert_eq!(
+        Type::Matrix((4, 4)) => assert_eq!(
             world.get_matrix4x4(&matrix).cofactor(row_idx, col_idx),
             cofactor_value
         ),
-        (2, 2) => panic!("Only supported on 3x3 matrices"),
+        Type::Matrix((2, 2)) => panic!("Only supported on 3x3 matrices"),
         _ => panic!("no matrix with given size"),
     }
 }
@@ -430,14 +317,10 @@ fn matrix_is_not_invertible(world: &mut RayTracerWorld, matrix: String) {
 }
 
 fn is_invertible(world: &mut RayTracerWorld, matrix: String) -> bool {
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (2, 2) => world.get_matrix2x2(&matrix).is_invertible(),
-        (3, 3) => world.get_matrix3x3(&matrix).is_invertible(),
-        (4, 4) => world.get_matrix4x4(&matrix).is_invertible(),
+    match world.get_element_type(&matrix) {
+        Type::Matrix((2, 2)) => world.get_matrix2x2(&matrix).is_invertible(),
+        Type::Matrix((3, 3)) => world.get_matrix3x3(&matrix).is_invertible(),
+        Type::Matrix((4, 4)) => world.get_matrix4x4(&matrix).is_invertible(),
         _ => panic!("no matrix with given size"),
     }
 }
@@ -453,14 +336,16 @@ fn value_in_matrix_equals_fraction(
 ) {
     let result = numerator / denominator;
 
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (2, 2) => assert_eq!(world.get_matrix2x2(&matrix).data[row_idx][col_idx], result),
-        (3, 3) => assert_eq!(world.get_matrix3x3(&matrix).data[row_idx][col_idx], result),
-        (4, 4) => assert_eq!(world.get_matrix4x4(&matrix).data[row_idx][col_idx], result),
+    match world.get_element_type(&matrix) {
+        Type::Matrix((2, 2)) => {
+            assert_eq!(world.get_matrix2x2(&matrix).data[row_idx][col_idx], result)
+        }
+        Type::Matrix((3, 3)) => {
+            assert_eq!(world.get_matrix3x3(&matrix).data[row_idx][col_idx], result)
+        }
+        Type::Matrix((4, 4)) => {
+            assert_eq!(world.get_matrix4x4(&matrix).data[row_idx][col_idx], result)
+        }
         _ => panic!("no matrix with given size"),
     }
 }
@@ -473,17 +358,13 @@ fn inverse_of_matrix_is_the_following_matrix(
     _col_idx: usize,
     step: &Step,
 ) {
-    match world
-        .matrices
-        .get(&matrix)
-        .expect(format!("{matrix} does not exist").as_str())
-    {
-        (2, 2) => panic!("not implemented"),
-        (3, 3) => assert_eq!(
+    match world.get_element_type(&matrix) {
+        Type::Matrix((2, 2)) => panic!("not implemented"),
+        Type::Matrix((3, 3)) => assert_eq!(
             world.get_matrix3x3(&matrix).invert(),
             Ok(get_matrix::<3, 3>(step))
         ),
-        (4, 4) => assert_eq!(
+        Type::Matrix((4, 4)) => assert_eq!(
             world.get_matrix4x4(&matrix).invert(),
             Ok(get_matrix::<4, 4>(step))
         ),
@@ -498,17 +379,13 @@ fn matrix_multiplied_by_inverse_of_matrix_equals_matrix(
     matrix2: String,
     result_matrix: String,
 ) {
-    match world
-        .matrices
-        .get(&matrix1)
-        .expect(format!("{matrix1} does not exist").as_str())
-    {
-        (2, 2) => panic!("not implemented"),
-        (3, 3) => assert_eq!(
+    match world.get_element_type(&matrix1) {
+        Type::Matrix((2, 2)) => panic!("not implemented"),
+        Type::Matrix((3, 3)) => assert_eq!(
             world.get_matrix3x3(&matrix1) * &world.get_matrix3x3(&matrix2).invert().unwrap(),
             *world.get_matrix3x3(&result_matrix)
         ),
-        (4, 4) => assert_eq!(
+        Type::Matrix((4, 4)) => assert_eq!(
             world.get_matrix4x4(&matrix1) * &world.get_matrix4x4(&matrix2).invert().unwrap(),
             *world.get_matrix4x4(&result_matrix)
         ),
@@ -538,9 +415,4 @@ fn get_matrix<const ROW_COUNT: usize, const COL_COUNT: usize>(
 fn get_matrix_size(step: &Step) -> usize {
     let table = step.table.as_ref().unwrap();
     table.rows.iter().count()
-}
-
-#[tokio::main]
-async fn main() {
-    RayTracerWorld::run("tests/features/matrices.feature").await;
 }

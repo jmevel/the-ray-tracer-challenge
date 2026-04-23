@@ -6,22 +6,22 @@
     {
       "label": "Test tuples",
       "type": "shell",
-      "command": "cargo test --test tuples",
+      "command": "cargo test --test cucumber -- -t '@tuples'",
     },
     {
       "label": "Test canvases",
       "type": "shell",
-      "command": "cargo test --test canvases",
+      "command": "cargo test --test cucumber -- -t '@canvases'",
     },
     {
       "label": "Test matrices",
       "type": "shell",
-      "command": "cargo test --test matrices",
+      "command": "cargo test --test cucumber -- -t '@matrices'",
     },
     {
       "label": "Test transformations",
       "type": "shell",
-      "command": "cargo test --test transformations",
+      "command": "cargo test --test cucumber -- -t '@transformations'",
     },
   ],
 }

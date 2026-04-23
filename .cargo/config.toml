@@ -1,5 +1,5 @@
 [alias]
-test_tuples = "test --test tuples -- --fail-fast"
-test_canvases = "test --test canvases -- --fail-fast"
-test_matrices = "test --test matrices -- --fail-fast"
-test_transformations = "test --test transformations -- --fail-fast"
+test_tuples = "cargo test --test cucumber -- -t '@tuples' --fail-fast"
+test_canvases = "cargo test --test cucumber -- -t '@canvases' --fail-fast"
+test_matrices = "cargo test --test cucumber -- -t '@matrices' --fail-fast"
+test_transformations = "cargo test --test cucumber -- -t '@transformations' --fail-fast"

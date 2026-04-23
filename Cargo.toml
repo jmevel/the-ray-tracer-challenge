@@ -3,29 +3,14 @@ name = "the-ray-tracer-challenge"
 version = "0.1.0"
 edition = "2024"
 
+[dependencies]
+duplicate = "2.0.1"
+
 [dev-dependencies]
 cucumber = { version = "0.21.1" }
 tokio = { version = "1.10", features = ["macros", "rt-multi-thread", "time"] }
 
 [[test]]
-name = "tuples" # this should be the same as the filename of your test target
-path = "tests/steps/tuples_steps.rs"
+name = "cucumber" # this should be the same as the filename of your test target
+path = "tests/cucumber.rs"
 harness = false  # allows Cucumber to print output instead of libtest
-
-[[test]]
-name = "canvases"
-path = "tests/steps/canvases_steps.rs"
-harness = false
-
-[[test]]
-name = "matrices"
-path = "tests/steps/matrices_steps.rs"
-harness = false
-
-[[test]]
-name = "transformations"
-path = "tests/steps/transformations_steps.rs"
-harness = false
-
-[dependencies]
-duplicate = "2.0.1"

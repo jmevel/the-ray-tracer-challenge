@@ -37,13 +37,13 @@ impl Canvas {
     }
     pub fn write_pixel(&mut self, x: usize, y: usize, color: Tuple) {
         if !color.is_color() {
-            panic!("color is not color");
+            panic!("Tuple is not color");
         }
         self.pixels.entry((x, y)).and_modify(|p| *p = color);
     }
     pub fn write_all_pixels(&mut self, color: Tuple) {
         if !color.is_color() {
-            panic!("pixel is not color");
+            panic!("Tuple is not color");
         }
         self.pixels.values_mut().for_each(|p| *p = color.clone());
     }

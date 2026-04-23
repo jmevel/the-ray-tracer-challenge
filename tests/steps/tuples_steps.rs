@@ -1,32 +1,32 @@
-#[path = "../common/mod.rs"]
-mod common;
-
-use common::ray_tracer_world::RayTracerWorld;
-
-use cucumber::{World, given, then, when};
+use crate::RayTracerWorld;
+use cucumber::{given, then, when};
 use the_ray_tracer_challenge::Tuple;
 use the_ray_tracer_challenge::float::float_equals;
 
 #[given(expr = "{word} ← tuple\\({float}, {float}, {float}, {float})")]
 fn tuple_is(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
-    world.tuples.insert(tuple, Tuple::new(x, y, z, w));
+    world.add_tuple(tuple, Tuple::new(x, y, z, w));
 }
 
 #[given(expr = "{word} ← point\\({float}, {float}, {float})")]
-#[given(expr = "{word} ← color\\({float}, {float}, {float})")]
 fn tuple_is_point(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32) {
-    world.tuples.insert(tuple, Tuple::new_point(x, y, z));
+    world.add_tuple(tuple, Tuple::new_point(x, y, z));
+}
+
+#[given(expr = "{word} ← color\\({float}, {float}, {float})")]
+fn tuple_is_color(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32) {
+    world.add_tuple(tuple, Tuple::new_color(x, y, z));
 }
 
 #[given(expr = "{word} ← vector\\({float}, {float}, {float})")]
 pub fn tuple_is_vector(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32) {
-    world.tuples.insert(tuple, Tuple::new_vector(x, y, z));
+    world.add_tuple(tuple, Tuple::new_vector(x, y, z));
 }
 
 #[when(expr = "{word} ← normalize\\({word})")]
 fn tuple_is_normalization(world: &mut RayTracerWorld, tuple2: String, tuple1: String) {
     let tuple1 = world.get_tuple(&tuple1);
-    world.tuples.insert(tuple2, tuple1.normalize());
+    world.add_tuple(tuple2, tuple1.normalize());
 }
 
 #[then(expr = "{word}.x = {float}")]
@@ -77,16 +77,6 @@ fn is_not_a_vector(world: &mut RayTracerWorld, tuple: String) {
 )]
 fn equals_tuple(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
     assert_eq!(*world.get_tuple(&tuple), Tuple::new(x, y, z, w));
-}
-
-#[then(regex = r"^([a-zA-Z0-9]*) = ([a-zA-Z0-9]*)$")]
-fn tuple_equals_tuple(world: &mut RayTracerWorld, tuple1: String, tuple2: String) {
-    assert_eq!(world.get_tuple(&tuple1), world.get_tuple(&tuple2));
-}
-
-#[then(expr = "{word} != {word}")]
-fn tuple_does_not_equal_tuple(world: &mut RayTracerWorld, tuple1: String, tuple2: String) {
-    assert!(!(world.get_tuple(&tuple1) == world.get_tuple(&tuple2)));
 }
 
 #[then(expr = "{word} + {word} = tuple\\({float}, {float}, {float}, {float})")]
@@ -299,9 +289,4 @@ fn cross_two_vectors_equals_vector(
     let expected = Tuple::new_vector(x, y, z);
 
     assert_eq!(tuple1.cross_product(tuple2), expected);
-}
-
-#[tokio::main]
-async fn main() {
-    RayTracerWorld::run("tests/features/tuples.feature").await;
 }
