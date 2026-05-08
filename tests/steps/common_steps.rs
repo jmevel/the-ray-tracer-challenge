@@ -1,5 +1,4 @@
 use cucumber::then;
-use the_ray_tracer_challenge::Matrix;
 
 use crate::steps::ray_tracer_world::{RayTracerWorld, Type};
 
@@ -41,7 +40,7 @@ fn entity_does_not_equal_entity(world: &mut RayTracerWorld, entity1: String, ent
     }
 }
 
-#[then(regex = r"^([a-zA-Z0-9]*) * ([a-zA-Z0-9]*) = ([a-zA-Z0-9]*)$")]
+#[then(regex = r"^([a-zA-Z0-9_]+) \* ([a-zA-Z0-9_]+) = ([a-zA-Z0-9_]+)$")]
 fn entity_multiplied_by_entity_equals_entity(
     world: &mut RayTracerWorld,
     entity1: String,
@@ -55,19 +54,19 @@ fn entity_multiplied_by_entity_equals_entity(
     ) {
         (Type::Matrix(size), Type::Matrix(_), Type::Matrix(_)) if size == &(2usize, 2usize) => {
             assert_eq!(
-                world.get_matrix2x2(&entity1) * &Matrix::identity_matrix(),
+                world.get_matrix2x2(&entity1) * world.get_matrix2x2(&entity2),
                 *world.get_matrix2x2(&entity1)
             )
         }
         (Type::Matrix(size), Type::Matrix(_), Type::Matrix(_)) if size == &(3usize, 3usize) => {
             assert_eq!(
-                world.get_matrix3x3(&entity1) * &Matrix::identity_matrix(),
+                world.get_matrix3x3(&entity1) * world.get_matrix3x3(&entity2),
                 *world.get_matrix3x3(&entity1)
             )
         }
         (Type::Matrix(size), Type::Matrix(_), Type::Matrix(_)) if size == &(4usize, 4usize) => {
             assert_eq!(
-                world.get_matrix4x4(&entity1) * &Matrix::identity_matrix(),
+                world.get_matrix4x4(&entity1) * world.get_matrix4x4(&entity2),
                 *world.get_matrix4x4(&entity1)
             )
         }

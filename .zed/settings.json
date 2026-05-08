@@ -6,18 +6,6 @@
   },
   "lsp": {
     "cucumber": {
-      // When using a NPM prefix to override de default's global folder location
-      // Zed isn't able to determine that path and automatically use the globally installed language server
-      // In that case it will automatically download its own version of the language server
-      // which in this case isn't working because the cucumber language server MUST be installed globally in order to work
-      // (The language server resolves tree-sitter WASM files via nested node_modules paths that only npm's global install layout provides)
-      // "binary": {
-      //   "path": "/usr/bin/node",
-      //   "arguments": [
-      //     "~/.npm-global/lib/node_modules/@cucumber/language-server/bin/cucumber-language-server.cjs",
-      //     "--stdio",
-      //   ],
-      // },
       "settings": {
         "features": ["tests/features/*.feature"],
         "glue": ["tests/steps/*_steps.rs"],

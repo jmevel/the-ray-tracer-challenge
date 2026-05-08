@@ -5,5 +5,9 @@ use steps::ray_tracer_world::RayTracerWorld;
 
 #[tokio::main]
 async fn main() {
-    RayTracerWorld::run("tests/features").await;
+    RayTracerWorld::cucumber()
+        .fail_fast()
+        .fail_on_skipped()
+        .run_and_exit("tests/features")
+        .await;
 }

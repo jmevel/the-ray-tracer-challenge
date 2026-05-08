@@ -2,7 +2,7 @@ use crate::RayTracerWorld;
 use crate::steps::ray_tracer_world::Type;
 use cucumber::gherkin::Step;
 use cucumber::{given, then};
-use the_ray_tracer_challenge::Matrix;
+use the_ray_tracer_challenge::{Matrix, Tuple};
 
 #[given(expr = "the following 2x2 matrix {word}:")]
 fn the_following_2x2_matrix(world: &mut RayTracerWorld, matrix_name: String, step: &Step) {
@@ -182,15 +182,27 @@ fn matrix_is_the_following_matrix(
     }
 }
 
-#[then(expr = "identity_matrix * {word} = {word}")]
-fn identity_matrix_multiplied_by_tuple_equals_tuple(
+#[then(
+    // A * b = tuple(18, 24, 33, 1)
+    regex = r"^([a-zA-Z0-9]*) \* ([a-zA-Z0-9]*) = tuple\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
+)]
+fn matrix_multiplied_by_tuple_equals_tuple(
     world: &mut RayTracerWorld,
+    matrix: String,
     tuple: String,
-    _tuple: String,
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
 ) {
     let tuple = world.get_tuple(&tuple);
-    let identity_matrix: Matrix<4, 4> = Matrix::identity_matrix();
-    assert_eq!(&identity_matrix * tuple, *tuple);
+    let expected = Tuple::new(x, y, z, w);
+
+    match world.get_element_type(&matrix) {
+        Type::Matrix((2, 2)) | Type::Matrix((3, 3)) => panic!("not supported"),
+        Type::Matrix((4, 4)) => assert_eq!(world.get_matrix4x4(&matrix) * tuple, expected),
+        _ => panic!("no matrix with given size"),
+    };
 }
 
 #[then(expr = "transpose\\({word}) is the following matrix:")]

@@ -4,6 +4,7 @@ use cucumber::World;
 use the_ray_tracer_challenge::{Canvas, Matrix, Tuple};
 
 #[derive(Debug, Default, World)]
+#[world(init = Self::new)]
 pub struct RayTracerWorld {
     canvases: HashMap<String, Canvas>,
     tuples: HashMap<String, Tuple>,
@@ -25,6 +26,14 @@ pub enum Type {
 }
 
 impl RayTracerWorld {
+    fn new() -> Self {
+        let mut world = RayTracerWorld::default();
+        world.add_matrix2x2("identity_matrix".to_string(), Matrix::identity_matrix());
+        world.add_matrix3x3("identity_matrix".to_string(), Matrix::identity_matrix());
+        world.add_matrix4x4("identity_matrix".to_string(), Matrix::identity_matrix());
+        world
+    }
+
     pub fn get_element_type(&self, name: &str) -> &Type {
         let element_type = self.index.get(name).expect("Element doesn't exist");
         element_type
