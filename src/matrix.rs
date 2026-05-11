@@ -99,6 +99,24 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
         result.data[2][2] = radians.cos();
         result
     }
+
+    pub fn rotation_y(radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[0][0] = radians.cos();
+        result.data[0][2] = radians.sin();
+        result.data[2][0] = -radians.sin();
+        result.data[2][2] = radians.cos();
+        result
+    }
+
+    pub fn rotation_z(radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[0][0] = radians.cos();
+        result.data[0][1] = -radians.sin();
+        result.data[1][0] = -radians.sin();
+        result.data[1][1] = radians.cos();
+        result
+    }
 }
 
 impl Matrix<2, 2> {

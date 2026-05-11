@@ -22,9 +22,23 @@ fn transform_is_scaling(world: &mut RayTracerWorld, scaling: String, x: f32, y: 
 }
 
 #[given(expr = "{word} ← rotation_x\\(π \\/ {float})")]
-fn rotation_is(world: &mut RayTracerWorld, rotation: String, denominator: f32) {
+fn rotation_x_is(world: &mut RayTracerWorld, rotation: String, denominator: f32) {
     let fraction = f32::consts::PI / denominator;
     let transform = Matrix::rotation_x(fraction);
+    world.add_matrix4x4(rotation.clone(), transform);
+}
+
+#[given(expr = "{word} ← rotation_y\\(π \\/ {float})")]
+fn rotation_y_is(world: &mut RayTracerWorld, rotation: String, denominator: f32) {
+    let fraction = f32::consts::PI / denominator;
+    let transform = Matrix::rotation_y(fraction);
+    world.add_matrix4x4(rotation.clone(), transform);
+}
+
+#[given(expr = "{word} ← rotation_z\\(π \\/ {float})")]
+fn rotation_z_is(world: &mut RayTracerWorld, rotation: String, denominator: f32) {
+    let fraction = f32::consts::PI / denominator;
+    let transform = Matrix::rotation_z(fraction);
     world.add_matrix4x4(rotation.clone(), transform);
 }
 
@@ -75,6 +89,42 @@ fn rotation_multiplied_by_point_equals_point(
     let y = f32::sqrt(y_numerator as f32) / y_denominator as f32;
     let z = f32::sqrt(z_numerator as f32) / z_denominator as f32;
     let expected = Tuple::new_point(x, y, z);
+
+    point_multiplied_by_transformation_equals_expected(world, point, rotation, expected);
+}
+
+#[then(expr = "{word} * {word} = point\\(√{int}\\/{int}, {int}, √{int}\\/{int})")]
+fn rotation_multiplied_by_point_equals_point2(
+    world: &mut RayTracerWorld,
+    rotation: String,
+    point: String,
+    x_numerator: f32,
+    x_denominator: i32,
+    y: f32,
+    z_numerator: i32,
+    z_denominator: i32,
+) {
+    let x = f32::sqrt(x_numerator as f32) / x_denominator as f32;
+    let z = f32::sqrt(z_numerator as f32) / z_denominator as f32;
+    let expected = Tuple::new_point(x, y, z);
+
+    point_multiplied_by_transformation_equals_expected(world, point, rotation, expected);
+}
+
+#[then(expr = "{word} * {word} = point\\(-√{int}\\/{int}, √{int}\\/{int}, {int})")]
+fn rotation_multiplied_by_point_equals_point3(
+    world: &mut RayTracerWorld,
+    rotation: String,
+    point: String,
+    x_numerator: f32,
+    x_denominator: i32,
+    y_numerator: f32,
+    y_denominator: i32,
+    z: f32,
+) {
+    let x = f32::sqrt(x_numerator as f32) / x_denominator as f32;
+    let y = f32::sqrt(y_numerator as f32) / y_denominator as f32;
+    let expected = Tuple::new_point(-x, y, z);
 
     point_multiplied_by_transformation_equals_expected(world, point, rotation, expected);
 }
