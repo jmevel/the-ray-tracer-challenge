@@ -1,11 +1,24 @@
 use crate::Tuple;
 use crate::float::float_equals;
 use duplicate::duplicate_item;
+use std::fmt::Debug;
 use std::ops::Mul;
 
-#[derive(Debug)]
 pub struct Matrix<const ROW_COUNT: usize, const COL_COUNT: usize> {
     pub data: [[f32; COL_COUNT]; ROW_COUNT],
+}
+
+impl<const ROW_COUNT: usize, const COL_COUNT: usize> Debug for Matrix<ROW_COUNT, COL_COUNT> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        _ = writeln!(f, "Matrix:");
+        for row in 0..ROW_COUNT {
+            for col in 0..COL_COUNT {
+                _ = write!(f, "| {:<18}", &self.data[col][row]);
+            }
+            _ = writeln!(f, "|");
+        }
+        Ok(())
+    }
 }
 
 impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT> {
@@ -81,8 +94,8 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
     pub fn rotation_x(radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
         let mut result = Matrix::identity_matrix();
         result.data[1][1] = radians.cos();
+        result.data[1][2] = -radians.sin();
         result.data[2][1] = radians.sin();
-        result.data[1][2] = radians.sin();
         result.data[2][2] = radians.cos();
         result
     }

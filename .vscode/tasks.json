@@ -23,5 +23,10 @@
       "type": "shell",
       "command": "cargo test --test cucumber -- -t '@transformations'",
     },
+    // {
+    //   "label": "Test rotating a point around the x axis",
+    //   "type": "shell",
+    //   "command": "cargo test --test cucumber -- -n 'Rotating a point around the x axis'",
+    // },
   ],
 }

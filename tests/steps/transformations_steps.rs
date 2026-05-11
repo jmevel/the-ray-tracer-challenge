@@ -106,5 +106,5 @@ fn point_multiplied_by_transformation_equals_expected(
     let transformation = world.get_matrix4x4(&transformation);
     let point = world.get_tuple(&point);
 
-    assert_eq!(transformation * point, expected);
+    assert_eq!(point * transformation, expected);
 }
