@@ -79,36 +79,6 @@ fn matrix_is_inverse_of_matrix(
     }
 }
 
-#[given(expr = "{word} ← {word} * {word}")]
-fn matrix_is_matrix_multiplied_by_matrix(
-    world: &mut RayTracerWorld,
-    product_matrix: String,
-    matrix1: String,
-    matrix2: String,
-) {
-    match world.get_element_type(&matrix1) {
-        Type::Matrix((2, 2)) => {
-            world.add_matrix2x2(
-                product_matrix.clone(),
-                world.get_matrix2x2(&matrix1) * world.get_matrix2x2(&matrix2),
-            );
-        }
-        Type::Matrix((3, 3)) => {
-            world.add_matrix3x3(
-                product_matrix.clone(),
-                world.get_matrix3x3(&matrix1) * world.get_matrix3x3(&matrix2),
-            );
-        }
-        Type::Matrix((4, 4)) => {
-            world.add_matrix4x4(
-                product_matrix.clone(),
-                world.get_matrix4x4(&matrix1) * world.get_matrix4x4(&matrix2),
-            );
-        }
-        _ => panic!("no matrix with given size"),
-    };
-}
-
 #[then(expr = "{word}[{int},{int}] = {float}")]
 fn matrix_index_equals(
     world: &mut RayTracerWorld,
