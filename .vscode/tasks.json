@@ -6,27 +6,27 @@
     {
       "label": "Test tuples",
       "type": "shell",
-      "command": "cargo test --test cucumber -- -t '@tuples'",
+      "command": "cargo test --test cucumber -- --tags '@tuples'",
     },
     {
       "label": "Test canvases",
       "type": "shell",
-      "command": "cargo test --test cucumber -- -t '@canvases'",
+      "command": "cargo test --test cucumber -- --tags '@canvases'",
     },
     {
       "label": "Test matrices",
       "type": "shell",
-      "command": "cargo test --test cucumber -- -t '@matrices'",
+      "command": "cargo test --test cucumber -- --tags '@matrices'",
     },
     {
       "label": "Test transformations",
       "type": "shell",
-      "command": "cargo test --test cucumber -- -t '@transformations'",
+      "command": "cargo test --test cucumber -- --tags '@transformations'",
     },
     // {
     //   "label": "Test rotating a point around the x axis",
     //   "type": "shell",
-    //   "command": "cargo test --test cucumber -- -n 'Rotating a point around the x axis'",
+    //   "command": "cargo test --test cucumber -- --name 'Rotating a point around the x axis'",
     // },
   ],
 }
