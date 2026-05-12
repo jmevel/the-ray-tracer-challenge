@@ -143,6 +143,13 @@ fn point_subtracted_to_vector_equals_point(
     assert_eq!(result, expected);
 }
 
+#[then(expr = "{word} = point\\({float}, {float}, {float})")]
+fn point_equals_point(world: &mut RayTracerWorld, point: String, x: f32, y: f32, z: f32) {
+    let expected = Tuple::new_point(x, y, z);
+    let actual = world.get_tuple(&point);
+    assert_eq!(actual, &expected);
+}
+
 #[then(expr = "{word} - {word} = color\\({float}, {float}, {float})")]
 fn color_subtracted_to_color_equals_color(
     world: &mut RayTracerWorld,

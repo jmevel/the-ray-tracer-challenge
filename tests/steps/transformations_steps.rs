@@ -42,6 +42,21 @@ fn rotation_z_is(world: &mut RayTracerWorld, rotation: String, denominator: f32)
     world.add_matrix4x4(rotation.clone(), transform);
 }
 
+#[given(expr = "{word} ← shearing\\({float}, {float}, {float}, {float}, {float}, {float})")]
+fn shearing_is(
+    world: &mut RayTracerWorld,
+    shearing: String,
+    xy: f32,
+    xz: f32,
+    yx: f32,
+    yz: f32,
+    zx: f32,
+    zy: f32,
+) {
+    let transform = Matrix::shearing(xy, xz, yx, yz, zx, zy);
+    world.add_matrix4x4(shearing.clone(), transform);
+}
+
 #[then(expr = "{word} * {word} = point\\({int}, {int}, {int})")]
 fn transform_multiplied_by_point_equals_point(
     world: &mut RayTracerWorld,

@@ -64,3 +64,8 @@ Feature: Matrix Transformations
     And full_quarter ← rotation_z(π / 2)
     Then half_quarter * p = point(-√2/2, √2/2, 0)
     And full_quarter * p = point(-1, 0, 0)
+
+  Scenario: A shearing transformation moves x in proportion to y
+    Given transform ← shearing(1, 0, 0, 0, 0, 0)
+    And p ← point(2, 3, 4)
+    Then transform * p = point(5, 3, 4)

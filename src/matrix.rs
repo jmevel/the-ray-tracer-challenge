@@ -117,6 +117,24 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
         result.data[1][1] = radians.cos();
         result
     }
+
+    pub fn shearing(
+        xy: f32,
+        xz: f32,
+        yx: f32,
+        yz: f32,
+        zx: f32,
+        zy: f32,
+    ) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[0][1] = xy;
+        result.data[0][2] = xz;
+        result.data[1][0] = yx;
+        result.data[1][2] = yz;
+        result.data[2][0] = zx;
+        result.data[2][1] = zy;
+        result
+    }
 }
 
 impl Matrix<2, 2> {

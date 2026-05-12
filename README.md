@@ -19,4 +19,4 @@ You can get full support by simply installing [this extension](https://marketpla
 4. Reopen Zed then `Extensions` -> `Install Dev Extension` -> Select the root path of `zed-extension-cucumber`
 5. Cucumber should be fully working now, giving you Gherkin syntax highliting, `Go to definition`, `Define in ...` and other nice features
 
-⚠️ If you're using a custom NPM prefix to change the default global folder location, Zed won't be able to figure it out and will default to downloading its own broken version of the cucumber language server. In that case check the `.zed/settings.json` file, uncomment the related settings and set your own desired path.
+⚠️ If you're using a custom NPM prefix make sure your `PATH` contains the new `bin` folder location otherwise Zed won't be able to figure it out and will default to downloading its own broken version of the cucumber language server.
