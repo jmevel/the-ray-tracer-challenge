@@ -1,0 +1,41 @@
+[
+  // Not working
+  // https://zed.dev/docs/languages/rust#automatically-locate-a-debug-target-based-on-build-command
+  // https://github.com/zed-industries/zed/issues/56641
+  {
+    "label": "TEST ZED BUILD",
+    "adapter": "CodeLLDB",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "test",
+        "--no-run",
+        "--test",
+        "cucumber",
+        // "--test=cucumber",
+        "--",
+        "--tags",
+        // "--tags='@tuples'",
+        "'@tuples'",
+      ],
+    },
+    "sourceLanguages": ["rust"],
+  },
+  {
+    "label": "TEST ZED cucumber",
+    "adapter": "CodeLLDB",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "sourceLanguages": ["rust"],
+  },
+]

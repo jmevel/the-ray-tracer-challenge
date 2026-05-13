@@ -3,6 +3,7 @@ use cucumber::{given, then, when};
 use crate::steps::ray_tracer_world::{RayTracerWorld, Type};
 
 #[given(expr = "{word} ← {word} * {word}")]
+#[when(expr = "{word} ← {word} * {word}")]
 fn entity_is_entity_multiplied_by_entity(
     world: &mut RayTracerWorld,
     result_entity: String,
@@ -10,56 +11,22 @@ fn entity_is_entity_multiplied_by_entity(
     entity2: String,
 ) {
     match (
-        world.get_element_type(&result_entity),
         world.get_element_type(&entity1),
         world.get_element_type(&entity2),
     ) {
-        (Type::Matrix(size), Type::Matrix(_), Type::Matrix(_)) if size == &(2usize, 2usize) => {
+        (Type::Matrix((2, 2)), Type::Matrix(_)) => {
             world.add_matrix2x2(
                 result_entity.clone(),
                 world.get_matrix2x2(&entity1) * world.get_matrix2x2(&entity2),
             );
         }
-        (Type::Matrix(size), Type::Matrix(_), Type::Matrix(_)) if size == &(3usize, 3usize) => {
+        (Type::Matrix((3, 3)), Type::Matrix(_)) => {
             world.add_matrix3x3(
                 result_entity.clone(),
                 world.get_matrix3x3(&entity1) * world.get_matrix3x3(&entity2),
             );
         }
-        (Type::Matrix(size), Type::Matrix(_), Type::Matrix(_)) if size == &(4usize, 4usize) => {
-            world.add_matrix4x4(
-                result_entity.clone(),
-                world.get_matrix4x4(&entity1) * world.get_matrix4x4(&entity2),
-            );
-        }
-        _ => panic!("Not supported"),
-    }
-}
-
-#[when(expr = "{word} ← {word} * {word}")]
-fn entity_is_entity_multiplied_by_entity2(
-    world: &mut RayTracerWorld,
-    result_entity: String,
-    entity1: String,
-    entity2: String,
-) {
-    match (
-        world.get_element_type(&entity1),
-        world.get_element_type(&entity2),
-    ) {
-        (Type::Matrix(size), Type::Matrix(_)) if size == &(2usize, 2usize) => {
-            world.add_matrix2x2(
-                result_entity.clone(),
-                world.get_matrix2x2(&entity1) * world.get_matrix2x2(&entity2),
-            );
-        }
-        (Type::Matrix(size), Type::Matrix(_)) if size == &(3usize, 3usize) => {
-            world.add_matrix3x3(
-                result_entity.clone(),
-                world.get_matrix3x3(&entity1) * world.get_matrix3x3(&entity2),
-            );
-        }
-        (Type::Matrix(size), Type::Matrix(_)) if size == &(4usize, 4usize) => {
+        (Type::Matrix((4, 4)), Type::Matrix(_)) => {
             world.add_matrix4x4(
                 result_entity.clone(),
                 world.get_matrix4x4(&entity1) * world.get_matrix4x4(&entity2),
@@ -69,6 +36,44 @@ fn entity_is_entity_multiplied_by_entity2(
             world.add_tuple(
                 result_entity.clone(),
                 world.get_matrix4x4(&entity1) * world.get_tuple(&entity2),
+            );
+        }
+        _ => panic!("Not supported"),
+    }
+}
+
+#[when(expr = "{word} ← {word} * {word} * {word}")]
+fn entity_is_entity_multiplied_by_entity_multiplied_by_entity(
+    world: &mut RayTracerWorld,
+    result_entity: String,
+    entity1: String,
+    entity2: String,
+    entity3: String,
+) {
+    match (
+        world.get_element_type(&entity1),
+        world.get_element_type(&entity2),
+        world.get_element_type(&entity3),
+    ) {
+        (Type::Matrix((2, 2)), Type::Matrix(_), Type::Matrix(_)) => {
+            world.add_matrix2x2(
+                result_entity.clone(),
+                &(world.get_matrix2x2(&entity1) * world.get_matrix2x2(&entity2))
+                    * world.get_matrix2x2(&entity3),
+            );
+        }
+        (Type::Matrix((3, 3)), Type::Matrix(_), Type::Matrix(_)) => {
+            world.add_matrix3x3(
+                result_entity.clone(),
+                &(world.get_matrix3x3(&entity1) * world.get_matrix3x3(&entity2))
+                    * world.get_matrix3x3(&entity3),
+            );
+        }
+        (Type::Matrix((4, 4)), Type::Matrix(_), Type::Matrix(_)) => {
+            world.add_matrix4x4(
+                result_entity.clone(),
+                &(world.get_matrix4x4(&entity1) * world.get_matrix4x4(&entity2))
+                    * world.get_matrix4x4(&entity3),
             );
         }
         _ => panic!("Not supported"),
