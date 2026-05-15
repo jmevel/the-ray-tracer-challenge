@@ -1,29 +1,8 @@
 [
-  // Not working
-  // https://zed.dev/docs/languages/rust#automatically-locate-a-debug-target-based-on-build-command
-  // https://github.com/zed-industries/zed/issues/56641
   {
-    "label": "TEST ZED BUILD",
+    "label": "Debug tuples tests",
     "adapter": "CodeLLDB",
-    "build": {
-      "command": "cargo",
-      "args": [
-        "test",
-        "--no-run",
-        "--test",
-        "cucumber",
-        // "--test=cucumber",
-        "--",
-        "--tags",
-        // "--tags='@tuples'",
-        "'@tuples'",
-      ],
-    },
-    "sourceLanguages": ["rust"],
-  },
-  {
-    "label": "TEST ZED cucumber",
-    "adapter": "CodeLLDB",
+    "request": "launch",
     "build": {
       "command": "cargo",
       "args": [
@@ -36,6 +15,100 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "sourceLanguages": ["rust"],
+    "args": ["--tags", "@tuples"],
   },
+  {
+    "label": "Debug canvases tests",
+    "adapter": "CodeLLDB",
+    "request": "launch",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "args": ["--tags", "@canvases"],
+  },
+  {
+    "label": "Debug matrices tests",
+    "adapter": "CodeLLDB",
+    "request": "launch",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "args": ["--tags", "@matrices"],
+  },
+  {
+    "label": "Debug transformations tests",
+    "adapter": "CodeLLDB",
+    "request": "launch",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "args": ["--tags", "@transformations"],
+  },
+  {
+    "label": "Debug 'Individual transformations are applied in sequence' scenario",
+    "adapter": "CodeLLDB",
+    "request": "launch",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "args": ["--name", "Individual transformations are applied in sequence"],
+  },
+  // Not working
+  // https://zed.dev/docs/languages/rust#automatically-locate-a-debug-target-based-on-build-command
+  // https://github.com/zed-industries/zed/issues/56641
+  // {
+  //   "label": "Automatically locate a debug target based on build command (Zed)",
+  //   "adapter": "CodeLLDB",
+  //   "build": {
+  //     "command": "cargo",
+  //     "args": [
+  //       "test",
+  //       "--no-run",
+  //       "--test",
+  //       "cucumber",
+  //       // "--test=cucumber",
+  //       "--",
+  //       "--tags",
+  //       // "--tags='@tuples'",
+  //       "'@tuples'",
+  //     ],
+  //   },
+  //   "sourceLanguages": ["rust"],
+  // },
 ]
