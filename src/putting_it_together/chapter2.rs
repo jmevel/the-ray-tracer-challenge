@@ -24,7 +24,7 @@ pub fn putting_it_together() {
     }
 
     let ppm = canvas.convert_to_ppm();
-    fs::write("./first.ppm", ppm).unwrap();
+    fs::write("./resources/images/chapter 2/chapter2.ppm", ppm).unwrap();
 
     println!("PPM file written");
 }

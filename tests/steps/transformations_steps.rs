@@ -11,34 +11,34 @@ fn transform_is_translation(
     y: f32,
     z: f32,
 ) {
-    let transform = Matrix::translation(x, y, z);
+    let transform = Matrix::new_translation(x, y, z);
     world.add_matrix4x4(translation.clone(), transform);
 }
 
 #[given(expr = "{word} ← scaling\\({float}, {float}, {float})")]
 fn transform_is_scaling(world: &mut RayTracerWorld, scaling: String, x: f32, y: f32, z: f32) {
-    let transform = Matrix::scaling(x, y, z);
+    let transform = Matrix::new_scaling(x, y, z);
     world.add_matrix4x4(scaling.clone(), transform);
 }
 
 #[given(expr = "{word} ← rotation_x\\(π \\/ {float})")]
 fn rotation_x_is(world: &mut RayTracerWorld, rotation: String, denominator: f32) {
     let fraction = f32::consts::PI / denominator;
-    let transform = Matrix::rotation_x(fraction);
+    let transform = Matrix::new_rotation_x(fraction);
     world.add_matrix4x4(rotation.clone(), transform);
 }
 
 #[given(expr = "{word} ← rotation_y\\(π \\/ {float})")]
 fn rotation_y_is(world: &mut RayTracerWorld, rotation: String, denominator: f32) {
     let fraction = f32::consts::PI / denominator;
-    let transform = Matrix::rotation_y(fraction);
+    let transform = Matrix::new_rotation_y(fraction);
     world.add_matrix4x4(rotation.clone(), transform);
 }
 
 #[given(expr = "{word} ← rotation_z\\(π \\/ {float})")]
 fn rotation_z_is(world: &mut RayTracerWorld, rotation: String, denominator: f32) {
     let fraction = f32::consts::PI / denominator;
-    let transform = Matrix::rotation_z(fraction);
+    let transform = Matrix::new_rotation_z(fraction);
     world.add_matrix4x4(rotation.clone(), transform);
 }
 
@@ -53,7 +53,7 @@ fn shearing_is(
     zx: f32,
     zy: f32,
 ) {
-    let transform = Matrix::shearing(xy, xz, yx, yz, zx, zy);
+    let transform = Matrix::new_shearing(xy, xz, yx, yz, zx, zy);
     world.add_matrix4x4(shearing.clone(), transform);
 }
 

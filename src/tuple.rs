@@ -1,5 +1,8 @@
-use crate::float::float_equals;
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use crate::{Matrix, float::float_equals};
+use std::{
+    fmt::{Display, Formatter},
+    ops::{Add, Div, Mul, Neg, Sub},
+};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum TupleType {
@@ -15,6 +18,16 @@ pub struct Tuple {
     z: f32,
     w: f32,
     tuple_type: TupleType,
+}
+
+impl Display for Tuple {
+    fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "(x: {}, y: {}, z: {}, w: {})",
+            self.x, self.y, self.z, self.w
+        )
+    }
 }
 
 impl Tuple {
@@ -116,6 +129,10 @@ impl Tuple {
             self.z * other.x - self.x * other.z,
             self.x * other.y - self.y * other.x,
         )
+    }
+
+    pub fn transform(&self, transformations: &Matrix<4, 4>) -> Tuple {
+        self * transformations
     }
 }
 

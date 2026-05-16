@@ -1,5 +1,6 @@
 use crate::Tuple;
 use crate::float::float_equals;
+use core::fmt;
 use duplicate::duplicate_item;
 use std::fmt::Debug;
 use std::ops::Mul;
@@ -10,6 +11,12 @@ pub struct Matrix<const ROW_COUNT: usize, const COL_COUNT: usize> {
 
 impl<const ROW_COUNT: usize, const COL_COUNT: usize> Debug for Matrix<ROW_COUNT, COL_COUNT> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        fmt::Display::fmt(self, f)
+    }
+}
+
+impl<const ROW_COUNT: usize, const COL_COUNT: usize> fmt::Display for Matrix<ROW_COUNT, COL_COUNT> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         _ = writeln!(f, "Matrix:");
         for row in 0..ROW_COUNT {
             for col in 0..COL_COUNT {
@@ -29,6 +36,67 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
         }
 
         Matrix { data }
+    }
+
+    pub fn new_translation(x: f32, y: f32, z: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[0][3] = result.data[0][3] + x;
+        result.data[1][3] = result.data[1][3] + y;
+        result.data[2][3] = result.data[2][3] + z;
+        result
+    }
+
+    pub fn new_scaling(x: f32, y: f32, z: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[0][0] = result.data[0][0] * x;
+        result.data[1][1] = result.data[1][1] * y;
+        result.data[2][2] = result.data[2][2] * z;
+        result
+    }
+
+    pub fn new_rotation_x(radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[1][1] = radians.cos();
+        result.data[1][2] = -radians.sin();
+        result.data[2][1] = radians.sin();
+        result.data[2][2] = radians.cos();
+        result
+    }
+
+    pub fn new_rotation_y(radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[0][0] = radians.cos();
+        result.data[0][2] = radians.sin();
+        result.data[2][0] = -radians.sin();
+        result.data[2][2] = radians.cos();
+        result
+    }
+
+    pub fn new_rotation_z(radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[0][0] = radians.cos();
+        result.data[0][1] = -radians.sin();
+        result.data[1][0] = -radians.sin();
+        result.data[1][1] = radians.cos();
+        result
+    }
+
+    pub fn new_shearing(
+        xy: f32,
+        xz: f32,
+        yx: f32,
+        yz: f32,
+        zx: f32,
+        zy: f32,
+    ) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let mut result = Matrix::identity_matrix();
+        result.data[0][1] = xy;
+        result.data[0][2] = xz;
+        result.data[1][0] = yx;
+        result.data[1][2] = yz;
+        result.data[2][0] = zx;
+        result.data[2][1] = zy;
+        result
     }
 
     pub fn transpose(&self) -> Matrix<ROW_COUNT, COL_COUNT> {
@@ -75,50 +143,33 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
             .unwrap()
     }
 
-    pub fn translation(x: f32, y: f32, z: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
-        let mut result = Matrix::identity_matrix();
-        result.data[0][3] = result.data[0][3] + x;
-        result.data[1][3] = result.data[1][3] + y;
-        result.data[2][3] = result.data[2][3] + z;
-        result
+    pub fn translate(&self, x: f32, y: f32, z: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let translation = Matrix::new_translation(x, y, z);
+        &translation * self
     }
 
-    pub fn scaling(x: f32, y: f32, z: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
-        let mut result = Matrix::identity_matrix();
-        result.data[0][0] = result.data[0][0] * x;
-        result.data[1][1] = result.data[1][1] * y;
-        result.data[2][2] = result.data[2][2] * z;
-        result
+    pub fn scale(&self, x: f32, y: f32, z: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let scaling = Matrix::new_scaling(x, y, z);
+        &scaling * self
     }
 
-    pub fn rotation_x(radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
-        let mut result = Matrix::identity_matrix();
-        result.data[1][1] = radians.cos();
-        result.data[1][2] = -radians.sin();
-        result.data[2][1] = radians.sin();
-        result.data[2][2] = radians.cos();
-        result
+    pub fn rotate_x(&self, radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let rotation_x = Matrix::new_rotation_x(radians);
+        &rotation_x * self
     }
 
-    pub fn rotation_y(radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
-        let mut result = Matrix::identity_matrix();
-        result.data[0][0] = radians.cos();
-        result.data[0][2] = radians.sin();
-        result.data[2][0] = -radians.sin();
-        result.data[2][2] = radians.cos();
-        result
+    pub fn rotate_y(&self, radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let rotation_y = Matrix::new_rotation_y(radians);
+        &rotation_y * self
     }
 
-    pub fn rotation_z(radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
-        let mut result = Matrix::identity_matrix();
-        result.data[0][0] = radians.cos();
-        result.data[0][1] = -radians.sin();
-        result.data[1][0] = -radians.sin();
-        result.data[1][1] = radians.cos();
-        result
+    pub fn rotate_z(&self, radians: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
+        let rotation_z = Matrix::new_rotation_z(radians);
+        &rotation_z * self
     }
 
-    pub fn shearing(
+    pub fn shear(
+        &self,
         xy: f32,
         xz: f32,
         yx: f32,
@@ -126,14 +177,8 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
         zx: f32,
         zy: f32,
     ) -> Matrix<ROW_COUNT, COL_COUNT> {
-        let mut result = Matrix::identity_matrix();
-        result.data[0][1] = xy;
-        result.data[0][2] = xz;
-        result.data[1][0] = yx;
-        result.data[1][2] = yz;
-        result.data[2][0] = zx;
-        result.data[2][1] = zy;
-        result
+        let shear = Matrix::new_shearing(xy, xz, yx, yz, zx, zy);
+        &shear * self
     }
 }
 
@@ -266,11 +311,27 @@ impl Mul<&Tuple> for &Matrix<4, 4> {
     }
 }
 
+impl Mul<Tuple> for Matrix<4, 4> {
+    type Output = Tuple;
+
+    fn mul(self, other: Tuple) -> Self::Output {
+        &self * &other
+    }
+}
+
 impl Mul<&Tuple> for Matrix<4, 4> {
     type Output = Tuple;
 
     fn mul(self, other: &Tuple) -> Self::Output {
         &self * other
+    }
+}
+
+impl Mul<Matrix<4, 4>> for Tuple {
+    type Output = Tuple;
+
+    fn mul(self, other: Matrix<4, 4>) -> Self::Output {
+        &self * &other
     }
 }
 
