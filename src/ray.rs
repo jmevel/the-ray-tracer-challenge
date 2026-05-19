@@ -24,4 +24,8 @@ impl Ray {
     pub fn direction(&self) -> &Tuple {
         &self.direction
     }
+
+    pub fn position(&self, t: f32) -> Tuple {
+        &self.origin + &(&self.direction * t)
+    }
 }
