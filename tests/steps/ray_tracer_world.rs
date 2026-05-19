@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use cucumber::World;
-use the_ray_tracer_challenge::{Canvas, Matrix, Tuple};
+use the_ray_tracer_challenge::{Canvas, Matrix, Ray, Tuple};
 
 #[derive(Debug, Default, World)]
 #[world(init = Self::new)]
@@ -14,6 +14,8 @@ pub struct RayTracerWorld {
     matrices3x3: HashMap<String, Matrix<3, 3>>,
     matrices4x4: HashMap<String, Matrix<4, 4>>,
 
+    rays: HashMap<String, Ray>,
+
     index: HashMap<String, Type>,
 }
 
@@ -23,6 +25,7 @@ pub enum Type {
     Tuple,
     PPM,
     Matrix((usize, usize)),
+    Ray,
 }
 
 impl RayTracerWorld {
@@ -80,7 +83,7 @@ impl RayTracerWorld {
 
     pub fn add_matrix2x2(&mut self, matrix_name: String, matrix: Matrix<2, 2>) {
         self.matrices2x2.insert(matrix_name.clone(), matrix);
-        self.index.insert(matrix_name.clone(), Type::Matrix((2, 2)));
+        self.index.insert(matrix_name, Type::Matrix((2, 2)));
     }
 
     pub fn get_matrix2x2(&self, matrix: &str) -> &Matrix<2, 2> {
@@ -91,7 +94,7 @@ impl RayTracerWorld {
 
     pub fn add_matrix3x3(&mut self, matrix_name: String, matrix: Matrix<3, 3>) {
         self.matrices3x3.insert(matrix_name.clone(), matrix);
-        self.index.insert(matrix_name.clone(), Type::Matrix((3, 3)));
+        self.index.insert(matrix_name, Type::Matrix((3, 3)));
     }
 
     pub fn get_matrix3x3(&self, matrix: &str) -> &Matrix<3, 3> {
@@ -102,12 +105,23 @@ impl RayTracerWorld {
 
     pub fn add_matrix4x4(&mut self, matrix_name: String, matrix: Matrix<4, 4>) {
         self.matrices4x4.insert(matrix_name.clone(), matrix);
-        self.index.insert(matrix_name.clone(), Type::Matrix((4, 4)));
+        self.index.insert(matrix_name, Type::Matrix((4, 4)));
     }
 
     pub fn get_matrix4x4(&self, matrix: &str) -> &Matrix<4, 4> {
         self.matrices4x4
             .get(matrix)
             .expect(format!("{matrix} does not exist").as_str())
+    }
+
+    pub fn add_ray(&mut self, ray_name: String, ray: Ray) {
+        self.rays.insert(ray_name.clone(), ray);
+        self.index.insert(ray_name, Type::Ray);
+    }
+
+    pub fn get_ray(&self, ray: &str) -> &Ray {
+        self.rays
+            .get(ray)
+            .expect(format!("{ray} does not exist").as_str())
     }
 }
