@@ -149,6 +149,48 @@
     {
       "type": "lldb",
       "request": "launch",
+      "name": "Debug spheres tests",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=cucumber",
+          "--package=the-ray-tracer-challenge",
+          "--",
+          "--tags='@spheres'",
+        ],
+        "filter": {
+          "name": "cucumber",
+          "kind": "test",
+        },
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}",
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug intersections tests",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=cucumber",
+          "--package=the-ray-tracer-challenge",
+          "--",
+          "--tags='@intersections'",
+        ],
+        "filter": {
+          "name": "cucumber",
+          "kind": "test",
+        },
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}",
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
       "name": "Debug 'Individual transformations are applied in sequence' scenario",
       "cargo": {
         "args": [

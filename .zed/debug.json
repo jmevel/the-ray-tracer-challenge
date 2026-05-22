@@ -90,6 +90,42 @@
     "args": ["--tags", "@rays"],
   },
   {
+    "label": "Debug spheres tests",
+    "adapter": "CodeLLDB",
+    "request": "launch",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "args": ["--tags", "@spheres"],
+  },
+  {
+    "label": "Debug intersections tests",
+    "adapter": "CodeLLDB",
+    "request": "launch",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "args": ["--tags", "@intersections"],
+  },
+  {
     "label": "Debug 'Individual transformations are applied in sequence' scenario",
     "adapter": "CodeLLDB",
     "request": "launch",

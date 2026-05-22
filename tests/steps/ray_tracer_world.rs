@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use cucumber::World;
-use the_ray_tracer_challenge::{Canvas, Matrix, Ray, Tuple};
+use the_ray_tracer_challenge::{Canvas, Intersection, Matrix, Ray, Sphere, Tuple};
 
 #[derive(Debug, Default, World)]
 #[world(init = Self::new)]
@@ -16,6 +16,11 @@ pub struct RayTracerWorld {
 
     rays: HashMap<String, Ray>,
 
+    spheres: HashMap<String, Sphere>,
+
+    intersects: HashMap<String, Option<Vec<f32>>>,
+    intersections: HashMap<String, Intersection>,
+
     index: HashMap<String, Type>,
 }
 
@@ -26,6 +31,9 @@ pub enum Type {
     PPM,
     Matrix((usize, usize)),
     Ray,
+    Sphere,
+    Intersect,
+    Intersections,
 }
 
 impl RayTracerWorld {
@@ -123,5 +131,39 @@ impl RayTracerWorld {
         self.rays
             .get(ray)
             .expect(format!("{ray} does not exist").as_str())
+    }
+
+    pub fn add_sphere(&mut self, sphere_name: String, sphere: Sphere) {
+        self.spheres.insert(sphere_name.clone(), sphere);
+        self.index.insert(sphere_name, Type::Sphere);
+    }
+
+    pub fn get_sphere(&self, sphere: &str) -> &Sphere {
+        self.spheres
+            .get(sphere)
+            .expect(format!("{sphere} does not exist").as_str())
+    }
+
+    pub fn add_intersect(&mut self, intersect_name: String, intersect: Option<Vec<f32>>) {
+        self.intersects.insert(intersect_name.clone(), intersect);
+        self.index.insert(intersect_name, Type::Intersect);
+    }
+
+    pub fn get_intersect(&self, intersect: &str) -> &Option<Vec<f32>> {
+        self.intersects
+            .get(intersect)
+            .expect(format!("{intersect} does not exist").as_str())
+    }
+
+    pub fn add_intersection(&mut self, intersection_name: String, intersection: Intersection) {
+        self.intersections
+            .insert(intersection_name.clone(), intersection);
+        self.index.insert(intersection_name, Type::Intersections);
+    }
+
+    pub fn get_intersection(&self, intersection: &str) -> &Intersection {
+        self.intersections
+            .get(intersection)
+            .expect(format!("{intersection} does not exist").as_str())
     }
 }
