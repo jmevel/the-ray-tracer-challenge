@@ -22,21 +22,6 @@ fn intersect_is_intersect_of_sphere_and_ray(
     world.add_intersect(intersect_name, intersect);
 }
 
-#[then(expr = "{word}.count = {int}")]
-fn intersect_count_equals_count(world: &mut RayTracerWorld, intersect_name: String, count: usize) {
-    if count == 0 {
-        let intersect = world.get_intersect(&intersect_name);
-        assert!(intersect.is_none());
-    } else {
-        let intersect = world
-            .get_intersect(&intersect_name)
-            .clone()
-            .expect("No intersect found");
-
-        assert_eq!(&intersect.iter().count(), &count);
-    }
-}
-
 #[then(expr = "{word}[{int}] = {float}")]
 fn index_of_intersect_equals_value(
     world: &mut RayTracerWorld,

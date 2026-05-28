@@ -159,3 +159,26 @@ fn entity_multiplied_by_entity_equals_entity(
         _ => panic!("Not supported"),
     }
 }
+
+#[then(expr = "{word}.count = {int}")]
+fn collection_count_equals_count(
+    world: &mut RayTracerWorld,
+    collection_name: String,
+    count: usize,
+) {
+    match world.get_element_type(&collection_name) {
+        Type::Intersect => {
+            let intersect = world.get_intersect(&collection_name).clone();
+            if count == 0 {
+                assert!(intersect.is_none());
+            } else {
+                assert_eq!(intersect.unwrap().len(), count);
+            }
+        }
+        Type::IntersectionsCollection => {
+            let intersect = world.get_intersections_collection(&collection_name).clone();
+            assert_eq!(intersect.len(), count);
+        }
+        _ => panic!("Not supported"),
+    }
+}

@@ -126,7 +126,7 @@
     "args": ["--tags", "@intersections"],
   },
   {
-    "label": "Debug 'Individual transformations are applied in sequence' scenario",
+    "label": "Debug 'Aggregating intersections' scenario",
     "adapter": "CodeLLDB",
     "request": "launch",
     "build": {
@@ -141,7 +141,7 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--name", "Individual transformations are applied in sequence"],
+    "args": ["--name", "Aggregating intersections"],
   },
   // Not working
   // https://zed.dev/docs/languages/rust#automatically-locate-a-debug-target-based-on-build-command

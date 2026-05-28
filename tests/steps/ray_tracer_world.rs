@@ -20,6 +20,7 @@ pub struct RayTracerWorld {
 
     intersects: HashMap<String, Option<Vec<f32>>>,
     intersections: HashMap<String, Intersection>,
+    intersections_collections: HashMap<String, Vec<String>>,
 
     index: HashMap<String, Type>,
 }
@@ -34,6 +35,7 @@ pub enum Type {
     Sphere,
     Intersect,
     Intersections,
+    IntersectionsCollection,
 }
 
 impl RayTracerWorld {
@@ -165,5 +167,28 @@ impl RayTracerWorld {
         self.intersections
             .get(intersection)
             .expect(format!("{intersection} does not exist").as_str())
+    }
+
+    pub fn add_intersections_collection(
+        &mut self,
+        intersection_collection_name: String,
+        intersections: Vec<String>,
+    ) {
+        self.intersections_collections
+            .insert(intersection_collection_name.clone(), intersections);
+        self.index
+            .insert(intersection_collection_name, Type::IntersectionsCollection);
+    }
+
+    pub fn get_intersections_collection(
+        &self,
+        intersections_collection: &str,
+    ) -> Vec<&Intersection> {
+        self.intersections_collections
+            .get(intersections_collection)
+            .expect(format!("{intersections_collection} does not exist").as_str())
+            .iter()
+            .map(|intersection_name| self.get_intersection(intersection_name))
+            .collect()
     }
 }
