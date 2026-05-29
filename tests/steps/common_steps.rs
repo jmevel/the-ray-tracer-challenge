@@ -1,4 +1,5 @@
 use cucumber::{given, then, when};
+use the_ray_tracer_challenge::intersection::Object;
 
 use crate::steps::ray_tracer_world::{RayTracerWorld, Type};
 
@@ -167,17 +168,53 @@ fn collection_count_equals_count(
     count: usize,
 ) {
     match world.get_element_type(&collection_name) {
-        Type::Intersect => {
-            let intersect = world.get_intersect(&collection_name).clone();
+        Type::IntersectionsCollection => {
+            let intersections_collection =
+                world.get_intersections_collection(&collection_name).clone();
             if count == 0 {
-                assert!(intersect.is_none());
+                assert!(intersections_collection.is_none());
             } else {
-                assert_eq!(intersect.unwrap().len(), count);
+                assert_eq!(intersections_collection.unwrap().len(), count);
             }
         }
-        Type::IntersectionsCollection => {
-            let intersect = world.get_intersections_collection(&collection_name).clone();
-            assert_eq!(intersect.len(), count);
+        _ => panic!("Not supported"),
+    }
+}
+
+#[then(regex = r#"^([a-zA-Z0-9_]+)\.object = (.*)$"#)]
+fn object_of_intersection_equals_object(
+    world: &mut RayTracerWorld,
+    intersection: String,
+    object_name: String,
+) {
+    let intersection_object = world.get_intersection(&intersection).object();
+    match world.get_element_type(&object_name) {
+        Type::Sphere => {
+            let sphere = world.get_sphere(&object_name).clone();
+            assert_eq!(intersection_object, &Object::Sphere(sphere));
+        }
+        _ => panic!("Not supported"),
+    }
+}
+
+#[then(expr = "{word}[{int}].object = {word}")]
+fn object_at_index_of_intersections_collection_equals_object(
+    world: &mut RayTracerWorld,
+    intersections_collection: String,
+    index: usize,
+    object_name: String,
+) {
+    let intersection = world
+        .get_intersections_collection(&intersections_collection)
+        .clone();
+
+    match world.get_element_type(&object_name) {
+        Type::Sphere => {
+            let sphere = world.get_sphere(&object_name).clone();
+            assert_eq!(
+                intersection.unwrap()[index].object(),
+                &Object::Sphere(sphere)
+            );
         }
         _ => panic!("Not supported"),
     }

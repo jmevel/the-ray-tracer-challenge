@@ -1,11 +1,11 @@
 use crate::Sphere;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Object {
     Sphere(Sphere),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Intersection {
     t: f32,
     object: Object,
@@ -19,6 +19,7 @@ impl Intersection {
     pub fn t(&self) -> f32 {
         self.t
     }
+
     pub fn object(&self) -> &Object {
         &self.object
     }
@@ -27,7 +28,7 @@ impl Intersection {
 impl PartialEq for Object {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
-            (Self::Sphere(l0), Self::Sphere(r0)) => l0 == r0,
+            (Self::Sphere(this_sphere), Self::Sphere(r0)) => this_sphere == r0,
         }
     }
 }

@@ -15,31 +15,22 @@ fn intersection_is(world: &mut RayTracerWorld, intersection_name: String, t: f32
 fn intersection_collections_is(
     world: &mut RayTracerWorld,
     intersection_collection_name: String,
-    intersection1: String,
-    intersection2: String,
+    intersection1_name: String,
+    intersection2_name: String,
 ) {
-    let intersections_collection = vec![intersection1, intersection2];
-    world.add_intersections_collection(intersection_collection_name, intersections_collection);
+    let intersection1 = world.get_intersection(&intersection1_name);
+    let intersection2 = world.get_intersection(&intersection2_name);
+    let intersections_collection = vec![intersection1.clone(), intersection2.clone()];
+    world
+        .add_intersections_collection(intersection_collection_name, Some(intersections_collection));
 }
 
-// #[then(expr = "{word}.t = {float}")]
 #[then(
     regex = r#"^([a-zA-Z0-9_]+)\.t = ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$"#
 )]
 fn t_of_intersection_equals(world: &mut RayTracerWorld, intersection_name: String, t: f32) {
     let intersection = world.get_intersection(&intersection_name);
     assert_eq!(intersection.t(), t);
-}
-
-#[then(expr = "{word}.object = {word}")]
-fn object_of_intersection_equals_sphere(
-    world: &mut RayTracerWorld,
-    intersection_name: String,
-    sphere: String,
-) {
-    let intersection = world.get_intersection(&intersection_name);
-    let sphere = world.get_sphere(&sphere).clone();
-    assert_eq!(intersection.object(), &Object::Sphere(sphere));
 }
 
 #[then(expr = "{word}[{int}].t = {float}")]
@@ -49,6 +40,10 @@ fn t_of_intersection_at_index_equals(
     index: usize,
     t: f32,
 ) {
-    let intersection = world.get_intersections_collection(&intersections_collection_name)[index];
-    assert_eq!(intersection.t(), t);
+    let intersections = world
+        .get_intersections_collection(&intersections_collection_name)
+        .clone()
+        .unwrap();
+    let actual = &intersections[index].t();
+    assert_eq!(actual, &t);
 }

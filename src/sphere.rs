@@ -1,6 +1,6 @@
 use uuid::Uuid;
 
-use crate::{Ray, Tuple};
+use crate::{Intersection, Ray, Tuple, intersection::Object};
 
 #[derive(Debug, Clone)]
 pub struct Sphere {
@@ -12,7 +12,7 @@ impl Sphere {
         Self { id: Uuid::new_v4() }
     }
 
-    pub fn intersect(&self, ray: &Ray) -> Option<Vec<f32>> {
+    pub fn intersect(&self, ray: &Ray) -> Option<Vec<Intersection>> {
         let sphere_to_ray = ray.origin() - &Tuple::new_point(0f32, 0f32, 0f32);
         let a = ray.direction().dot_product(ray.direction());
         let b = 2f32 * ray.direction().dot_product(&sphere_to_ray);
@@ -26,7 +26,10 @@ impl Sphere {
         let t1 = (-b - discriminant.sqrt()) / (2f32 * a);
         let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
 
-        Some(vec![t1, t2])
+        Some(vec![
+            Intersection::new(t1, Object::Sphere(self.clone())),
+            Intersection::new(t2, Object::Sphere(self.clone())),
+        ])
     }
 }
 

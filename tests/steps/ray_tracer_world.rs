@@ -18,9 +18,8 @@ pub struct RayTracerWorld {
 
     spheres: HashMap<String, Sphere>,
 
-    intersects: HashMap<String, Option<Vec<f32>>>,
     intersections: HashMap<String, Intersection>,
-    intersections_collections: HashMap<String, Vec<String>>,
+    intersections_collections: HashMap<String, Option<Vec<Intersection>>>,
 
     index: HashMap<String, Type>,
 }
@@ -33,7 +32,6 @@ pub enum Type {
     Matrix((usize, usize)),
     Ray,
     Sphere,
-    Intersect,
     Intersections,
     IntersectionsCollection,
 }
@@ -146,17 +144,6 @@ impl RayTracerWorld {
             .expect(format!("{sphere} does not exist").as_str())
     }
 
-    pub fn add_intersect(&mut self, intersect_name: String, intersect: Option<Vec<f32>>) {
-        self.intersects.insert(intersect_name.clone(), intersect);
-        self.index.insert(intersect_name, Type::Intersect);
-    }
-
-    pub fn get_intersect(&self, intersect: &str) -> &Option<Vec<f32>> {
-        self.intersects
-            .get(intersect)
-            .expect(format!("{intersect} does not exist").as_str())
-    }
-
     pub fn add_intersection(&mut self, intersection_name: String, intersection: Intersection) {
         self.intersections
             .insert(intersection_name.clone(), intersection);
@@ -172,7 +159,7 @@ impl RayTracerWorld {
     pub fn add_intersections_collection(
         &mut self,
         intersection_collection_name: String,
-        intersections: Vec<String>,
+        intersections: Option<Vec<Intersection>>,
     ) {
         self.intersections_collections
             .insert(intersection_collection_name.clone(), intersections);
@@ -183,12 +170,9 @@ impl RayTracerWorld {
     pub fn get_intersections_collection(
         &self,
         intersections_collection: &str,
-    ) -> Vec<&Intersection> {
+    ) -> &Option<Vec<Intersection>> {
         self.intersections_collections
             .get(intersections_collection)
             .expect(format!("{intersections_collection} does not exist").as_str())
-            .iter()
-            .map(|intersection_name| self.get_intersection(intersection_name))
-            .collect()
     }
 }
