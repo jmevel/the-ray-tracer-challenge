@@ -1,5 +1,5 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::intersection::Object;
+use the_ray_tracer_challenge::Object;
 
 use crate::steps::ray_tracer_world::{RayTracerWorld, Type};
 
@@ -96,7 +96,13 @@ fn entity_equals_entity(world: &mut RayTracerWorld, entity1: String, entity2: St
         Type::Matrix((4, 4)) => {
             assert_eq!(world.get_matrix4x4(&entity1), world.get_matrix4x4(&entity2))
         }
-        _ => panic!("no matrix with given size"),
+        Type::Intersection => {
+            assert_eq!(
+                world.get_intersection(&entity1),
+                world.get_intersection(&entity2)
+            )
+        }
+        _ => panic!("Not supported"),
     }
 }
 
@@ -187,11 +193,11 @@ fn object_of_intersection_equals_object(
     intersection: String,
     object_name: String,
 ) {
-    let intersection_object = world.get_intersection(&intersection).object();
+    let intersection = world.get_intersection(&intersection).clone().unwrap();
     match world.get_element_type(&object_name) {
         Type::Sphere => {
             let sphere = world.get_sphere(&object_name).clone();
-            assert_eq!(intersection_object, &Object::Sphere(sphere));
+            assert_eq!(intersection.object(), &Object::Sphere(sphere));
         }
         _ => panic!("Not supported"),
     }
@@ -215,6 +221,16 @@ fn object_at_index_of_intersections_collection_equals_object(
                 intersection.unwrap()[index].object(),
                 &Object::Sphere(sphere)
             );
+        }
+        _ => panic!("Not supported"),
+    }
+}
+
+#[then(expr = "{word} is nothing")]
+fn entity_is_nothing(world: &mut RayTracerWorld, entity: String) {
+    match world.get_element_type(&entity) {
+        Type::Intersection => {
+            assert!(world.get_intersection(&entity).is_none());
         }
         _ => panic!("Not supported"),
     }

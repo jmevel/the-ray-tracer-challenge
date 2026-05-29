@@ -1,8 +1,8 @@
 use uuid::Uuid;
 
-use crate::{Intersection, Ray, Tuple, intersection::Object};
+use crate::{Intersection, Object, Ray, Tuple, intersections::Intersections};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Sphere {
     id: Uuid,
 }
@@ -12,7 +12,7 @@ impl Sphere {
         Self { id: Uuid::new_v4() }
     }
 
-    pub fn intersect(&self, ray: &Ray) -> Option<Vec<Intersection>> {
+    pub fn intersect(&self, ray: &Ray) -> Option<Intersections> {
         let sphere_to_ray = ray.origin() - &Tuple::new_point(0f32, 0f32, 0f32);
         let a = ray.direction().dot_product(ray.direction());
         let b = 2f32 * ray.direction().dot_product(&sphere_to_ray);
@@ -26,15 +26,9 @@ impl Sphere {
         let t1 = (-b - discriminant.sqrt()) / (2f32 * a);
         let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
 
-        Some(vec![
+        Some(Intersections::new(vec![
             Intersection::new(t1, Object::Sphere(self.clone())),
             Intersection::new(t2, Object::Sphere(self.clone())),
-        ])
-    }
-}
-
-impl PartialEq for Sphere {
-    fn eq(&self, other: &Self) -> bool {
-        self.id == other.id
+        ]))
     }
 }

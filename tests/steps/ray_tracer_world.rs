@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 
 use cucumber::World;
-use the_ray_tracer_challenge::{Canvas, Intersection, Matrix, Ray, Sphere, Tuple};
+use the_ray_tracer_challenge::{
+    Canvas, Intersection, Matrix, Ray, Sphere, Tuple, intersections::Intersections,
+};
 
 #[derive(Debug, Default, World)]
 #[world(init = Self::new)]
@@ -18,8 +20,8 @@ pub struct RayTracerWorld {
 
     spheres: HashMap<String, Sphere>,
 
-    intersections: HashMap<String, Intersection>,
-    intersections_collections: HashMap<String, Option<Vec<Intersection>>>,
+    intersections: HashMap<String, Option<Intersection>>,
+    intersections_collections: HashMap<String, Option<Intersections>>,
 
     index: HashMap<String, Type>,
 }
@@ -32,7 +34,7 @@ pub enum Type {
     Matrix((usize, usize)),
     Ray,
     Sphere,
-    Intersections,
+    Intersection,
     IntersectionsCollection,
 }
 
@@ -144,13 +146,17 @@ impl RayTracerWorld {
             .expect(format!("{sphere} does not exist").as_str())
     }
 
-    pub fn add_intersection(&mut self, intersection_name: String, intersection: Intersection) {
+    pub fn add_intersection(
+        &mut self,
+        intersection_name: String,
+        intersection: Option<Intersection>,
+    ) {
         self.intersections
             .insert(intersection_name.clone(), intersection);
-        self.index.insert(intersection_name, Type::Intersections);
+        self.index.insert(intersection_name, Type::Intersection);
     }
 
-    pub fn get_intersection(&self, intersection: &str) -> &Intersection {
+    pub fn get_intersection(&self, intersection: &str) -> &Option<Intersection> {
         self.intersections
             .get(intersection)
             .expect(format!("{intersection} does not exist").as_str())
@@ -159,7 +165,7 @@ impl RayTracerWorld {
     pub fn add_intersections_collection(
         &mut self,
         intersection_collection_name: String,
-        intersections: Option<Vec<Intersection>>,
+        intersections: Option<Intersections>,
     ) {
         self.intersections_collections
             .insert(intersection_collection_name.clone(), intersections);
@@ -170,7 +176,7 @@ impl RayTracerWorld {
     pub fn get_intersections_collection(
         &self,
         intersections_collection: &str,
-    ) -> &Option<Vec<Intersection>> {
+    ) -> &Option<Intersections> {
         self.intersections_collections
             .get(intersections_collection)
             .expect(format!("{intersections_collection} does not exist").as_str())

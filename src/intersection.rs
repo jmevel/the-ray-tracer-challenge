@@ -1,9 +1,6 @@
-use crate::Sphere;
+use std::cmp::Ordering;
 
-#[derive(Debug, Clone)]
-pub enum Object {
-    Sphere(Sphere),
-}
+use crate::Object;
 
 #[derive(Debug, Clone)]
 pub struct Intersection {
@@ -25,10 +22,22 @@ impl Intersection {
     }
 }
 
-impl PartialEq for Object {
+impl PartialEq for Intersection {
     fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            (Self::Sphere(this_sphere), Self::Sphere(r0)) => this_sphere == r0,
-        }
+        self.t == other.t
+    }
+}
+
+impl Eq for Intersection {}
+
+impl PartialOrd for Intersection {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.t.partial_cmp(&other.t)
+    }
+}
+
+impl Ord for Intersection {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.t.total_cmp(&other.t)
     }
 }
