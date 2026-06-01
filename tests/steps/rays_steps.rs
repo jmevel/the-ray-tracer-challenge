@@ -35,6 +35,19 @@ fn ray_is_origin_and_direction(
     world.add_ray(ray_name, ray);
 }
 
+#[when(expr = "{word} ← transform\\({word}, {word})")]
+fn ray_is_ray_transformed_by_matrix(
+    world: &mut RayTracerWorld,
+    new_ray_name: String,
+    initial_ray: String,
+    transformation: String,
+) {
+    let initial_ray = world.get_ray(&initial_ray);
+    let transformation = world.get_matrix4x4(&transformation);
+    let new_ray = initial_ray.transform(transformation);
+    world.add_ray(new_ray_name, new_ray);
+}
+
 #[then(expr = "{word}.origin = {word}")]
 fn ray_origin_equals_origin(world: &mut RayTracerWorld, ray: String, origin: String) {
     let ray = world.get_ray(&ray);
@@ -61,4 +74,18 @@ fn position_of_ray_equals_point(
     let ray = world.get_ray(&ray);
     let expected_position = Tuple::new_point(x, y, z);
     assert_eq!(ray.position(position), expected_position);
+}
+
+#[then(expr = "{word}.origin = point\\({float}, {float}, {float})")]
+fn ray_origin_equals_point(world: &mut RayTracerWorld, ray: String, x: f32, y: f32, z: f32) {
+    let expected = Tuple::new_point(x, y, z);
+    let ray = world.get_ray(&ray);
+    assert_eq!(ray.origin(), &expected);
+}
+
+#[then(expr = "{word}.direction = vector\\({float}, {float}, {float})")]
+fn ray_direction_equals_vector(world: &mut RayTracerWorld, ray: String, x: f32, y: f32, z: f32) {
+    let expected = Tuple::new_vector(x, y, z);
+    let ray = world.get_ray(&ray);
+    assert_eq!(ray.direction(), &expected);
 }
