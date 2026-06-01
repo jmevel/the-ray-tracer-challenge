@@ -1,15 +1,19 @@
 use uuid::Uuid;
 
-use crate::{Intersection, Object, Ray, Tuple, intersections::Intersections};
+use crate::{Intersection, Matrix, Object, Ray, Tuple, intersections::Intersections};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Sphere {
     id: Uuid,
+    pub transform: Matrix<4, 4>,
 }
 
 impl Sphere {
     pub fn new() -> Self {
-        Self { id: Uuid::new_v4() }
+        Self {
+            id: Uuid::new_v4(),
+            transform: Matrix::identity_matrix(),
+        }
     }
 
     pub fn intersect(&self, ray: &Ray) -> Option<Intersections> {

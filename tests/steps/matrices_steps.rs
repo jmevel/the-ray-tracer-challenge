@@ -198,7 +198,7 @@ fn transpose_matrix_is_the_following_matrix(
     }
 }
 
-#[then(expr = "{word} = identity_matrix")]
+#[then(regex = r#"^([a-zA-Z0-9_]+) = identity_matrix$"#)]
 fn matrix_equals_identity_matrix(world: &mut RayTracerWorld, matrix: String) {
     let matrix = world.get_matrix4x4(&matrix);
     let identity_matrix: Matrix<4, 4> = Matrix::identity_matrix();

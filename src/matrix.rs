@@ -5,6 +5,7 @@ use duplicate::duplicate_item;
 use std::fmt::Debug;
 use std::ops::Mul;
 
+#[derive(Clone)]
 pub struct Matrix<const ROW_COUNT: usize, const COL_COUNT: usize> {
     pub data: [[f32; COL_COUNT]; ROW_COUNT],
 }

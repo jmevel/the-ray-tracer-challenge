@@ -146,6 +146,12 @@ impl RayTracerWorld {
             .expect(format!("{sphere} does not exist").as_str())
     }
 
+    pub fn get_mut_sphere(&mut self, sphere: &str) -> &mut Sphere {
+        self.spheres
+            .get_mut(sphere)
+            .expect(format!("{sphere} does not exist").as_str())
+    }
+
     pub fn add_intersection(
         &mut self,
         intersection_name: String,
