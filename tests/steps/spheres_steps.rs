@@ -15,11 +15,12 @@ fn intersection_is_intersect_of_sphere_and_ray(
     intersect_name: String,
     sphere_name: String,
     ray_name: String,
-) {
+) -> Result<(), String> {
     let sphere = world.get_sphere(&sphere_name);
     let ray = world.get_ray(&ray_name);
     let intersections = sphere.intersect(ray);
-    world.add_intersections_collection(intersect_name, intersections);
+    world.add_intersections_collection(intersect_name, intersections?);
+    Ok(())
 }
 
 #[when(expr = "set_transform\\({word}, {word})")]
