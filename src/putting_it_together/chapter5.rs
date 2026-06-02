@@ -1,36 +1,52 @@
-use std::{f32, fs};
+use std::{f32, fs, thread};
 
 use the_ray_tracer_challenge::{Canvas, Matrix, Ray, Sphere, Tuple};
 
 #[allow(dead_code)]
 pub fn putting_it_together() {
-    show_sphere_shadow_on_a_wall(None, "chapter5");
-    println!("sphere finished");
+    let sphere_thread = thread::spawn(move || {
+        show_sphere_shadow_on_a_wall(None, "chapter5");
+        println!("sphere finished");
+    });
 
     // shrinked along the y axis
-    show_sphere_shadow_on_a_wall(
-        Some(Matrix::new_scaling(1f32, 0.5, 1f32)),
-        "chapter5_shrinked_y_axis",
-    );
-    println!("shrinked along the y axis finished");
+    let shrink_y_axis_thread = thread::spawn(move || {
+        show_sphere_shadow_on_a_wall(
+            Some(Matrix::new_scaling(1f32, 0.5, 1f32)),
+            "chapter5_shrinked_y_axis",
+        );
+        println!("shrinked along the y axis finished");
+    });
 
     // shrinked along the x axis
-    show_sphere_shadow_on_a_wall(
-        Some(Matrix::new_scaling(0.5, 1f32, 1f32)),
-        "chapter5_shrinked_x_axis",
-    );
-    println!("shrinked along the x axis finished");
+    let shrink_x_axis_thread = thread::spawn(move || {
+        show_sphere_shadow_on_a_wall(
+            Some(Matrix::new_scaling(0.5, 1f32, 1f32)),
+            "chapter5_shrinked_x_axis",
+        );
+        println!("shrinked along the x axis finished");
+    });
 
     // shrinked and rotated
-    let transformation = Matrix::new_scaling(0.5, 1f32, 1f32).rotate_z(f32::consts::PI / 4f32);
-    show_sphere_shadow_on_a_wall(Some(transformation), "chapter5_shrinked_and_rotated");
-    println!("shrinked and rotated finished");
+    let shrink_and_rotate_tread = thread::spawn(move || {
+        let transformation = Matrix::new_scaling(0.5, 1f32, 1f32).rotate_z(f32::consts::PI / 4f32);
+        show_sphere_shadow_on_a_wall(Some(transformation), "chapter5_shrinked_and_rotated");
+        println!("shrinked and rotated finished");
+    });
 
     // shrinked and skewed
-    let transformation =
-        Matrix::new_scaling(0.5, 1f32, 1f32).shear(1f32, 0f32, 0f32, 0f32, 0f32, 0f32);
-    show_sphere_shadow_on_a_wall(Some(transformation), "chapter5_shrinked_and_skewed");
-    println!("shrinked and skewed finished");
+    let shrink_and_skew_thread = thread::spawn(move || {
+        let transformation =
+            Matrix::new_scaling(0.5, 1f32, 1f32).shear(1f32, 0f32, 0f32, 0f32, 0f32, 0f32);
+        show_sphere_shadow_on_a_wall(Some(transformation), "chapter5_shrinked_and_skewed");
+        println!("shrinked and skewed finished");
+    });
+
+    sphere_thread.join().unwrap();
+    shrink_y_axis_thread.join().unwrap();
+    shrink_x_axis_thread.join().unwrap();
+    shrink_and_rotate_tread.join().unwrap();
+    shrink_and_skew_thread.join().unwrap();
 }
 
 fn show_sphere_shadow_on_a_wall(transformation: Option<Matrix<4, 4>>, file_name: &str) {
