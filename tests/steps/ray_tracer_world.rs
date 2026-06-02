@@ -2,14 +2,16 @@ use std::collections::HashMap;
 
 use cucumber::World;
 use the_ray_tracer_challenge::{
-    Canvas, Intersection, Matrix, Ray, Sphere, Tuple, intersections::Intersections,
+    Canvas, Color, Intersection, Matrix, Point, Ray, Sphere, Vector, intersections::Intersections,
 };
 
 #[derive(Debug, Default, World)]
 #[world(init = Self::new)]
 pub struct RayTracerWorld {
     canvases: HashMap<String, Canvas>,
-    tuples: HashMap<String, Tuple>,
+    points: HashMap<String, Point>,
+    colors: HashMap<String, Color>,
+    vectors: HashMap<String, Vector>,
     ppms: HashMap<String, String>,
 
     matrices2x2: HashMap<String, Matrix<2, 2>>,
@@ -29,7 +31,9 @@ pub struct RayTracerWorld {
 #[derive(Debug)]
 pub enum Type {
     Canvas,
-    Tuple,
+    Point,
+    Color,
+    Vector,
     PPM,
     Matrix((usize, usize)),
     Ray,
@@ -52,15 +56,37 @@ impl RayTracerWorld {
         element_type
     }
 
-    pub fn add_tuple(&mut self, tuple_name: String, tuple: Tuple) {
-        self.tuples.insert(tuple_name.clone(), tuple);
-        self.index.insert(tuple_name, Type::Tuple);
+    pub fn add_point(&mut self, tuple_name: String, point: Point) {
+        self.points.insert(tuple_name.clone(), point);
+        self.index.insert(tuple_name, Type::Point);
     }
 
-    pub fn get_tuple(&self, tuple: &str) -> &Tuple {
-        self.tuples
-            .get(tuple)
-            .expect(format!("{tuple} does not exist").as_str())
+    pub fn get_point(&self, point: &str) -> &Point {
+        self.points
+            .get(point)
+            .expect(format!("{point} does not exist").as_str())
+    }
+
+    pub fn add_color(&mut self, tuple_name: String, color: Color) {
+        self.colors.insert(tuple_name.clone(), color);
+        self.index.insert(tuple_name, Type::Color);
+    }
+
+    pub fn get_color(&self, color: &str) -> &Color {
+        self.colors
+            .get(color)
+            .expect(format!("{color} does not exist").as_str())
+    }
+
+    pub fn add_vector(&mut self, tuple_name: String, vector: Vector) {
+        self.vectors.insert(tuple_name.clone(), vector);
+        self.index.insert(tuple_name, Type::Vector);
+    }
+
+    pub fn get_vector(&self, vector: &str) -> &Vector {
+        self.vectors
+            .get(vector)
+            .expect(format!("{vector} does not exist").as_str())
     }
 
     pub fn add_canvas(&mut self, canvas_name: String, canvas: Canvas) {

@@ -1,31 +1,24 @@
-use crate::{Matrix, Tuple};
+use crate::{Matrix, Point, Vector};
 
 #[derive(Debug)]
 pub struct Ray {
-    origin: Tuple,
-    direction: Tuple,
+    origin: Point,
+    direction: Vector,
 }
 
 impl Ray {
-    pub fn new(origin: Tuple, direction: Tuple) -> Self {
-        if !origin.is_point() {
-            panic!("origin must be a point");
-        }
-        if !direction.is_vector() {
-            panic!("direction must be a vector");
-        }
-
+    pub fn new(origin: Point, direction: Vector) -> Self {
         Self { origin, direction }
     }
 
-    pub fn origin(&self) -> &Tuple {
+    pub fn origin(&self) -> &Point {
         &self.origin
     }
-    pub fn direction(&self) -> &Tuple {
+    pub fn direction(&self) -> &Vector {
         &self.direction
     }
 
-    pub fn position(&self, t: f32) -> Tuple {
+    pub fn position(&self, t: f32) -> Point {
         &self.origin + &(&self.direction * t)
     }
 

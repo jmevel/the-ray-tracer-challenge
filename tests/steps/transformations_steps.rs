@@ -1,7 +1,7 @@
 use crate::RayTracerWorld;
 use cucumber::{given, then};
 use std::f32;
-use the_ray_tracer_challenge::{Matrix, Tuple};
+use the_ray_tracer_challenge::{Matrix, Point, Vector};
 
 #[given(expr = "{word} ← translation\\({int}, {int}, {int})")]
 fn transform_is_translation(
@@ -67,8 +67,8 @@ fn transform_multiplied_by_point_equals_point(
     z: f32,
 ) {
     let transformation = world.get_matrix4x4(&transformation);
-    let point = world.get_tuple(&point_name);
-    let expected = Tuple::new_point(x, y, z);
+    let point = world.get_point(&point_name);
+    let expected = Point::new_point(x, y, z);
 
     assert_eq!(transformation * point, expected);
 }
@@ -83,8 +83,8 @@ fn transformation_multiplied_by_vector_equals_vector(
     z: f32,
 ) {
     let transformation = world.get_matrix4x4(&transformation);
-    let vector = world.get_tuple(&vector);
-    let expected = Tuple::new_vector(x, y, z);
+    let vector = world.get_vector(&vector);
+    let expected = Vector::new_vector(x, y, z);
     let actual = transformation * vector;
 
     assert_eq!(actual, expected);
@@ -103,7 +103,7 @@ fn rotation_multiplied_by_point_equals_point(
 ) {
     let y = f32::sqrt(y_numerator as f32) / y_denominator as f32;
     let z = f32::sqrt(z_numerator as f32) / z_denominator as f32;
-    let expected = Tuple::new_point(x, y, z);
+    let expected = Point::new_point(x, y, z);
 
     point_multiplied_by_transformation_equals_expected(world, point, rotation, expected);
 }
@@ -121,7 +121,7 @@ fn rotation_multiplied_by_point_equals_point2(
 ) {
     let x = f32::sqrt(x_numerator as f32) / x_denominator as f32;
     let z = f32::sqrt(z_numerator as f32) / z_denominator as f32;
-    let expected = Tuple::new_point(x, y, z);
+    let expected = Point::new_point(x, y, z);
 
     point_multiplied_by_transformation_equals_expected(world, point, rotation, expected);
 }
@@ -139,7 +139,7 @@ fn rotation_multiplied_by_point_equals_point3(
 ) {
     let x = f32::sqrt(x_numerator as f32) / x_denominator as f32;
     let y = f32::sqrt(y_numerator as f32) / y_denominator as f32;
-    let expected = Tuple::new_point(-x, y, z);
+    let expected = Point::new_point(-x, y, z);
 
     point_multiplied_by_transformation_equals_expected(world, point, rotation, expected);
 }
@@ -157,7 +157,7 @@ fn inverse_of_rotation_multiplied_by_point_equals_point(
 ) {
     let y = f32::sqrt(y_numerator as f32) / y_denominator as f32;
     let z = f32::sqrt(z_numerator as f32) / z_denominator as f32;
-    let expected = Tuple::new_point(x, y, -z);
+    let expected = Point::new_point(x, y, -z);
 
     point_multiplied_by_transformation_equals_expected(world, point, rotation, expected);
 }
@@ -166,10 +166,10 @@ fn point_multiplied_by_transformation_equals_expected(
     world: &mut RayTracerWorld,
     point: String,
     transformation: String,
-    expected: Tuple,
+    expected: Point,
 ) {
     let transformation = world.get_matrix4x4(&transformation);
-    let point = world.get_tuple(&point);
+    let point = world.get_point(&point);
 
     assert_eq!(point * transformation, expected);
 }

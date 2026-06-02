@@ -1,18 +1,18 @@
 use std::fs;
-use the_ray_tracer_challenge::{Canvas, Tuple};
+use the_ray_tracer_challenge::{Canvas, Color, Point, Tuple, Vector};
 
 #[allow(dead_code)]
 pub fn putting_it_together() {
-    let position = Tuple::new_point(0f32, 1f32, 0f32);
-    let velocity = Tuple::new_vector(1f32, 1.8, 0f32).normalize() * 11.25;
+    let position = Point::new_point(0f32, 1f32, 0f32);
+    let velocity = Vector::new_vector(1f32, 1.8, 0f32).normalize() * 11.25;
     let mut projectile = Projectile::new(position, velocity);
 
-    let gravity = Tuple::new_vector(0f32, -0.1, 0f32);
-    let wind = Tuple::new_vector(-0.01, 0f32, 0f32);
+    let gravity = Vector::new_vector(0f32, -0.1, 0f32);
+    let wind = Vector::new_vector(-0.01, 0f32, 0f32);
     let environment = Environment::new(gravity, wind);
 
     let mut canvas = Canvas::new(900, 550, None);
-    let red = Tuple::new_color(255f32, 0f32, 0f32);
+    let red = Color::new_color(255f32, 0f32, 0f32);
 
     while projectile.position.y() > &0f32 {
         projectile = tick(&environment, &projectile);
@@ -30,35 +30,23 @@ pub fn putting_it_together() {
 }
 
 struct Projectile {
-    position: Tuple,
-    velocity: Tuple,
+    position: Point,
+    velocity: Vector,
 }
 
 impl Projectile {
-    pub fn new(position: Tuple, velocity: Tuple) -> Self {
-        if !position.is_point() {
-            panic!("position must be a point");
-        }
-        if !velocity.is_vector() {
-            panic!("velocity must be a vector");
-        }
+    pub fn new(position: Point, velocity: Vector) -> Self {
         Self { position, velocity }
     }
 }
 
 struct Environment {
-    gravity: Tuple,
-    wind: Tuple,
+    gravity: Vector,
+    wind: Vector,
 }
 
 impl Environment {
-    pub fn new(gravity: Tuple, wind: Tuple) -> Self {
-        if !gravity.is_vector() {
-            panic!("gravity must be a vector");
-        }
-        if !wind.is_vector() {
-            panic!("velocity must be a vector");
-        }
+    pub fn new(gravity: Vector, wind: Vector) -> Self {
         Self { gravity, wind }
     }
 }

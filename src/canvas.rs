@@ -1,4 +1,5 @@
-use crate::Tuple;
+use crate::Color;
+use crate::tuple::Tuple;
 use std::cmp;
 use std::collections::HashMap;
 
@@ -6,7 +7,7 @@ use std::collections::HashMap;
 pub struct Canvas {
     width: usize,
     height: usize,
-    pixels: HashMap<(usize, usize), Tuple>,
+    pixels: HashMap<(usize, usize), Color>,
     max_color_value: u32,
 }
 
@@ -17,7 +18,7 @@ impl Canvas {
     pub fn height(&self) -> &usize {
         &self.height
     }
-    pub fn pixels(&self) -> &HashMap<(usize, usize), Tuple> {
+    pub fn pixels(&self) -> &HashMap<(usize, usize), Color> {
         &self.pixels
     }
     pub fn new(width: usize, height: usize, max_color_value: Option<u32>) -> Self {
@@ -25,7 +26,7 @@ impl Canvas {
         let mut pixels = HashMap::with_capacity(width * height);
         for x in 0..width {
             for y in 0..height {
-                pixels.insert((x, y), Tuple::new_color(0.0, 0.0, 0.0));
+                pixels.insert((x, y), Color::new_color(0.0, 0.0, 0.0));
             }
         }
         Self {
@@ -35,16 +36,10 @@ impl Canvas {
             max_color_value,
         }
     }
-    pub fn write_pixel(&mut self, x: usize, y: usize, color: Tuple) {
-        if !color.is_color() {
-            panic!("Tuple is not color");
-        }
+    pub fn write_pixel(&mut self, x: usize, y: usize, color: Color) {
         self.pixels.entry((x, y)).and_modify(|p| *p = color);
     }
-    pub fn write_all_pixels(&mut self, color: Tuple) {
-        if !color.is_color() {
-            panic!("Tuple is not color");
-        }
+    pub fn write_all_pixels(&mut self, color: Color) {
         self.pixels.values_mut().for_each(|p| *p = color.clone());
     }
     pub fn convert_to_ppm(&self) -> String {

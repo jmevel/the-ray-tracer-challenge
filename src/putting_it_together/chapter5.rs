@@ -1,6 +1,6 @@
 use std::{f32, fs, thread};
 
-use the_ray_tracer_challenge::{Canvas, Matrix, Ray, Sphere, Tuple};
+use the_ray_tracer_challenge::{Canvas, Color, Matrix, Point, Ray, Sphere};
 
 #[allow(dead_code)]
 pub fn putting_it_together() {
@@ -51,7 +51,7 @@ pub fn putting_it_together() {
 
 fn show_sphere_shadow_on_a_wall(transformation: Option<Matrix<4, 4>>, file_name: &str) {
     // start the ray at z = -5
-    let ray_origin = Tuple::new_point(0f32, 0f32, -5f32);
+    let ray_origin = Point::new_point(0f32, 0f32, -5f32);
 
     // put the wall at z = 10
     let wall_z = 10f32;
@@ -67,7 +67,7 @@ fn show_sphere_shadow_on_a_wall(transformation: Option<Matrix<4, 4>>, file_name:
     // it means that 'half' describes the minimum and maximum x and y coordinates of the wall
     let half = wall_size / 2f32;
 
-    let color = Tuple::new_color(1f32, 0f32, 0f32);
+    let color = Color::new_color(1f32, 0f32, 0f32);
     let shape = Sphere::new(transformation);
 
     // for each row of pixels in the canvas
@@ -81,7 +81,7 @@ fn show_sphere_shadow_on_a_wall(transformation: Option<Matrix<4, 4>>, file_name:
             let world_x = -half + pixel_size * x as f32;
 
             // point on the wall that the ray will target
-            let position = Tuple::new_point(world_x, world_y, wall_z);
+            let position = Point::new_point(world_x, world_y, wall_z);
 
             let direction = position - ray_origin;
             let ray = Ray::new(ray_origin.clone(), direction.normalize().clone());

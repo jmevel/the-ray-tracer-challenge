@@ -1,7 +1,7 @@
 use crate::RayTracerWorld;
 use cucumber::gherkin::Step;
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::Tuple;
+use the_ray_tracer_challenge::Color;
 use the_ray_tracer_challenge::canvas::Canvas;
 
 #[given(expr = "{word} ← canvas\\({int}, {int})")]
@@ -11,7 +11,7 @@ fn canvas_is(world: &mut RayTracerWorld, canvas: String, width: usize, height: u
 
 #[when(expr = "write_pixel\\({word}, {int}, {int}, {word})")]
 fn write_pixels(world: &mut RayTracerWorld, canvas: String, x: usize, y: usize, color: String) {
-    let color = world.get_tuple(&color).to_owned();
+    let color = world.get_color(&color).to_owned();
     world.get_mut_canvas(&canvas).write_pixel(x, y, color)
 }
 
@@ -30,7 +30,7 @@ fn every_pixel_of_canvas_is_set_to_color(
     green: f32,
     blue: f32,
 ) {
-    let color = Tuple::new_color(red, green, blue);
+    let color = Color::new_color(red, green, blue);
     let canvas = world.get_mut_canvas(&canvas_name);
     canvas.write_all_pixels(color);
 }
@@ -53,7 +53,7 @@ fn every_pixel_of_canvas_is_color(
     green: f32,
     blue: f32,
 ) {
-    let black = Tuple::new_color(red, green, blue);
+    let black = Color::new_color(red, green, blue);
     let canvas_pixels = world.get_canvas(&canvas).pixels();
     canvas_pixels.iter().for_each(|pixel| {
         assert_eq!(pixel.1, &black);
@@ -62,7 +62,7 @@ fn every_pixel_of_canvas_is_color(
 
 #[then(expr = "pixel_at\\({word}, {int}, {int}) = {word}")]
 fn pixel_at(world: &mut RayTracerWorld, canvas: String, x: usize, y: usize, color: String) {
-    let expected = world.get_tuple(&color);
+    let expected = world.get_color(&color);
     assert_eq!(
         world.get_canvas(&canvas).pixels().get(&(x, y)).unwrap(),
         expected

@@ -1,6 +1,6 @@
 use uuid::Uuid;
 
-use crate::{Intersection, Matrix, Object, Ray, Tuple, intersections::Intersections};
+use crate::{Intersection, Matrix, Object, Point, Ray, intersections::Intersections};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Sphere {
@@ -23,7 +23,7 @@ impl Sphere {
         // If the sphere has been transformed, the inverse of the transformation must be applied to the ray as well before calculating the intersections
         let ray = ray.transform(&self.transform.invert()?);
 
-        let sphere_to_ray = ray.origin() - &Tuple::new_point(0f32, 0f32, 0f32);
+        let sphere_to_ray = ray.origin() - &Point::new_point(0f32, 0f32, 0f32);
         let a = ray.direction().dot_product(ray.direction());
         let b = 2f32 * ray.direction().dot_product(&sphere_to_ray);
         let c = sphere_to_ray.dot_product(&sphere_to_ray) - 1f32;

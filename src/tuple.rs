@@ -1,269 +1,206 @@
-use crate::{Matrix, float::float_equals};
-use std::{
-    fmt::{Display, Formatter},
-    ops::{Add, Div, Mul, Neg, Sub},
-};
+use crate::Matrix;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum TupleType {
-    Point,
-    Vector,
-    Color,
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct Tuple {
-    x: f32,
-    y: f32,
-    z: f32,
-    w: f32,
-    tuple_type: TupleType,
-}
-
-impl Display for Tuple {
-    fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "(x: {}, y: {}, z: {}, w: {})",
-            self.x, self.y, self.z, self.w
-        )
+pub trait Tuple {
+    fn x(&self) -> &f32;
+    fn y(&self) -> &f32;
+    fn z(&self) -> &f32;
+    fn w(&self) -> &f32;
+    fn new(x: f32, y: f32, z: f32, w: f32) -> Self;
+    fn transform(&self, transformations: &Matrix<4, 4>) -> Self
+    where
+        Self: Sized,
+    {
+        transformations * self
     }
 }
 
-impl Tuple {
-    pub fn x(&self) -> &f32 {
-        &self.x
-    }
-    pub fn y(&self) -> &f32 {
-        &self.y
-    }
-    pub fn z(&self) -> &f32 {
-        &self.z
-    }
-    pub fn w(&self) -> &f32 {
-        &self.w
-    }
-    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
-        let tuple_type = match w {
-            1f32 => TupleType::Point,
-            0f32 | _ => TupleType::Vector,
-        };
-        Self {
-            x,
-            y,
-            z,
-            w,
-            tuple_type,
+#[macro_export]
+macro_rules! impl_display_for_tuple {
+    ($type:ty) => {
+        impl Display for $type
+        where
+            $type: Tuple,
+        {
+            fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+                write!(
+                    f,
+                    "(x: {}, y: {}, z: {}, w: {})",
+                    self.x(),
+                    self.y(),
+                    self.z(),
+                    self.w()
+                )
+            }
         }
-    }
-    pub fn new_point(x: f32, y: f32, z: f32) -> Tuple {
-        Tuple {
-            x,
-            y,
-            z,
-            w: 1.0,
-            tuple_type: TupleType::Point,
+    };
+}
+
+#[macro_export]
+macro_rules! impl_partial_eq_for_tuple {
+    ($type: ty) => {
+        impl PartialEq for $type
+        where
+            $type: Tuple,
+        {
+            fn eq(&self, other: &Self) -> bool {
+                float_equals(&self.x, &other.x)
+                    && float_equals(&self.y, &other.y)
+                    && float_equals(&self.z, &other.z)
+                    && float_equals(&self.w, &other.w)
+            }
         }
-    }
-    pub fn new_color(red: f32, green: f32, blue: f32) -> Tuple {
-        Tuple {
-            x: red,
-            y: green,
-            z: blue,
-            w: 1.0,
-            tuple_type: TupleType::Color,
+    };
+}
+
+#[macro_export]
+macro_rules! impl_add_for_tuple {
+    ($type: ty) => {
+        impl Add<&$type> for &$type
+        where
+            $type: Tuple,
+        {
+            type Output = $type;
+
+            fn add(self, rhs: &$type) -> Self::Output {
+                <$type>::new(
+                    self.x + rhs.x(),
+                    self.y + rhs.y(),
+                    self.z + rhs.z(),
+                    self.w + rhs.w(),
+                )
+            }
         }
-    }
-    pub fn new_vector(x: f32, y: f32, z: f32) -> Tuple {
-        Tuple {
-            x,
-            y,
-            z,
-            w: 0.0,
-            tuple_type: TupleType::Vector,
+    };
+}
+
+#[macro_export]
+macro_rules! impl_sub_for_tuple {
+    ($type: ty) => {
+        impl Sub for &$type
+        where
+            $type: Tuple,
+        {
+            type Output = Vector;
+
+            fn sub(self, rhs: Self) -> Self::Output {
+                Vector::new(
+                    self.x - rhs.x,
+                    self.y - rhs.y,
+                    self.z - rhs.z,
+                    self.w - rhs.w,
+                )
+            }
         }
-    }
-    pub fn is_point(&self) -> bool {
-        self.tuple_type == TupleType::Point
-    }
-    pub fn is_vector(&self) -> bool {
-        self.tuple_type == TupleType::Vector
-    }
-    pub fn is_color(&self) -> bool {
-        self.tuple_type == TupleType::Color
-    }
-    pub fn magnitude(&self) -> f32 {
-        if !self.is_vector() {
-            panic!("Magnitude only makes sense on vectors")
+
+        impl Sub for $type
+        where
+            $type: Tuple,
+        {
+            type Output = Vector;
+
+            fn sub(self, rhs: Self) -> Self::Output {
+                &self - &rhs
+            }
         }
-        (self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)).sqrt()
-    }
-    pub fn normalize(&self) -> Tuple {
-        if !self.is_vector() {
-            panic!("Only a vector can be normalized");
+    };
+}
+
+#[macro_export]
+macro_rules! impl_neg_for_tuple {
+    ($type: ty) => {
+        impl Neg for &$type
+        where
+            $type: Tuple,
+        {
+            type Output = $type;
+
+            fn neg(self) -> Self::Output {
+                <$type>::new(-self.x, -self.y, -self.z, -self.w)
+            }
         }
-        let mag = self.magnitude();
-        if mag == 0f32 {
-            panic!("Magnitude is 0");
+
+        impl Neg for $type
+        where
+            $type: Tuple,
+        {
+            type Output = $type;
+
+            fn neg(self) -> Self::Output {
+                -&self
+            }
         }
-        Tuple {
-            x: self.x / mag,
-            y: self.y / mag,
-            z: self.z / mag,
-            w: self.w / mag,
-            tuple_type: TupleType::Vector,
+    };
+}
+
+#[macro_export]
+macro_rules! impl_mul_f32_for_tuple {
+    ($type: ty) => {
+        impl Mul<f32> for &$type
+        where
+            $type: Tuple,
+        {
+            type Output = $type;
+
+            fn mul(self, scalar: f32) -> Self::Output {
+                Tuple::new(
+                    self.x * scalar,
+                    self.y * scalar,
+                    self.z * scalar,
+                    self.w * scalar,
+                )
+            }
         }
-    }
-    pub fn dot_product(&self, other: &Tuple) -> f32 {
-        if !self.is_vector() || !other.is_vector() {
-            panic!("Dot product can only be applied on vectors");
+        impl Mul<f32> for $type
+        where
+            $type: Tuple,
+        {
+            type Output = $type;
+
+            fn mul(self, scalar: f32) -> Self::Output {
+                &self * scalar
+            }
         }
-        self.x * other.x + self.y * other.y + self.z * other.z + self.w * other.w
-    }
-    pub fn cross_product(&self, other: &Tuple) -> Tuple {
-        if !self.is_vector() || !other.is_vector() {
-            panic!("Dot product can only be applied on vectors");
+    };
+}
+
+#[macro_export]
+macro_rules! impl_mul_for_tuple {
+    ($type: ty) => {
+        impl Mul for &$type
+        where
+            $type: Tuple,
+        {
+            type Output = $type;
+
+            fn mul(self, other: &$type) -> Self::Output {
+                <$type>::new(
+                    self.x * other.x,
+                    self.y * other.y,
+                    self.z * other.z,
+                    self.w * other.w,
+                )
+            }
         }
-        Tuple::new_vector(
-            self.y * other.z - self.z * other.y,
-            self.z * other.x - self.x * other.z,
-            self.x * other.y - self.y * other.x,
-        )
-    }
-
-    pub fn transform(&self, transformations: &Matrix<4, 4>) -> Tuple {
-        self * transformations
-    }
+    };
 }
 
-impl Eq for Tuple {}
+#[macro_export]
+macro_rules! impl_div_f32_for_tuple {
+    ($type: ty) => {
+        impl Div<f32> for &$type
+        where
+            $type: Tuple,
+        {
+            type Output = $type;
 
-impl PartialEq for Tuple {
-    fn eq(&self, other: &Self) -> bool {
-        float_equals(&self.x, &other.x)
-            && float_equals(&self.y, &other.y)
-            && float_equals(&self.z, &other.z)
-            && float_equals(&self.w, &other.w)
-    }
-}
-
-impl Add for &Tuple {
-    type Output = Tuple;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        Tuple::new(
-            self.x + rhs.x,
-            self.y + rhs.y,
-            self.z + rhs.z,
-            self.w + rhs.w,
-        )
-    }
-}
-
-impl Add for Tuple {
-    type Output = Tuple;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        &self + &rhs
-    }
-}
-
-impl Sub for &Tuple {
-    type Output = Tuple;
-
-    fn sub(self, rhs: Self) -> Self::Output {
-        Tuple::new(
-            self.x - rhs.x,
-            self.y - rhs.y,
-            self.z - rhs.z,
-            self.w - rhs.w,
-        )
-    }
-}
-
-impl Sub for Tuple {
-    type Output = Tuple;
-
-    fn sub(self, rhs: Self) -> Self::Output {
-        &self - &rhs
-    }
-}
-
-impl Neg for &Tuple {
-    type Output = Tuple;
-
-    fn neg(self) -> Self::Output {
-        Tuple::new(-self.x, -self.y, -self.z, -self.w)
-    }
-}
-
-impl Neg for Tuple {
-    type Output = Tuple;
-
-    fn neg(self) -> Self::Output {
-        -&self
-    }
-}
-
-impl Mul<f32> for &Tuple {
-    type Output = Tuple;
-
-    fn mul(self, scalar: f32) -> Self::Output {
-        Tuple::new(
-            self.x * scalar,
-            self.y * scalar,
-            self.z * scalar,
-            self.w * scalar,
-        )
-    }
-}
-
-impl Mul<f32> for Tuple {
-    type Output = Tuple;
-
-    fn mul(self, scalar: f32) -> Self::Output {
-        &self * scalar
-    }
-}
-
-impl Mul<&Tuple> for &Tuple {
-    type Output = Tuple;
-
-    fn mul(self, other: &Tuple) -> Self::Output {
-        Tuple::new(
-            self.x * other.x,
-            self.y * other.y,
-            self.z * other.z,
-            self.w * other.w,
-        )
-    }
-}
-
-impl Mul<&Tuple> for Tuple {
-    type Output = Tuple;
-
-    fn mul(self, other: &Tuple) -> Self::Output {
-        &self * other
-    }
-}
-
-impl Div<f32> for &Tuple {
-    type Output = Tuple;
-
-    fn div(self, fraction: f32) -> Self::Output {
-        Tuple::new(
-            self.x / fraction,
-            self.y / fraction,
-            self.z / fraction,
-            self.w / fraction,
-        )
-    }
-}
-
-impl Div<f32> for Tuple {
-    type Output = Tuple;
-
-    fn div(self, fraction: f32) -> Self::Output {
-        &self / fraction
-    }
+            fn div(self, fraction: f32) -> Self::Output {
+                <$type>::new(
+                    self.x / fraction,
+                    self.y / fraction,
+                    self.z / fraction,
+                    self.w / fraction,
+                )
+            }
+        }
+    };
 }

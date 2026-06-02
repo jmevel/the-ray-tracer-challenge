@@ -287,10 +287,10 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Mul<&Matrix<ROW_COUNT, COL_
     }
 }
 
-impl Mul<&Tuple> for &Matrix<4, 4> {
-    type Output = Tuple;
+impl<T: Tuple> Mul<&T> for &Matrix<4, 4> {
+    type Output = T;
 
-    fn mul(self, other: &Tuple) -> Self::Output {
+    fn mul(self, other: &T) -> Self::Output {
         let x = self.data[0][0] * other.x()
             + self.data[0][1] * other.y()
             + self.data[0][2] * other.z()
@@ -312,34 +312,10 @@ impl Mul<&Tuple> for &Matrix<4, 4> {
     }
 }
 
-impl Mul<Tuple> for Matrix<4, 4> {
-    type Output = Tuple;
+impl<T: Tuple> Mul<T> for Matrix<4, 4> {
+    type Output = T;
 
-    fn mul(self, other: Tuple) -> Self::Output {
+    fn mul(self, other: T) -> Self::Output {
         &self * &other
-    }
-}
-
-impl Mul<&Tuple> for Matrix<4, 4> {
-    type Output = Tuple;
-
-    fn mul(self, other: &Tuple) -> Self::Output {
-        &self * other
-    }
-}
-
-impl Mul<Matrix<4, 4>> for Tuple {
-    type Output = Tuple;
-
-    fn mul(self, other: Matrix<4, 4>) -> Self::Output {
-        &self * &other
-    }
-}
-
-impl Mul<&Matrix<4, 4>> for &Tuple {
-    type Output = Tuple;
-
-    fn mul(self, other: &Matrix<4, 4>) -> Self::Output {
-        other * self
     }
 }

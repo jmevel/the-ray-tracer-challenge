@@ -33,10 +33,16 @@ fn entity_is_entity_multiplied_by_entity(
                 world.get_matrix4x4(&entity1) * world.get_matrix4x4(&entity2),
             );
         }
-        (Type::Matrix((4, 4)), Type::Tuple) => {
-            world.add_tuple(
+        (Type::Matrix((4, 4)), Type::Point) => {
+            world.add_point(
                 result_entity.clone(),
-                world.get_matrix4x4(&entity1) * world.get_tuple(&entity2),
+                world.get_matrix4x4(&entity1) * world.get_point(&entity2),
+            );
+        }
+        (Type::Matrix((4, 4)), Type::Vector) => {
+            world.add_vector(
+                result_entity.clone(),
+                world.get_matrix4x4(&entity1) * world.get_vector(&entity2),
             );
         }
         _ => panic!("Not supported"),
@@ -84,8 +90,14 @@ fn entity_is_entity_multiplied_by_entity_multiplied_by_entity(
 #[then(regex = r"^([a-zA-Z0-9]*) = ([a-zA-Z0-9]*)$")]
 fn entity_equals_entity(world: &mut RayTracerWorld, entity1: String, entity2: String) {
     match world.get_element_type(&entity1) {
-        Type::Tuple => {
-            assert_eq!(world.get_tuple(&entity1), world.get_tuple(&entity2));
+        Type::Point => {
+            assert_eq!(world.get_point(&entity1), world.get_point(&entity2));
+        }
+        Type::Color => {
+            assert_eq!(world.get_color(&entity1), world.get_color(&entity2));
+        }
+        Type::Vector => {
+            assert_eq!(world.get_vector(&entity1), world.get_vector(&entity2));
         }
         Type::Matrix((2, 2)) => {
             assert_eq!(world.get_matrix2x2(&entity1), world.get_matrix2x2(&entity2))
@@ -109,8 +121,14 @@ fn entity_equals_entity(world: &mut RayTracerWorld, entity1: String, entity2: St
 #[then(regex = r"^([a-zA-Z0-9]*) != ([a-zA-Z0-9]*)$")]
 fn entity_does_not_equal_entity(world: &mut RayTracerWorld, entity1: String, entity2: String) {
     match world.get_element_type(&entity1) {
-        Type::Tuple => {
-            assert!(!(world.get_tuple(&entity1) == world.get_tuple(&entity2)));
+        Type::Point => {
+            assert_ne!(world.get_point(&entity1), world.get_point(&entity2))
+        }
+        Type::Color => {
+            assert_ne!(world.get_color(&entity1), world.get_color(&entity2))
+        }
+        Type::Vector => {
+            assert_ne!(world.get_vector(&entity1), world.get_vector(&entity2))
         }
         Type::Matrix((2, 2)) => {
             assert_ne!(world.get_matrix2x2(&entity1), world.get_matrix2x2(&entity2))
@@ -155,11 +173,11 @@ fn entity_multiplied_by_entity_equals_entity(
                 *world.get_matrix4x4(&entity1)
             )
         }
-        (Type::Matrix((4, 4)), Type::Tuple, Type::Tuple) => {
+        (Type::Matrix((4, 4)), Type::Vector, Type::Vector) => {
             let transformation = world.get_matrix4x4(&entity1);
-            let vector = world.get_tuple(&entity2);
+            let vector = world.get_vector(&entity2);
             let actual = transformation * vector;
-            let expected_entity = world.get_tuple(&expected_entity);
+            let expected_entity = world.get_vector(&expected_entity);
 
             assert_eq!(&actual, expected_entity);
         }

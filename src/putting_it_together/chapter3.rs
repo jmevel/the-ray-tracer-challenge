@@ -1,4 +1,4 @@
-use the_ray_tracer_challenge::{Matrix, Tuple};
+use the_ray_tracer_challenge::{Matrix, Tuple, Vector};
 
 #[allow(dead_code)]
 pub fn putting_it_together() {
@@ -26,7 +26,7 @@ pub fn putting_it_together() {
     assert_eq!(transpose_of_inverse, inverse_of_transpose);
     println!("The transpose of the inverse of a matrix is equal to its inverse of its transpose");
 
-    let tuple = Tuple::new(1f32, 2f32, 3f32, 4f32);
+    let tuple = Vector::new(1f32, 2f32, 3f32, 4f32);
     let tuple_multiplied_by_identity_matrix = &tuple * &identity_matrix;
     assert_eq!(tuple_multiplied_by_identity_matrix, tuple);
     println!("A tuple multiplied by the identity matrix is equal to the initial tuple");

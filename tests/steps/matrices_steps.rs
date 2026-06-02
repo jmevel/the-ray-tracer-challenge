@@ -2,7 +2,7 @@ use crate::RayTracerWorld;
 use crate::steps::ray_tracer_world::Type;
 use cucumber::gherkin::Step;
 use cucumber::{given, then};
-use the_ray_tracer_challenge::{Matrix, Tuple};
+use the_ray_tracer_challenge::{Matrix, Point, Tuple, Vector};
 
 #[given(expr = "the following 2x2 matrix {word}:")]
 fn the_following_2x2_matrix(world: &mut RayTracerWorld, matrix_name: String, step: &Step) {
@@ -165,13 +165,19 @@ fn matrix_multiplied_by_tuple_equals_tuple(
     z: f32,
     w: f32,
 ) {
-    let tuple = world.get_tuple(&tuple);
-    let expected = Tuple::new(x, y, z, w);
-
-    match world.get_element_type(&matrix) {
-        Type::Matrix((2, 2)) | Type::Matrix((3, 3)) => panic!("not supported"),
-        Type::Matrix((4, 4)) => assert_eq!(world.get_matrix4x4(&matrix) * tuple, expected),
-        _ => panic!("no matrix with given size"),
+    let matrix = world.get_matrix4x4(&matrix);
+    match world.get_element_type(&tuple) {
+        Type::Point => {
+            let point = world.get_point(&tuple);
+            let expected = Point::new(x, y, z, w);
+            assert_eq!(matrix * point, expected);
+        }
+        Type::Vector => {
+            let vector = world.get_vector(&tuple);
+            let expected = Vector::new(x, y, z, w);
+            assert_eq!(matrix * vector, expected);
+        }
+        _ => panic!("Not implemented"),
     };
 }
 
