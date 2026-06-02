@@ -77,7 +77,7 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
         let mut result = Matrix::identity_matrix();
         result.data[0][0] = radians.cos();
         result.data[0][1] = -radians.sin();
-        result.data[1][0] = -radians.sin();
+        result.data[1][0] = radians.sin();
         result.data[1][1] = radians.cos();
         result
     }

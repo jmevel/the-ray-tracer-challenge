@@ -9,14 +9,18 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new() -> Self {
+    pub fn new(transformation: Option<Matrix<4, 4>>) -> Self {
         Self {
             id: Uuid::new_v4(),
-            transform: Matrix::identity_matrix(),
+            transform: match transformation {
+                Some(transformation) => transformation,
+                None => Matrix::identity_matrix(),
+            },
         }
     }
 
     pub fn intersect(&self, ray: &Ray) -> Result<Option<Intersections>, String> {
+        // If the sphere has been transformed, the inverse of the transformation must be applied to the ray as well before calculating the intersections
         let ray = ray.transform(&self.transform.invert()?);
 
         let sphere_to_ray = ray.origin() - &Tuple::new_point(0f32, 0f32, 0f32);

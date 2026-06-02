@@ -11,7 +11,7 @@ pub enum TupleType {
     Color,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Tuple {
     x: f32,
     y: f32,

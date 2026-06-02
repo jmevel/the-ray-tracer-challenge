@@ -5,7 +5,7 @@ use crate::steps::ray_tracer_world::RayTracerWorld;
 
 #[given(expr = "{word} ← sphere\\()")]
 fn sphere_is(world: &mut RayTracerWorld, sphere_name: String) {
-    let sphere = Sphere::new();
+    let sphere = Sphere::new(None);
     world.add_sphere(sphere_name, sphere);
 }
 
