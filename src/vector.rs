@@ -5,6 +5,7 @@ use crate::impl_add_for_tuple;
 use crate::impl_display_for_tuple;
 use crate::impl_div_f32_for_tuple;
 use crate::impl_mul_f32_for_tuple;
+use crate::impl_mul_matrix_for_tuple;
 use crate::impl_neg_for_tuple;
 use crate::impl_partial_eq_for_tuple;
 use crate::impl_sub_for_tuple;
@@ -22,6 +23,10 @@ pub struct Vector {
 impl Vector {
     pub fn new_vector(x: f32, y: f32, z: f32) -> Vector {
         Vector { x, y, z, w: 0.0 }
+    }
+    pub fn with_w(mut self, w: f32) -> Self {
+        self.w = w;
+        self
     }
     pub fn magnitude(&self) -> f32 {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)).sqrt()
@@ -69,18 +74,11 @@ impl Tuple for Vector {
     }
 }
 
-impl Mul<&Matrix<4, 4>> for &Vector {
-    type Output = Vector;
-
-    fn mul(self, other: &Matrix<4, 4>) -> Self::Output {
-        other * self
-    }
-}
-
 impl_display_for_tuple!(Vector);
 impl_partial_eq_for_tuple!(Vector);
 impl_add_for_tuple!(Vector);
 impl_sub_for_tuple!(Vector);
 impl_neg_for_tuple!(Vector);
 impl_mul_f32_for_tuple!(Vector);
+impl_mul_matrix_for_tuple!(Vector);
 impl_div_f32_for_tuple!(Vector);

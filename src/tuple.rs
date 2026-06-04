@@ -133,6 +133,27 @@ macro_rules! impl_neg_for_tuple {
 }
 
 #[macro_export]
+macro_rules! impl_mul_for_tuple {
+    ($type: ty) => {
+        impl Mul for &$type
+        where
+            $type: Tuple,
+        {
+            type Output = $type;
+
+            fn mul(self, other: &$type) -> Self::Output {
+                <$type>::new(
+                    self.x * other.x,
+                    self.y * other.y,
+                    self.z * other.z,
+                    self.w * other.w,
+                )
+            }
+        }
+    };
+}
+
+#[macro_export]
 macro_rules! impl_mul_f32_for_tuple {
     ($type: ty) => {
         impl Mul<f32> for &$type
@@ -164,21 +185,16 @@ macro_rules! impl_mul_f32_for_tuple {
 }
 
 #[macro_export]
-macro_rules! impl_mul_for_tuple {
+macro_rules! impl_mul_matrix_for_tuple {
     ($type: ty) => {
-        impl Mul for &$type
+        impl Mul<&Matrix<4, 4>> for &$type
         where
             $type: Tuple,
         {
             type Output = $type;
 
-            fn mul(self, other: &$type) -> Self::Output {
-                <$type>::new(
-                    self.x * other.x,
-                    self.y * other.y,
-                    self.z * other.z,
-                    self.w * other.w,
-                )
+            fn mul(self, rhs: &Matrix<4, 4>) -> Self::Output {
+                rhs * self
             }
         }
     };

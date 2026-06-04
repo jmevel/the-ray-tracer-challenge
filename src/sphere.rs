@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::{Intersection, Intersections, Matrix, Object, Point, Ray, Vector};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Sphere {
     id: Uuid,
     pub transform: Matrix<4, 4>,
@@ -42,9 +42,11 @@ impl Sphere {
         ])))
     }
 
-    pub fn normal_at(&self, point: &Point) -> Vector {
-        let result = point - &Point::new_point(0f32, 0f32, 0f32);
-        // result.normalize()
-        result
+    pub fn normal_at(&self, world_point: &Point) -> Vector {
+        let object_point = &self.transform.invert().unwrap() * world_point;
+        let object_normal = object_point - Point::new_point(0f32, 0f32, 0f32);
+        let world_normal = &self.transform.invert().unwrap().transpose() * &object_normal;
+
+        world_normal.with_w(0f32).normalize()
     }
 }
