@@ -96,13 +96,13 @@ fn rotation_multiplied_by_point_equals_point(
     rotation: String,
     point: String,
     x: f32,
-    y_numerator: i32,
-    y_denominator: i32,
-    z_numerator: i32,
-    z_denominator: i32,
+    y_numerator: f32,
+    y_denominator: f32,
+    z_numerator: f32,
+    z_denominator: f32,
 ) {
-    let y = f32::sqrt(y_numerator as f32) / y_denominator as f32;
-    let z = f32::sqrt(z_numerator as f32) / z_denominator as f32;
+    let y = f32::sqrt(y_numerator) / y_denominator;
+    let z = f32::sqrt(z_numerator) / z_denominator;
     let expected = Point::new_point(x, y, z);
 
     point_multiplied_by_transformation_equals_expected(world, point, rotation, expected);

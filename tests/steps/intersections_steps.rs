@@ -1,5 +1,5 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Intersection, Object, intersections::Intersections};
+use the_ray_tracer_challenge::{Intersection, Intersections, Object};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 

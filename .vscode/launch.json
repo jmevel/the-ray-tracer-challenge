@@ -191,7 +191,7 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug 'Individual transformations are applied in sequence' scenario",
+      "name": "Debug single scenario",
       "cargo": {
         "args": [
           "test",

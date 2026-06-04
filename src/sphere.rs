@@ -1,8 +1,8 @@
 use uuid::Uuid;
 
-use crate::{Intersection, Matrix, Object, Point, Ray, intersections::Intersections};
+use crate::{Intersection, Intersections, Matrix, Object, Point, Ray, Vector};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Sphere {
     id: Uuid,
     pub transform: Matrix<4, 4>,
@@ -40,5 +40,11 @@ impl Sphere {
             Intersection::new(t1, Object::Sphere(self.clone())),
             Intersection::new(t2, Object::Sphere(self.clone())),
         ])))
+    }
+
+    pub fn normal_at(&self, point: &Point) -> Vector {
+        let result = point - &Point::new_point(0f32, 0f32, 0f32);
+        // result.normalize()
+        result
     }
 }

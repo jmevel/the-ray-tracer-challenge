@@ -17,6 +17,7 @@ pub mod vector;
 pub use crate::canvas::Canvas;
 pub use crate::color::Color;
 pub use crate::intersection::Intersection;
+pub use crate::intersections::Intersections;
 pub use crate::matrix::Matrix;
 pub use crate::object::Object;
 pub use crate::point::Point;

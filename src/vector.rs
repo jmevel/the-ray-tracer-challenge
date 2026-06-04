@@ -11,7 +11,7 @@ use crate::impl_sub_for_tuple;
 use std::fmt::{Display, Formatter};
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Vector {
     x: f32,
     y: f32,

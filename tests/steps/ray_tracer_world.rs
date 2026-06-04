@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use cucumber::World;
 use the_ray_tracer_challenge::{
-    Canvas, Color, Intersection, Matrix, Point, Ray, Sphere, Vector, intersections::Intersections,
+    Canvas, Color, Intersection, Intersections, Matrix, Point, Ray, Sphere, Vector,
 };
 
 #[derive(Debug, Default, World)]
@@ -56,9 +56,9 @@ impl RayTracerWorld {
         element_type
     }
 
-    pub fn add_point(&mut self, tuple_name: String, point: Point) {
-        self.points.insert(tuple_name.clone(), point);
-        self.index.insert(tuple_name, Type::Point);
+    pub fn add_point(&mut self, point_name: String, point: Point) {
+        self.points.insert(point_name.clone(), point);
+        self.index.insert(point_name, Type::Point);
     }
 
     pub fn get_point(&self, point: &str) -> &Point {
@@ -67,9 +67,9 @@ impl RayTracerWorld {
             .expect(format!("{point} does not exist").as_str())
     }
 
-    pub fn add_color(&mut self, tuple_name: String, color: Color) {
-        self.colors.insert(tuple_name.clone(), color);
-        self.index.insert(tuple_name, Type::Color);
+    pub fn add_color(&mut self, color_name: String, color: Color) {
+        self.colors.insert(color_name.clone(), color);
+        self.index.insert(color_name, Type::Color);
     }
 
     pub fn get_color(&self, color: &str) -> &Color {
@@ -78,9 +78,9 @@ impl RayTracerWorld {
             .expect(format!("{color} does not exist").as_str())
     }
 
-    pub fn add_vector(&mut self, tuple_name: String, vector: Vector) {
-        self.vectors.insert(tuple_name.clone(), vector);
-        self.index.insert(tuple_name, Type::Vector);
+    pub fn add_vector(&mut self, vector_name: String, vector: Vector) {
+        self.vectors.insert(vector_name.clone(), vector);
+        self.index.insert(vector_name, Type::Vector);
     }
 
     pub fn get_vector(&self, vector: &str) -> &Vector {
