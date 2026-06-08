@@ -1,0 +1,60 @@
+use crate::{Color, ReflectionValue};
+
+#[derive(Debug)]
+pub struct Material {
+    color: Color,
+    ambient: ReflectionValue,
+    diffuse: ReflectionValue,
+    specular: ReflectionValue,
+    shininess: f32,
+}
+
+impl Material {
+    pub fn new(
+        color: Color,
+        ambient: ReflectionValue,
+        diffuse: ReflectionValue,
+        specular: ReflectionValue,
+        shininess: f32,
+    ) -> Self {
+        Self {
+            color,
+            ambient,
+            diffuse,
+            specular,
+            shininess,
+        }
+    }
+
+    pub fn color(&self) -> &Color {
+        &self.color
+    }
+
+    pub fn ambient(&self) -> &ReflectionValue {
+        &self.ambient
+    }
+
+    pub fn diffuse(&self) -> &ReflectionValue {
+        &self.diffuse
+    }
+
+    pub fn specular(&self) -> &ReflectionValue {
+        &self.specular
+    }
+
+    pub fn shininess(&self) -> f32 {
+        self.shininess
+    }
+}
+
+impl Default for Material {
+    fn default() -> Self {
+        Self {
+            color: Color::new_color(1f32, 1f32, 1f32),
+            ambient: ReflectionValue::new(0.1),
+            diffuse: ReflectionValue::new(0.9),
+            specular: ReflectionValue::new(0.9),
+            shininess: 200f32,
+        }
+    }
+}

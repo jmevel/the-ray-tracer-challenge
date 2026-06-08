@@ -144,6 +144,24 @@
     "args": ["--tags", "@lights"],
   },
   {
+    "label": "Debug materials tests",
+    "adapter": "CodeLLDB",
+    "request": "launch",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "args": ["--tags", "@materials"],
+  },
+  {
     "label": "Debug single scenario",
     "adapter": "CodeLLDB",
     "request": "launch",

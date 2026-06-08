@@ -2,7 +2,8 @@ use std::collections::HashMap;
 
 use cucumber::World;
 use the_ray_tracer_challenge::{
-    Canvas, Color, Intersection, Intersections, Matrix, Point, PointLight, Ray, Sphere, Vector,
+    Canvas, Color, Intersection, Intersections, Material, Matrix, Point, PointLight, Ray, Sphere,
+    Vector,
 };
 
 #[derive(Debug, Default, World)]
@@ -27,6 +28,8 @@ pub struct RayTracerWorld {
 
     point_lights: HashMap<String, PointLight>,
 
+    materials: HashMap<String, Material>,
+
     index: HashMap<String, Type>,
 }
 
@@ -43,6 +46,7 @@ pub enum Type {
     Intersection,
     IntersectionsCollection,
     PointLight,
+    Material,
 }
 
 impl RayTracerWorld {
@@ -227,5 +231,16 @@ impl RayTracerWorld {
         self.point_lights
             .get(point_light)
             .expect(format!("{point_light} does not exist").as_str())
+    }
+
+    pub fn add_material(&mut self, material_name: String, material: Material) {
+        self.materials.insert(material_name.clone(), material);
+        self.index.insert(material_name, Type::Material);
+    }
+
+    pub fn get_material(&self, material: &str) -> &Material {
+        self.materials
+            .get(material)
+            .expect(format!("{material} does not exist").as_str())
     }
 }

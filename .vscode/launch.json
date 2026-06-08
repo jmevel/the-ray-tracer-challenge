@@ -212,6 +212,27 @@
     {
       "type": "lldb",
       "request": "launch",
+      "name": "Debug materials tests",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=cucumber",
+          "--package=the-ray-tracer-challenge",
+          "--",
+          "--tags='@materials'",
+        ],
+        "filter": {
+          "name": "cucumber",
+          "kind": "test",
+        },
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}",
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
       "name": "Debug single scenario",
       "cargo": {
         "args": [
