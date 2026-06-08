@@ -29,10 +29,38 @@ pub fn tuple_is_vector(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32
     world.add_vector(tuple, Vector::new_vector(x, y, z));
 }
 
+#[given(expr = "{word} ← vector\\(√{float}\\/{float}, √{float}\\/{float}, {float})")]
+pub fn tuple_is_vector2(
+    world: &mut RayTracerWorld,
+    tuple: String,
+    x_numerator: f32,
+    x_denominator: f32,
+    y_numerator: f32,
+    y_denominator: f32,
+    z: f32,
+) {
+    let x = f32::sqrt(x_numerator) / x_denominator;
+    let y = f32::sqrt(y_numerator) / y_denominator;
+    world.add_vector(tuple, Vector::new_vector(x, y, z));
+}
+
 #[when(expr = "{word} ← normalize\\({word})")]
 fn tuple_is_normalization(world: &mut RayTracerWorld, tuple2: String, tuple1: String) {
     let tuple1 = world.get_vector(&tuple1);
     world.add_vector(tuple2, tuple1.normalize());
+}
+
+#[when(expr = "{word} ← reflect\\({word}, {word})")]
+fn vector_is_reflect_of_vector_and_vector(
+    world: &mut RayTracerWorld,
+    result_name: String,
+    in_vector: String,
+    normal_vector: String,
+) {
+    let in_vector = world.get_vector(&in_vector);
+    let normal_vector = world.get_vector(&normal_vector);
+    let result = in_vector.reflect(normal_vector);
+    world.add_vector(result_name, result);
 }
 
 #[then(expr = "{word}.x = {float}")]

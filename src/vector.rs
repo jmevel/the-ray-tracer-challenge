@@ -24,13 +24,16 @@ impl Vector {
     pub fn new_vector(x: f32, y: f32, z: f32) -> Vector {
         Vector { x, y, z, w: 0.0 }
     }
+
     pub fn with_w(mut self, w: f32) -> Self {
         self.w = w;
         self
     }
+
     pub fn magnitude(&self) -> f32 {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)).sqrt()
     }
+
     pub fn normalize(&self) -> Vector {
         let mag = self.magnitude();
         if mag == 0f32 {
@@ -43,9 +46,11 @@ impl Vector {
             w: self.w / mag,
         }
     }
+
     pub fn dot_product(&self, other: &Vector) -> f32 {
         self.x * other.x + self.y * other.y + self.z * other.z + self.w * other.w
     }
+
     pub fn cross_product(&self, other: &Vector) -> Vector {
         Self {
             x: self.y * other.z - self.z * other.y,
@@ -53,6 +58,11 @@ impl Vector {
             z: self.x * other.y - self.y * other.x,
             w: 0.0,
         }
+    }
+
+    pub fn reflect(&self, normal: &Vector) -> Vector {
+        let dot_product = self.dot_product(normal);
+        self - &(normal * 2f32 * dot_product)
     }
 }
 
