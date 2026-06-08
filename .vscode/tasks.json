@@ -43,6 +43,11 @@
       "type": "shell",
       "command": "cargo test --test cucumber -- --tags '@intersections'",
     },
+    {
+      "label": "Test lights",
+      "type": "shell",
+      "command": "cargo test --test cucumber -- --tags '@lights'",
+    },
     // {
     //   "label": "Test rotating a point around the x axis",
     //   "type": "shell",

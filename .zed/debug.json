@@ -126,6 +126,24 @@
     "args": ["--tags", "@intersections"],
   },
   {
+    "label": "Debug lights tests",
+    "adapter": "CodeLLDB",
+    "request": "launch",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "args": ["--tags", "@lights"],
+  },
+  {
     "label": "Debug single scenario",
     "adapter": "CodeLLDB",
     "request": "launch",

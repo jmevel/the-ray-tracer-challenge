@@ -1,6 +1,7 @@
 pub mod canvases_steps;
 pub mod common_steps;
 pub mod intersections_steps;
+pub mod lights_steps;
 pub mod matrices_steps;
 pub mod ray_tracer_world;
 pub mod rays_steps;
