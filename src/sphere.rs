@@ -1,11 +1,12 @@
 use uuid::Uuid;
 
-use crate::{Intersection, Intersections, Matrix, Object, Point, Ray, Vector};
+use crate::{Intersection, Intersections, Material, Matrix, Object, Point, Ray, Vector};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Sphere {
     id: Uuid,
     pub transform: Matrix<4, 4>,
+    pub material: Material,
 }
 
 impl Sphere {
@@ -16,6 +17,7 @@ impl Sphere {
                 Some(transformation) => transformation,
                 None => Matrix::identity_matrix(),
             },
+            material: Material::default(),
         }
     }
 

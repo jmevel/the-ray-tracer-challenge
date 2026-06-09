@@ -243,4 +243,10 @@ impl RayTracerWorld {
             .get(material)
             .expect(format!("{material} does not exist").as_str())
     }
+
+    pub fn get_mut_material(&mut self, material: &str) -> &mut Material {
+        self.materials
+            .get_mut(material)
+            .expect(format!("{material} does not exist").as_str())
+    }
 }

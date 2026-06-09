@@ -1,5 +1,5 @@
 use cucumber::{given, then};
-use the_ray_tracer_challenge::{Color, Material};
+use the_ray_tracer_challenge::{Color, Material, ReflectionValue};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
@@ -7,6 +7,12 @@ use crate::steps::ray_tracer_world::RayTracerWorld;
 fn material_is(world: &mut RayTracerWorld, material_name: String) {
     let material = Material::default();
     world.add_material(material_name, material);
+}
+
+#[given(expr = "{word}.ambient ← {float}")]
+fn ambient_of_material_is_value(world: &mut RayTracerWorld, material: String, value: f32) {
+    let material = world.get_mut_material(&material);
+    material.ambient = ReflectionValue::new(value);
 }
 
 #[then(expr = "{word}.color = color\\({int}, {int}, {int})")]
@@ -25,7 +31,7 @@ fn color_of_material_equals_color(
 #[then(expr = "{word}.ambient = {float}")]
 fn ambient_of_material_equal_value(world: &mut RayTracerWorld, material: String, value: f32) {
     let material = world.get_material(&material);
-    assert_eq!(material.ambient(), &value);
+    assert_eq!(*material.ambient, value);
 }
 
 #[then(expr = "{word}.diffuse = {float}")]

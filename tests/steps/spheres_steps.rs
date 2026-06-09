@@ -1,7 +1,7 @@
 use std::f32;
 
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Matrix, Point, Sphere, Vector};
+use the_ray_tracer_challenge::{Material, Matrix, Point, Sphere, Vector};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
@@ -9,6 +9,27 @@ use crate::steps::ray_tracer_world::RayTracerWorld;
 fn sphere_is(world: &mut RayTracerWorld, sphere_name: String) {
     let sphere = Sphere::new(None);
     world.add_sphere(sphere_name, sphere);
+}
+
+#[given(expr = "set_transform\\({word}, translation\\({float}, {float}, {float}))")]
+fn set_transform_s_translation(world: &mut RayTracerWorld, sphere: String, x: f32, y: f32, z: f32) {
+    let sphere = world.get_mut_sphere(&sphere);
+    let transformation = Matrix::new_translation(x, y, z);
+    sphere.transform = transformation;
+}
+
+#[given(expr = "{word} ← scaling\\({float}, {float}, {float}) * rotation_z\\(π\\/{float})")]
+fn transformation_is_scaling_and_rotation_z(
+    world: &mut RayTracerWorld,
+    transformation_name: String,
+    x: f32,
+    y: f32,
+    z: f32,
+    denominator: f32,
+) {
+    let transformation: Matrix<4, 4> =
+        Matrix::new_rotation_z(f32::consts::PI / denominator).scale(x, y, z);
+    world.add_matrix4x4(transformation_name, transformation);
 }
 
 #[when(expr = "{word} ← intersect\\({word}, {word})")]
@@ -85,6 +106,19 @@ fn n_normal_at_point3(
     n_normal_at_point(world, normal_name, sphere, x, y, z);
 }
 
+#[when(expr = "{word} ← {word}.material")]
+fn material_is_sphere_material(world: &mut RayTracerWorld, material_name: String, sphere: String) {
+    let sphere = world.get_sphere(&sphere);
+    world.add_material(material_name, sphere.material.clone());
+}
+
+#[when(expr = "{word}.material ← {word}")]
+fn material_of_sphere_is(world: &mut RayTracerWorld, sphere: String, material: String) {
+    let material = world.get_material(&material).clone();
+    let sphere = world.get_mut_sphere(&sphere);
+    sphere.material = material;
+}
+
 #[then(expr = "{word}.transform = {word}")]
 fn sphere_transform_equals_identity_matrix(
     world: &mut RayTracerWorld,
@@ -132,23 +166,19 @@ fn vector_equals_vector_normalized(world: &mut RayTracerWorld, vector: String, _
     assert_eq!(&actual, expected);
 }
 
-#[given(expr = "set_transform\\({word}, translation\\({float}, {float}, {float}))")]
-fn set_transform_s_translation(world: &mut RayTracerWorld, sphere: String, x: f32, y: f32, z: f32) {
-    let sphere = world.get_mut_sphere(&sphere);
-    let transformation = Matrix::new_translation(x, y, z);
-    sphere.transform = transformation;
+#[then(expr = "{word} = material\\()")]
+fn material_equals_default_material(world: &mut RayTracerWorld, material: String) {
+    let actual = world.get_material(&material);
+    assert_eq!(actual, &Material::default());
 }
 
-#[given(expr = "{word} ← scaling\\({float}, {float}, {float}) * rotation_z\\(π\\/{float})")]
-fn transformation_is_scaling_and_rotation_z(
+#[then(expr = "{word}.material = {word}")]
+fn material_of_sphere_equals_material(
     world: &mut RayTracerWorld,
-    transformation_name: String,
-    x: f32,
-    y: f32,
-    z: f32,
-    denominator: f32,
+    sphere: String,
+    material: String,
 ) {
-    let transformation: Matrix<4, 4> =
-        Matrix::new_rotation_z(f32::consts::PI / denominator).scale(x, y, z);
-    world.add_matrix4x4(transformation_name, transformation);
+    let sphere = world.get_sphere(&sphere);
+    let expected = world.get_material(&material);
+    assert_eq!(&sphere.material, expected);
 }

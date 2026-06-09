@@ -1,4 +1,6 @@
-#[derive(Debug)]
+use std::ops::Deref;
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct ReflectionValue {
     value: f32,
 }
@@ -20,5 +22,13 @@ impl ReflectionValue {
 impl PartialEq<f32> for ReflectionValue {
     fn eq(&self, other: &f32) -> bool {
         &self.value == other
+    }
+}
+
+impl Deref for ReflectionValue {
+    type Target = f32;
+
+    fn deref(&self) -> &Self::Target {
+        &self.value
     }
 }
