@@ -1,7 +1,7 @@
 use std::f32;
 
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Material, Matrix, Point, Sphere, Vector};
+use the_ray_tracer_challenge::{Material, Matrix, Point, Sphere};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
@@ -131,39 +131,6 @@ fn sphere_transform_equals_identity_matrix(
         _ => world.get_matrix4x4(&transformation),
     };
     assert_eq!(&sphere.transform, expected);
-}
-
-#[then(
-    regex = r"^([a-zA-Z0-9]*) = vector\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
-)]
-fn vector_equals_vector(world: &mut RayTracerWorld, vector: String, x: f32, y: f32, z: f32) {
-    let actual = world.get_vector(&vector);
-    let expected = Vector::new_vector(x, y, z);
-    assert_eq!(actual, &expected);
-}
-
-#[then(expr = "{word} = vector\\(√{float}\\/{float}, √{float}\\/{float}, √{float}\\/{float})")]
-fn vector_equals_vector2(
-    world: &mut RayTracerWorld,
-    vector: String,
-    x_numerator: f32,
-    x_denominator: f32,
-    y_numerator: f32,
-    y_denominator: f32,
-    z_numerator: f32,
-    z_denominator: f32,
-) {
-    let x = f32::sqrt(x_numerator) / x_denominator;
-    let y = f32::sqrt(y_numerator) / y_denominator;
-    let z = f32::sqrt(z_numerator) / z_denominator;
-    vector_equals_vector(world, vector, x, y, z);
-}
-
-#[then(expr = "{word} = normalize\\({word})")]
-fn vector_equals_vector_normalized(world: &mut RayTracerWorld, vector: String, _vector: String) {
-    let expected = world.get_vector(&vector);
-    let actual = expected.normalize();
-    assert_eq!(&actual, expected);
 }
 
 #[then(expr = "{word} = material\\()")]

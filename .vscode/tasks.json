@@ -53,10 +53,10 @@
       "type": "shell",
       "command": "cargo test --test cucumber -- --tags '@materials'",
     },
-    // {
-    //   "label": "Test rotating a point around the x axis",
-    //   "type": "shell",
-    //   "command": "cargo test --test cucumber -- --name 'Rotating a point around the x axis'",
-    // },
+    {
+      "label": "Test single scenario",
+      "type": "shell",
+      "command": "cargo test --test cucumber -- --name 'Lighting with the eye between the light and the surface'",
+    },
   ],
 }

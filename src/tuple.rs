@@ -53,27 +53,6 @@ macro_rules! impl_partial_eq_for_tuple {
 }
 
 #[macro_export]
-macro_rules! impl_add_for_tuple {
-    ($type: ty) => {
-        impl Add<&$type> for &$type
-        where
-            $type: Tuple,
-        {
-            type Output = $type;
-
-            fn add(self, rhs: &$type) -> Self::Output {
-                <$type>::new(
-                    self.x + rhs.x(),
-                    self.y + rhs.y(),
-                    self.z + rhs.z(),
-                    self.w + rhs.w(),
-                )
-            }
-        }
-    };
-}
-
-#[macro_export]
 macro_rules! impl_sub_for_tuple {
     ($type: ty) => {
         impl Sub for &$type
@@ -148,6 +127,17 @@ macro_rules! impl_mul_for_tuple {
                     self.z * other.z,
                     self.w * other.w,
                 )
+            }
+        }
+
+        impl Mul for $type
+        where
+            $type: Tuple,
+        {
+            type Output = $type;
+
+            fn mul(self, other: $type) -> Self::Output {
+                &self * &other
             }
         }
     };

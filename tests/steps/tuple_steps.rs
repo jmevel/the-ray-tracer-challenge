@@ -3,7 +3,6 @@ use std::panic;
 use crate::RayTracerWorld;
 use crate::steps::ray_tracer_world::Type;
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::float::float_equals;
 use the_ray_tracer_challenge::{Color, Point, Tuple, Vector};
 
 #[given(expr = "{word} ← tuple\\({float}, {float}, {float}, {float})")]
@@ -50,19 +49,6 @@ fn tuple_is_normalization(world: &mut RayTracerWorld, tuple2: String, tuple1: St
     world.add_vector(tuple2, tuple1.normalize());
 }
 
-#[when(expr = "{word} ← reflect\\({word}, {word})")]
-fn vector_is_reflect_of_vector_and_vector(
-    world: &mut RayTracerWorld,
-    result_name: String,
-    in_vector: String,
-    normal_vector: String,
-) {
-    let in_vector = world.get_vector(&in_vector);
-    let normal_vector = world.get_vector(&normal_vector);
-    let result = in_vector.reflect(normal_vector);
-    world.add_vector(result_name, result);
-}
-
 #[then(expr = "{word}.x = {float}")]
 #[then(expr = "{word}.red = {float}")]
 fn x_equal(world: &mut RayTracerWorld, tuple: String, x: f32) {
@@ -106,33 +92,11 @@ fn w_equal(world: &mut RayTracerWorld, tuple: String, w: f32) {
     }
 }
 
-#[then(expr = "{word} is a point")]
-fn is_a_point(world: &mut RayTracerWorld, tuple: String) {
-    _ = world.get_point(&tuple);
-}
-
-#[then(expr = "{word} is a vector")]
-fn is_a_vector(world: &mut RayTracerWorld, tuple: String) {
-    _ = world.get_vector(&tuple);
-}
-
-#[then(expr = "{word} is not a point")]
-fn is_not_a_point(world: &mut RayTracerWorld, tuple: String) {
-    let result = panic::catch_unwind(|| world.get_point(&tuple));
-    assert!(result.is_err());
-}
-
-#[then(expr = "{word} is not a vector")]
-fn is_not_a_vector(world: &mut RayTracerWorld, tuple: String) {
-    let result = panic::catch_unwind(|| world.get_vector(&tuple));
-    assert!(result.is_err());
-}
-
 // x = tuple(1.0, 2.0, 3.0, 4.0)
 #[then(
     regex = r"^([a-zA-Z0-9]*) = tuple\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
 )]
-fn equals_tuple(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
+fn tuple_equals_tuple(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
     match world.get_element_type(&tuple) {
         Type::Point => assert_eq!(world.get_point(&tuple), &Point::new(x, y, z, w)),
         Type::Color => assert_eq!(world.get_color(&tuple), &Color::new(x, y, z, w)),
@@ -142,7 +106,7 @@ fn equals_tuple(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f3
 }
 
 #[then(expr = "{word} + {word} = tuple\\({float}, {float}, {float}, {float})")]
-fn tuple_added_to_tuple_equals_tuple(
+pub fn tuple_added_to_tuple_equals_tuple(
     world: &mut RayTracerWorld,
     tuple1: String,
     tuple2: String,
@@ -172,18 +136,6 @@ fn tuple_added_to_tuple_equals_tuple(
 
         _ => panic!("Not implemented"),
     }
-}
-
-#[then(expr = "{word} + {word} = color\\({float}, {float}, {float})")]
-fn color_added_to_color_equals_color(
-    world: &mut RayTracerWorld,
-    tuple1: String,
-    tuple2: String,
-    red: f32,
-    green: f32,
-    blue: f32,
-) {
-    tuple_added_to_tuple_equals_tuple(world, tuple1, tuple2, red, green, blue, 2f32);
 }
 
 #[then(expr = "{word} - {word} = vector\\({float}, {float}, {float})")]
@@ -237,15 +189,6 @@ fn point_subtracted_to_vector_equals_point(
     let result = point - vector;
 
     assert_eq!(result, expected);
-}
-
-#[then(
-    regex = r#"^([a-zA-Z0-9_]+) = point\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"#
-)]
-fn point_equals_point(world: &mut RayTracerWorld, point: String, x: f32, y: f32, z: f32) {
-    let expected = Point::new_point(x, y, z);
-    let actual = world.get_point(&point);
-    assert_eq!(actual, &expected);
 }
 
 #[then(expr = "{word} - {word} = color\\({float}, {float}, {float})")]
@@ -325,29 +268,6 @@ fn multiplied_tuple_by_scalar_equals_tuple(
     }
 }
 
-#[then(expr = "{word} * {word} = color\\({float}, {float}, {float})")]
-fn multiplied_color_by_color_equals_color(
-    world: &mut RayTracerWorld,
-    color1: String,
-    scalar_or_color: String,
-    red: f32,
-    green: f32,
-    blue: f32,
-) {
-    let expected = Color::new_color(red, green, blue);
-    let color1 = world.get_color(&color1);
-
-    let result = match scalar_or_color.parse::<f32>() {
-        Ok(scalar) => color1 * scalar,
-        Err(_) => {
-            let color2 = world.get_color(&scalar_or_color);
-            color1 * color2
-        }
-    };
-
-    assert!(float_equals(&result.x(), &expected.x()));
-}
-
 #[then(expr = "{word} \\/ {int} = tuple\\({float}, {float}, {float}, {float})")]
 fn divided_tuple_by_fraction_equals_tuple(
     world: &mut RayTracerWorld,
@@ -379,67 +299,4 @@ fn divided_tuple_by_fraction_equals_tuple(
         }
         _ => panic!("Not implemented"),
     }
-}
-
-#[then(expr = "magnitude\\({word}) = {float}")]
-fn magnitude_equals_float(world: &mut RayTracerWorld, tuple: String, expected: f32) {
-    let tuple = world.get_vector(&tuple);
-
-    assert!(float_equals(&tuple.magnitude(), &expected));
-}
-
-#[then(expr = "magnitude\\({word}) = √{float}")]
-fn magnitude_equals_squareroot_float(world: &mut RayTracerWorld, tuple: String, expected: f32) {
-    let expected = expected.sqrt();
-    let tuple = world.get_vector(&tuple);
-
-    assert_eq!(tuple.magnitude(), expected);
-}
-
-#[then(expr = "normalize\\({word}) = vector\\({float}, {float}, {float})")]
-fn normalize_equals_vector(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32) {
-    let expected = Vector::new_vector(x, y, z);
-    let tuple = world.get_vector(&tuple);
-
-    assert_eq!(tuple.normalize(), expected);
-}
-
-#[then(expr = "normalize\\({word}) = approximately vector\\({float}, {float}, {float})")]
-fn normalize_equals_approximately_vector(
-    world: &mut RayTracerWorld,
-    tuple: String,
-    x: f32,
-    y: f32,
-    z: f32,
-) {
-    normalize_equals_vector(world, tuple, x, y, z);
-}
-
-#[then(expr = "dot\\({word}, {word}) = {float}")]
-fn dot_two_vectors_equals(
-    world: &mut RayTracerWorld,
-    vector1: String,
-    vector2: String,
-    expected: f32,
-) {
-    let vector1 = world.get_vector(&vector1);
-    let vector2 = world.get_vector(&vector2);
-
-    assert_eq!(vector1.dot_product(vector2), expected);
-}
-
-#[then(expr = "cross\\({word}, {word}) = vector\\({float}, {float}, {float})")]
-fn cross_two_vectors_equals_vector(
-    world: &mut RayTracerWorld,
-    vector1: String,
-    vector2: String,
-    x: f32,
-    y: f32,
-    z: f32,
-) {
-    let vector1 = world.get_vector(&vector1);
-    let vector2 = world.get_vector(&vector2);
-    let expected = Vector::new_vector(x, y, z);
-
-    assert_eq!(vector1.cross_product(vector2), expected);
 }

@@ -1,7 +1,6 @@
 use crate::Matrix;
 use crate::Tuple;
 use crate::float::float_equals;
-use crate::impl_add_for_tuple;
 use crate::impl_display_for_tuple;
 use crate::impl_div_f32_for_tuple;
 use crate::impl_mul_f32_for_tuple;
@@ -84,9 +83,29 @@ impl Tuple for Vector {
     }
 }
 
+impl Add for &Vector {
+    type Output = Vector;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Vector::new(
+            self.x + rhs.x(),
+            self.y + rhs.y(),
+            self.z + rhs.z(),
+            self.w + rhs.w(),
+        )
+    }
+}
+
+impl Add for Vector {
+    type Output = Vector;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        &self + &rhs
+    }
+}
+
 impl_display_for_tuple!(Vector);
 impl_partial_eq_for_tuple!(Vector);
-impl_add_for_tuple!(Vector);
 impl_sub_for_tuple!(Vector);
 impl_neg_for_tuple!(Vector);
 impl_mul_f32_for_tuple!(Vector);
