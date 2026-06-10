@@ -31,6 +31,10 @@ impl Color {
         }
     }
 
+    pub fn white() -> Color {
+        Color::new_color(1f32, 1f32, 1f32)
+    }
+
     pub fn black() -> Color {
         Color::default()
     }
@@ -43,7 +47,7 @@ impl Color {
         normal_vector: &Vector,
     ) -> Color {
         // combine the surface's color with the light's color/intensity
-        let effective_color = material.color() * light.intensity();
+        let effective_color = &material.color * light.intensity();
 
         // find the direction to the light source
         let light_vector = (light.position() - position).normalize();

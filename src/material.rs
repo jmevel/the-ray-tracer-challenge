@@ -2,7 +2,7 @@ use crate::{Color, ReflectionValue};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Material {
-    color: Color,
+    pub color: Color,
     pub ambient: ReflectionValue,
     diffuse: ReflectionValue,
     specular: ReflectionValue,
@@ -24,10 +24,6 @@ impl Material {
             specular,
             shininess,
         }
-    }
-
-    pub fn color(&self) -> &Color {
-        &self.color
     }
 
     pub fn diffuse(&self) -> &ReflectionValue {

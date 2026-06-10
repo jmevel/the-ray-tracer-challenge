@@ -64,7 +64,7 @@ fn color_of_material_equals_color(
 ) {
     let expected = Color::new_color(red, green, blue);
     let material = world.get_material(&material);
-    assert_eq!(material.color(), &expected);
+    assert_eq!(material.color, expected);
 }
 
 #[then(expr = "{word}.ambient = {float}")]
