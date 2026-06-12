@@ -1,5 +1,5 @@
-@intersections
-Feature: Intersections
+@intersection
+Feature: Intersection
 
   Scenario: An intersection encapsulates t and object
     Given s ← sphere()

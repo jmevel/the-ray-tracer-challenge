@@ -30,6 +30,8 @@ pub struct RayTracerWorld {
 
     materials: HashMap<String, Material>,
 
+    world: the_ray_tracer_challenge::World,
+
     index: HashMap<String, Type>,
 }
 
@@ -47,6 +49,7 @@ pub enum Type {
     IntersectionsCollection,
     PointLight,
     Material,
+    World,
 }
 
 impl RayTracerWorld {
@@ -248,5 +251,14 @@ impl RayTracerWorld {
         self.materials
             .get_mut(material)
             .expect(format!("{material} does not exist").as_str())
+    }
+
+    pub fn add_world(&mut self, world_name: String, world: the_ray_tracer_challenge::World) {
+        self.world = world;
+        self.index.insert(world_name, Type::World);
+    }
+
+    pub fn get_world(&self) -> &the_ray_tracer_challenge::World {
+        &self.world
     }
 }

@@ -1,5 +1,5 @@
-@rays
-Feature: Rays
+@ray
+Feature: Ray
 
   Scenario: Creating and querying a ray
     Given origin ← point(1, 2, 3)

@@ -1,5 +1,5 @@
-@spheres
-Feature: Spheres
+@sphere
+Feature: Sphere
 
   Scenario: A ray intersects a sphere at two points
     Given r ← ray(point(0, 0, -5), vector(0, 0, 1))

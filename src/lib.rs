@@ -16,6 +16,7 @@ pub mod reflection_value;
 pub mod sphere;
 pub mod tuple;
 pub mod vector;
+pub mod world;
 
 pub use crate::canvas::Canvas;
 pub use crate::color::Color;
@@ -31,3 +32,4 @@ pub use crate::reflection_value::ReflectionValue;
 pub use crate::sphere::Sphere;
 pub use crate::tuple::Tuple;
 pub use crate::vector::Vector;
+pub use crate::world::World;

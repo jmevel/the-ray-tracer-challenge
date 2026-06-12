@@ -22,9 +22,9 @@ pub fn putting_it_together() {
     let half = wall_size / 2f32;
 
     let mut material = Material::default();
-    material.color = Color::new_color(1f32, 0.2, 1f32);
-    let mut shape = Sphere::new(None);
-    shape.material = material.clone();
+    material.color = Color::new_color(1f32, 0.2, 1f32); // purple
+    let mut sphere = Sphere::new(None);
+    sphere.material = material.clone();
 
     let light_positon = Point::new_point(-10f32, 10f32, -10f32);
     let light_color = Color::white();
@@ -42,13 +42,10 @@ pub fn putting_it_together() {
 
             // point on the wall that the ray will target
             let position = Point::new_point(world_x, world_y, wall_z);
-
             let direction = position - ray_origin;
             let ray = Ray::new(ray_origin.clone(), direction.normalize().clone());
 
-            let intersections = shape.intersect(&ray);
-
-            match intersections {
+            match sphere.intersect(&ray) {
                 Ok(intersections) => {
                     if let Some(intersections) = intersections {
                         if let Some(hit) = intersections.hit() {
@@ -64,7 +61,6 @@ pub fn putting_it_together() {
                         }
                     }
                 }
-
                 Err(e) => eprintln!("{e}"),
             };
         }

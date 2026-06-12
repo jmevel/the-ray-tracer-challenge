@@ -1,5 +1,5 @@
-@materials
-Feature: Materials
+@material
+Feature: Material
 
   Background:
     Given m ← material()
@@ -38,7 +38,11 @@ Feature: Materials
     And normalv ← vector(0, 0, -1)
     And light ← point_light(point(0, 10, -10), color(1, 1, 1))
     When result ← lighting(m, light, position, eyev, normalv)
-    Then result = color(1.6364, 1.6364, 1.6364)
+    # Values from the book aren't precise enough
+    # In scenario 'two tuples with different values are different' we make the test that 4.00001 does NOT equal 4
+    # But here the books wants to test that two values with even less fraction digits ARE EQUAL (1.6364 and 1.6363853)
+    # Point and Color are both Tuple so they share the same EPSILON value
+    Then result = color(1.6363853, 1.6363853, 1.6363853)
 
   Scenario: Lighting with the light behind the surface
     Given eyev ← vector(0, 0, -1)

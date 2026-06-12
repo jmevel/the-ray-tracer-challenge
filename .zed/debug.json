@@ -1,6 +1,6 @@
 [
   {
-    "label": "Debug tuples tests",
+    "label": "Debug tuple tests",
     "adapter": "CodeLLDB",
     "request": "launch",
     "build": {
@@ -15,10 +15,10 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@tuples"],
+    "args": ["--tags", "@tuple"],
   },
   {
-    "label": "Debug canvases tests",
+    "label": "Debug canvas tests",
     "adapter": "CodeLLDB",
     "request": "launch",
     "build": {
@@ -33,10 +33,10 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@canvases"],
+    "args": ["--tags", "@canvas"],
   },
   {
-    "label": "Debug matrices tests",
+    "label": "Debug matrix tests",
     "adapter": "CodeLLDB",
     "request": "launch",
     "build": {
@@ -51,10 +51,10 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@matrices"],
+    "args": ["--tags", "@matrix"],
   },
   {
-    "label": "Debug transformations tests",
+    "label": "Debug transformation tests",
     "adapter": "CodeLLDB",
     "request": "launch",
     "build": {
@@ -69,10 +69,10 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@transformations"],
+    "args": ["--tags", "@transformation"],
   },
   {
-    "label": "Debug rays tests",
+    "label": "Debug ray tests",
     "adapter": "CodeLLDB",
     "request": "launch",
     "build": {
@@ -87,10 +87,10 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@rays"],
+    "args": ["--tags", "@ray"],
   },
   {
-    "label": "Debug spheres tests",
+    "label": "Debug sphere tests",
     "adapter": "CodeLLDB",
     "request": "launch",
     "build": {
@@ -105,10 +105,10 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@spheres"],
+    "args": ["--tags", "@sphere"],
   },
   {
-    "label": "Debug intersections tests",
+    "label": "Debug intersection tests",
     "adapter": "CodeLLDB",
     "request": "launch",
     "build": {
@@ -123,10 +123,10 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@intersections"],
+    "args": ["--tags", "@intersection"],
   },
   {
-    "label": "Debug lights tests",
+    "label": "Debug light tests",
     "adapter": "CodeLLDB",
     "request": "launch",
     "build": {
@@ -141,10 +141,10 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@lights"],
+    "args": ["--tags", "@light"],
   },
   {
-    "label": "Debug materials tests",
+    "label": "Debug material tests",
     "adapter": "CodeLLDB",
     "request": "launch",
     "build": {
@@ -159,7 +159,25 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@materials"],
+    "args": ["--tags", "@material"],
+  },
+  {
+    "label": "Debug world tests",
+    "adapter": "CodeLLDB",
+    "request": "launch",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "args": ["--tags", "@world"],
   },
   {
     "label": "Debug single scenario",

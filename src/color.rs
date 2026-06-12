@@ -39,6 +39,10 @@ impl Color {
         Color::default()
     }
 
+    pub fn red() -> Color {
+        Color::new_color(1f32, 0f32, 0f32)
+    }
+
     pub fn lighting(
         material: &Material,
         light: &PointLight,

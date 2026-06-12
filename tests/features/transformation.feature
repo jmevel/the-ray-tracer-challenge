@@ -1,5 +1,5 @@
-@transformations
-Feature: Matrix Transformations
+@transformation
+Feature: Matrix Transformation
 
   Scenario: Multiplying by a translation matrix
     Given transform ← translation(5, -3, 2)

@@ -1,5 +1,5 @@
-@lights
-Feature: Lights
+@light
+Feature: Light
 
   Scenario: A point light has a position and intensity
     Given intensity ← color(1, 1, 1)

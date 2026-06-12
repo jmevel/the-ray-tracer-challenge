@@ -44,7 +44,7 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug tuples tests",
+      "name": "Debug tuple tests",
       "cargo": {
         "args": [
           "test",
@@ -52,7 +52,7 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@tuples'",
+          "--tags='@tuple'",
         ],
         "filter": {
           "name": "cucumber",
@@ -65,7 +65,7 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug canvases tests",
+      "name": "Debug canvas tests",
       "cargo": {
         "args": [
           "test",
@@ -73,7 +73,7 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@canvases'",
+          "--tags='@canvas'",
         ],
         "filter": {
           "name": "cucumber",
@@ -86,7 +86,7 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug matrices tests",
+      "name": "Debug matrix tests",
       "cargo": {
         "args": [
           "test",
@@ -94,7 +94,7 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@matrices'",
+          "--tags='@matrix'",
         ],
         "filter": {
           "name": "cucumber",
@@ -107,7 +107,7 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug transformations tests",
+      "name": "Debug transformation tests",
       "cargo": {
         "args": [
           "test",
@@ -115,7 +115,7 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@transformations'",
+          "--tags='@transformation'",
         ],
         "filter": {
           "name": "cucumber",
@@ -128,7 +128,7 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug rays tests",
+      "name": "Debug ray tests",
       "cargo": {
         "args": [
           "test",
@@ -136,7 +136,7 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@rays'",
+          "--tags='@ray'",
         ],
         "filter": {
           "name": "cucumber",
@@ -149,7 +149,7 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug spheres tests",
+      "name": "Debug sphere tests",
       "cargo": {
         "args": [
           "test",
@@ -157,7 +157,7 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@spheres'",
+          "--tags='@sphere'",
         ],
         "filter": {
           "name": "cucumber",
@@ -170,7 +170,7 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug intersections tests",
+      "name": "Debug intersection tests",
       "cargo": {
         "args": [
           "test",
@@ -178,7 +178,7 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@intersections'",
+          "--tags='@intersection'",
         ],
         "filter": {
           "name": "cucumber",
@@ -191,7 +191,7 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug lights tests",
+      "name": "Debug light tests",
       "cargo": {
         "args": [
           "test",
@@ -199,7 +199,7 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@lights'",
+          "--tags='@light'",
         ],
         "filter": {
           "name": "cucumber",
@@ -212,7 +212,7 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug materials tests",
+      "name": "Debug material tests",
       "cargo": {
         "args": [
           "test",
@@ -220,7 +220,28 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@materials'",
+          "--tags='@material'",
+        ],
+        "filter": {
+          "name": "cucumber",
+          "kind": "test",
+        },
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}",
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug world tests",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=cucumber",
+          "--package=the-ray-tracer-challenge",
+          "--",
+          "--tags='@world'",
         ],
         "filter": {
           "name": "cucumber",

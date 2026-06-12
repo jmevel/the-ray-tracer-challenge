@@ -5,8 +5,6 @@ use the_ray_tracer_challenge::{Canvas, Color, Matrix, Point, Tuple};
 #[allow(dead_code)]
 pub fn putting_it_together() {
     let mut canvas = Canvas::new(500, 500, None);
-    let white = Color::new_color(255f32, 255f32, 255f32);
-    let red = Color::new_color(255f32, 0f32, 0f32);
 
     let origin = Point::new_point(0f32, 0f32, 0f32);
     let middle_translation: Matrix<4, 4> = Matrix::new_translation(
@@ -18,7 +16,7 @@ pub fn putting_it_together() {
     canvas.write_pixel(
         *origin.x() as usize,
         canvas.height() - *origin.y() as usize,
-        red,
+        Color::red(),
     );
 
     let radius: f32 = (3f32 / 8f32) * *canvas.width() as f32;
@@ -38,7 +36,7 @@ pub fn putting_it_together() {
         canvas.write_pixel(
             *point.x() as usize,
             *canvas.height() - *point.y() as usize,
-            white.clone(),
+            Color::white(),
         );
     }
     let ppm = canvas.convert_to_ppm();
