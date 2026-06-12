@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct ReflectionValue {
     value: f32,
 }

@@ -1,7 +1,7 @@
 use std::f32;
 
-use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Material, Matrix, Point, Sphere};
+use cucumber::{gherkin::Step, given, then, when};
+use the_ray_tracer_challenge::{Color, Material, Matrix, Point, ReflectionValue, Sphere};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
@@ -32,6 +32,76 @@ fn transformation_is_scaling_and_rotation_z(
     world.add_matrix4x4(transformation_name, transformation);
 }
 
+#[given(expr = "{word} ← sphere\\() with:")]
+fn sphere_is_sphere_with(world: &mut RayTracerWorld, sphere_name: String, step: &Step) {
+    if let Some(table) = step.table.as_ref() {
+        let mut sphere = Sphere::new(None);
+        let mut material = Material::default();
+        let mut transform: Matrix<4, 4> = Matrix::identity_matrix();
+        for row in table.rows.iter() {
+            let field_value = &row[1];
+            match row[0].as_str() {
+                obj if obj.starts_with("material") => {
+                    match obj {
+                        field_name if field_name.ends_with("color") => {
+                            let color_values = field_value
+                                .trim_matches('(')
+                                .trim_matches(')')
+                                .split(',')
+                                .map(|s| s.trim().parse::<f32>().unwrap())
+                                .collect::<Vec<f32>>();
+                            material.color =
+                                Color::new_color(color_values[0], color_values[1], color_values[2]);
+                        }
+                        field_name if field_name.ends_with("diffuse") => {
+                            material.diffuse =
+                                ReflectionValue::new(field_value.parse::<f32>().unwrap());
+                        }
+                        field_name if field_name.ends_with("specular") => {
+                            material.specular =
+                                ReflectionValue::new(field_value.parse::<f32>().unwrap());
+                        }
+                        _ => panic!("Not implemented"),
+                    }
+                    sphere.material = material;
+                }
+                obj if obj.starts_with("transform") => {
+                    match field_value {
+                        transform_type if transform_type.starts_with("scaling") => {
+                            let scaling_values = field_value
+                                .trim_start_matches("scaling")
+                                .trim_matches('(')
+                                .trim_matches(')')
+                                .split(',')
+                                .map(|s| s.trim().parse::<f32>().unwrap())
+                                .collect::<Vec<f32>>();
+
+                            transform = transform.scale(
+                                scaling_values[0],
+                                scaling_values[1],
+                                scaling_values[2],
+                            );
+                        }
+                        _ => panic!("Not implemented"),
+                    }
+                    sphere.transform = transform;
+                }
+                _ => panic!("Not implemented"),
+            }
+        }
+        world.add_sphere(sphere_name, sphere);
+    } else {
+        panic!("Missing table");
+    }
+}
+
+#[given(expr = "set_transform\\({word}, {word})")]
+#[when(expr = "set_transform\\({word}, {word})")]
+fn set_transform_s_t(world: &mut RayTracerWorld, sphere: String, transformation: String) {
+    let transformation = world.get_matrix4x4(&transformation);
+    world.get_mut_sphere(&sphere).transform = transformation.clone();
+}
+
 #[when(expr = "{word} ← intersect\\({word}, {word})")]
 fn intersection_is_intersect_of_sphere_and_ray(
     world: &mut RayTracerWorld,
@@ -44,13 +114,6 @@ fn intersection_is_intersect_of_sphere_and_ray(
     let intersections = sphere.intersect(ray);
     world.add_intersections_collection(intersect_name, intersections?);
     Ok(())
-}
-
-#[when(expr = "set_transform\\({word}, {word})")]
-#[given(expr = "set_transform\\({word}, {word})")]
-fn set_transform_s_t(world: &mut RayTracerWorld, sphere: String, transformation: String) {
-    let transformation = world.get_matrix4x4(&transformation);
-    world.get_mut_sphere(&sphere).transform = transformation.clone();
 }
 
 #[when(expr = "{word} ← normal_at\\({word}, point\\({float}, {float}, {float}))")]

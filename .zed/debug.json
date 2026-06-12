@@ -195,10 +195,7 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": [
-      "--name",
-      "Lighting with the eye between the light and the surface",
-    ],
+    "args": ["--name", "The default world"],
   },
   // Not working
   // https://zed.dev/docs/languages/rust#automatically-locate-a-debug-target-based-on-build-command

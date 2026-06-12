@@ -76,19 +76,19 @@ fn ambient_of_material_equal_value(world: &mut RayTracerWorld, material: String,
 #[then(expr = "{word}.diffuse = {float}")]
 fn diffuse_of_material_equal_value(world: &mut RayTracerWorld, material: String, value: f32) {
     let material = world.get_material(&material);
-    assert_eq!(material.diffuse(), &value);
+    assert_eq!(*material.diffuse, value);
 }
 
 #[then(expr = "{word}.specular = {float}")]
 fn specular_of_material_equal_value(world: &mut RayTracerWorld, material: String, value: f32) {
     let material = world.get_material(&material);
-    assert_eq!(material.specular(), &value);
+    assert_eq!(*material.specular, value);
 }
 
 #[then(expr = "{word}.shininess = {float}")]
 fn shininess_of_material_equal_value(world: &mut RayTracerWorld, material: String, value: f32) {
     let material = world.get_material(&material);
-    assert_eq!(material.shininess(), value);
+    assert_eq!(material.shininess, value);
 }
 
 // color = color(0.0, 0.0, 0.0)

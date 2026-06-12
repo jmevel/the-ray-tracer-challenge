@@ -59,18 +59,20 @@ impl Color {
         // compute the ambient contribution
         let ambient = effective_color * *material.ambient;
 
-        let mut diffuse = Color::default();
-        let mut specular = Color::default();
+        // These variables are used but the compiler is warning me that 'Color::default()' value is assigned to the variables but the value is never read
+        // Which is true but I don't want to over-complicate the logic here. I prefer to keep it as is and simply prefix the variables with a '_' to make the compiler happy
+        let mut _diffuse = Color::default();
+        let mut _specular = Color::default();
 
         // Light_dot_normal represents the cosine of the angle between the light vector and the normal vector
         // A negative numer means the light is on the other side of the surface
         let light_dot_normal = light_vector.dot_product(normal_vector);
         if light_dot_normal < 0f32 {
-            diffuse = Color::black();
-            specular = Color::black();
+            _diffuse = Color::black();
+            _specular = Color::black();
         } else {
             // Compute the diffuse contribution
-            diffuse = effective_color * **material.diffuse() * light_dot_normal;
+            _diffuse = effective_color * *material.diffuse * light_dot_normal;
 
             // Reflect_dot_eye represents the cosine of the angle between the reflection vector and the eye vector
             // A negative number means the light reflects away from the eye
@@ -78,16 +80,16 @@ impl Color {
             let reflect_dot_eye = reflect_vector.dot_product(eye_vector);
 
             if reflect_dot_eye <= 0f32 {
-                specular = Color::black();
+                _specular = Color::black();
             } else {
                 // Compute the specular contribution
-                let factor = reflect_dot_eye.powf(material.shininess());
-                specular = *light.intensity() * **material.specular() * factor;
+                let factor = reflect_dot_eye.powf(material.shininess);
+                _specular = *light.intensity() * *material.specular * factor;
             }
         }
 
         // Add the three contributions together to get the final shading
-        let final_color = ambient + diffuse + specular;
+        let final_color = ambient + _diffuse + _specular;
         final_color
     }
 }
