@@ -21,8 +21,9 @@ fn intersection_collections_is_2_intersections(
 ) {
     let intersection1 = world.get_intersection(&intersection1_name).clone().unwrap();
     let intersection2 = world.get_intersection(&intersection2_name).clone().unwrap();
-    let intersections_collection =
-        Intersections::new(vec![intersection1.clone(), intersection2.clone()]);
+    let intersections_collection = Intersections {
+        0: vec![intersection1.clone(), intersection2.clone()],
+    };
     world
         .add_intersections_collection(intersection_collection_name, Some(intersections_collection));
 }
@@ -40,12 +41,14 @@ fn intersection_collections_is_4_intersections(
     let intersection2 = world.get_intersection(&intersection2_name).clone().unwrap();
     let intersection3 = world.get_intersection(&intersection3_name).clone().unwrap();
     let intersection4 = world.get_intersection(&intersection4_name).clone().unwrap();
-    let intersections_collection = Intersections::new(vec![
-        intersection1.clone(),
-        intersection2.clone(),
-        intersection3.clone(),
-        intersection4.clone(),
-    ]);
+    let intersections_collection = Intersections {
+        0: vec![
+            intersection1.clone(),
+            intersection2.clone(),
+            intersection3.clone(),
+            intersection4.clone(),
+        ],
+    };
     world
         .add_intersections_collection(intersection_collection_name, Some(intersections_collection));
 }

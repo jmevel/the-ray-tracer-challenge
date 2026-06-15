@@ -1,4 +1,7 @@
-use crate::{Color, Material, Matrix, Object, Point, PointLight, ReflectionValue, Sphere};
+use crate::{
+    Color, Intersection, Intersections, Material, Matrix, Object, Point, PointLight, Ray,
+    ReflectionValue, Sphere,
+};
 
 #[derive(Debug)]
 pub struct World {
@@ -12,6 +15,33 @@ impl World {
             light: None,
             elements: Vec::new(),
         }
+    }
+
+    pub fn intersect(&self, ray: &Ray) -> Result<Option<Intersections>, String> {
+        let mut intersections = self
+            .elements
+            .iter()
+            // TODO: use a match when the Object enum will contain other value(s) than Sphere
+            // .map(|e| match e {
+            //     Object::Sphere(sphere) => sphere.intersect(ray),
+            //     _ => panic!("Not implemented"),
+            // })
+            .map(|e| {
+                let Object::Sphere(sphere) = e;
+                sphere.intersect(ray)
+            })
+            .collect::<Result<Vec<Option<Intersections>>, String>>()? // collect can transform a Vec<Result<T>> into a Result<Vec<T>>
+            .into_iter()
+            .flatten()
+            .flat_map(|inter| inter.0)
+            .collect::<Vec<Intersection>>();
+
+        intersections.sort_by(|a, b| a.t().partial_cmp(&b.t()).unwrap());
+        if intersections.is_empty() {
+            return Ok(None);
+        }
+
+        Ok(Some(Intersections { 0: intersections }))
     }
 }
 

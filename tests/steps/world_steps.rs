@@ -8,9 +8,24 @@ fn world_is_new_world(world: &mut RayTracerWorld, world_name: String) {
     world.add_world(world_name, World::new());
 }
 
+#[given(expr = "{word} ← default_world\\()")]
 #[when(expr = "{word} ← default_world\\()")]
 fn world_is_default_world(world: &mut RayTracerWorld, world_name: String) {
     world.add_world(world_name, World::default());
+}
+
+#[when(expr = "{word} ← intersect_world\\({word}, {word})")]
+fn intersections_is_world_intersected_with_ray(
+    world: &mut RayTracerWorld,
+    intersections_name: String,
+    _world: String,
+    ray: String,
+) {
+    let scene_world = world.get_world();
+    let ray = world.get_ray(&ray);
+    let intersections = scene_world.intersect(&ray).unwrap();
+
+    world.add_intersections_collection(intersections_name, intersections);
 }
 
 #[then(expr = "{word} contains no objects")]

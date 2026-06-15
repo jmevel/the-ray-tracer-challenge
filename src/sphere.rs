@@ -38,10 +38,12 @@ impl Sphere {
         let t1 = (-b - discriminant.sqrt()) / (2f32 * a);
         let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
 
-        Ok(Some(Intersections::new(vec![
-            Intersection::new(t1, Object::Sphere(self.clone())),
-            Intersection::new(t2, Object::Sphere(self.clone())),
-        ])))
+        Ok(Some(Intersections {
+            0: vec![
+                Intersection::new(t1, Object::Sphere(self.clone())),
+                Intersection::new(t2, Object::Sphere(self.clone())),
+            ],
+        }))
     }
 
     pub fn normal_at(&self, world_point: &Point) -> Vector {
