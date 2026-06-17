@@ -1,6 +1,6 @@
 use crate::Sphere;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum Object {
     Sphere(Sphere),
 }

@@ -3,6 +3,7 @@
 
 pub mod canvas;
 pub mod color;
+pub mod computations;
 pub mod float;
 pub mod intersection;
 pub mod intersections;
@@ -20,6 +21,7 @@ pub mod world;
 
 pub use crate::canvas::Canvas;
 pub use crate::color::Color;
+pub use crate::computations::Computations;
 pub use crate::intersection::Intersection;
 pub use crate::intersections::Intersections;
 pub use crate::material::Material;

@@ -53,12 +53,24 @@ fn intersection_collections_is_4_intersections(
         .add_intersections_collection(intersection_collection_name, Some(intersections_collection));
 }
 
+#[when(expr = "{word} ← hit\\({word})")]
+fn entity_is_hit(world: &mut RayTracerWorld, hit_name: String, intersections_collection: String) {
+    let intersections_collection = world
+        .get_intersections_collection(&intersections_collection)
+        .clone()
+        .unwrap();
+
+    let hit = intersections_collection.hit().cloned();
+
+    world.add_intersection(hit_name, hit);
+}
+
 #[then(
     regex = r#"^([a-zA-Z0-9_]+)\.t = ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$"#
 )]
 fn t_of_intersection_equals(world: &mut RayTracerWorld, intersection_name: String, t: f32) {
     let intersection = world.get_intersection(&intersection_name).clone().unwrap();
-    assert_eq!(intersection.t(), t);
+    assert_eq!(intersection.t(), &t);
 }
 
 #[then(expr = "{word}[{int}].t = {float}")]
@@ -72,18 +84,6 @@ fn t_of_intersection_at_index_equals(
         .get_intersections_collection(&intersections_collection_name)
         .clone()
         .unwrap();
-    let actual = &intersections[index].t();
+    let actual = intersections[index].t();
     assert_eq!(actual, &t);
-}
-
-#[when(expr = "{word} ← hit\\({word})")]
-fn entity_is_hit(world: &mut RayTracerWorld, hit_name: String, intersections_collection: String) {
-    let intersections_collection = world
-        .get_intersections_collection(&intersections_collection)
-        .clone()
-        .unwrap();
-
-    let hit = intersections_collection.hit().cloned();
-
-    world.add_intersection(hit_name, hit);
 }

@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use cucumber::World;
 use the_ray_tracer_challenge::{
-    Canvas, Color, Intersection, Intersections, Material, Matrix, Point, PointLight, Ray, Sphere,
-    Vector,
+    Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Object, Point,
+    PointLight, Ray, Sphere, Vector,
 };
 
 #[derive(Debug, Default, World)]
@@ -32,6 +32,8 @@ pub struct RayTracerWorld {
 
     world: the_ray_tracer_challenge::World,
 
+    computations: HashMap<String, OwnedComputations>,
+
     index: HashMap<String, Type>,
 }
 
@@ -50,6 +52,7 @@ pub enum Type {
     PointLight,
     Material,
     World,
+    Computations,
 }
 
 impl RayTracerWorld {
@@ -260,5 +263,53 @@ impl RayTracerWorld {
 
     pub fn get_world(&self) -> &the_ray_tracer_challenge::World {
         &self.world
+    }
+
+    pub fn add_computations(&mut self, computations_name: String, computations: Computations) {
+        self.computations.insert(
+            computations_name.clone(),
+            OwnedComputations::from(computations),
+        );
+        self.index.insert(computations_name, Type::Computations);
+    }
+
+    pub fn get_computations(&self, computation: &str) -> Computations<'_> {
+        self.computations
+            .get(computation)
+            .expect(format!("{computation} does not exist").as_str())
+            .as_computations()
+    }
+}
+
+#[derive(Debug)]
+struct OwnedComputations {
+    t: f32,
+    object: Object,
+    point: Point,
+    eye_vector: Vector,
+    normal_vector: Vector,
+}
+
+impl From<Computations<'_>> for OwnedComputations {
+    fn from(value: Computations<'_>) -> Self {
+        Self {
+            t: *value.t(),
+            object: *value.object(),
+            point: value.point(),
+            eye_vector: value.eye_vector(),
+            normal_vector: value.normal_vector(),
+        }
+    }
+}
+
+impl OwnedComputations {
+    fn as_computations(&self) -> Computations<'_> {
+        Computations {
+            t: &self.t,
+            object: &self.object,
+            point: self.point,
+            eye_vector: self.eye_vector,
+            normal_vector: self.normal_vector,
+        }
     }
 }

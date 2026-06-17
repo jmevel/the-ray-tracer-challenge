@@ -13,8 +13,8 @@ impl Intersection {
         Self { t, object }
     }
 
-    pub fn t(&self) -> f32 {
-        self.t
+    pub fn t(&self) -> &f32 {
+        &self.t
     }
 
     pub fn object(&self) -> &Object {

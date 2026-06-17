@@ -1,6 +1,7 @@
 pub mod canvas_steps;
 pub mod color_steps;
 pub mod common_steps;
+pub mod computations_steps;
 pub mod intersection_steps;
 pub mod light_steps;
 pub mod material_steps;

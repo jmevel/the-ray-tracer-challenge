@@ -73,7 +73,7 @@ fn position_of_ray_equals_point(
 ) {
     let ray = world.get_ray(&ray);
     let expected_position = Point::new_point(x, y, z);
-    assert_eq!(ray.position(position), expected_position);
+    assert_eq!(ray.position(&position), expected_position);
 }
 
 #[then(expr = "{word}.origin = point\\({float}, {float}, {float})")]

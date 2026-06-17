@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::{Intersection, Intersections, Material, Matrix, Object, Point, Ray, Vector};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Sphere {
     id: Uuid,
     pub transform: Matrix<4, 4>,

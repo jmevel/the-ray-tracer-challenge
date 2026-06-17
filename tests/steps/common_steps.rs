@@ -205,17 +205,21 @@ fn collection_count_equals_count(
     }
 }
 
-#[then(regex = r#"^([a-zA-Z0-9_]+)\.object = (.*)$"#)]
-fn object_of_intersection_equals_object(
-    world: &mut RayTracerWorld,
-    intersection: String,
-    object_name: String,
-) {
-    let intersection = world.get_intersection(&intersection).clone().unwrap();
-    match world.get_element_type(&object_name) {
-        Type::Sphere => {
-            let sphere = world.get_sphere(&object_name).clone();
+#[then(regex = r#"^([a-zA-Z0-9_]+)\.object = ([a-zA-Z0-9_]+)$"#)]
+fn object_of_element_equals_object(world: &mut RayTracerWorld, element: String, object: String) {
+    match (
+        world.get_element_type(&element),
+        world.get_element_type(&object),
+    ) {
+        (Type::Intersection, Type::Sphere) => {
+            let intersection = world.get_intersection(&element).as_ref().unwrap();
+            let sphere = world.get_sphere(&object).clone();
             assert_eq!(intersection.object(), &Object::Sphere(sphere));
+        }
+        (Type::Computations, Type::Sphere) => {
+            let computations = world.get_computations(&element);
+            let sphere = world.get_sphere(&object).to_owned();
+            assert_eq!(computations.object, &Object::Sphere(sphere));
         }
         _ => panic!("Not supported"),
     }
