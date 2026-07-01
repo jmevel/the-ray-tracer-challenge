@@ -1,7 +1,7 @@
 use std::panic;
 
 use crate::RayTracerWorld;
-use crate::steps::ray_tracer_world::Type;
+use crate::steps::ray_tracer_world::ElementType;
 use cucumber::{given, then, when};
 use the_ray_tracer_challenge::{Color, Point, Tuple, Vector};
 
@@ -52,10 +52,10 @@ fn tuple_is_normalization(world: &mut RayTracerWorld, tuple2: String, tuple1: St
 #[then(expr = "{word}.x = {float}")]
 #[then(expr = "{word}.red = {float}")]
 fn x_equal(world: &mut RayTracerWorld, tuple: String, x: f32) {
-    match world.get_element_type(&tuple) {
-        Type::Point => assert_eq!(world.get_point(&tuple).x(), &x),
-        Type::Color => assert_eq!(world.get_color(&tuple).x(), &x),
-        Type::Vector => assert_eq!(world.get_vector(&tuple).x(), &x),
+    match world.get_element(&tuple) {
+        ElementType::Point(point) => assert_eq!(point.x(), &x),
+        ElementType::Color(color) => assert_eq!(color.x(), &x),
+        ElementType::Vector(vector) => assert_eq!(vector.x(), &x),
         _ => panic!("Not implemented"),
     }
 }
@@ -63,10 +63,10 @@ fn x_equal(world: &mut RayTracerWorld, tuple: String, x: f32) {
 #[then(expr = "{word}.y = {float}")]
 #[then(expr = "{word}.green = {float}")]
 fn y_equal(world: &mut RayTracerWorld, tuple: String, y: f32) {
-    match world.get_element_type(&tuple) {
-        Type::Point => assert_eq!(world.get_point(&tuple).y(), &y),
-        Type::Color => assert_eq!(world.get_color(&tuple).y(), &y),
-        Type::Vector => assert_eq!(world.get_vector(&tuple).y(), &y),
+    match world.get_element(&tuple) {
+        ElementType::Point(point) => assert_eq!(point.y(), &y),
+        ElementType::Color(color) => assert_eq!(color.y(), &y),
+        ElementType::Vector(vector) => assert_eq!(vector.y(), &y),
         _ => panic!("Not implemented"),
     }
 }
@@ -74,20 +74,20 @@ fn y_equal(world: &mut RayTracerWorld, tuple: String, y: f32) {
 #[then(expr = "{word}.z = {float}")]
 #[then(expr = "{word}.blue = {float}")]
 fn z_equal(world: &mut RayTracerWorld, tuple: String, z: f32) {
-    match world.get_element_type(&tuple) {
-        Type::Point => assert_eq!(world.get_point(&tuple).z(), &z),
-        Type::Color => assert_eq!(world.get_color(&tuple).z(), &z),
-        Type::Vector => assert_eq!(world.get_vector(&tuple).z(), &z),
+    match world.get_element(&tuple) {
+        ElementType::Point(point) => assert_eq!(point.z(), &z),
+        ElementType::Color(color) => assert_eq!(color.z(), &z),
+        ElementType::Vector(vector) => assert_eq!(vector.z(), &z),
         _ => panic!("Not implemented"),
     }
 }
 
 #[then(expr = "{word}.w = {float}")]
 fn w_equal(world: &mut RayTracerWorld, tuple: String, w: f32) {
-    match world.get_element_type(&tuple) {
-        Type::Point => assert_eq!(world.get_point(&tuple).w(), &w),
-        Type::Color => assert_eq!(world.get_color(&tuple).w(), &w),
-        Type::Vector => assert_eq!(world.get_vector(&tuple).w(), &w),
+    match world.get_element(&tuple) {
+        ElementType::Point(point) => assert_eq!(point.w(), &w),
+        ElementType::Color(color) => assert_eq!(color.w(), &w),
+        ElementType::Vector(vector) => assert_eq!(vector.w(), &w),
         _ => panic!("Not implemented"),
     }
 }
@@ -97,10 +97,10 @@ fn w_equal(world: &mut RayTracerWorld, tuple: String, w: f32) {
     regex = r"^([a-zA-Z0-9]*) = tuple\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
 )]
 fn tuple_equals_tuple(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
-    match world.get_element_type(&tuple) {
-        Type::Point => assert_eq!(world.get_point(&tuple), &Point::new(x, y, z, w)),
-        Type::Color => assert_eq!(world.get_color(&tuple), &Color::new(x, y, z, w)),
-        Type::Vector => assert_eq!(world.get_vector(&tuple), &Vector::new(x, y, z, w)),
+    match world.get_element(&tuple) {
+        ElementType::Point(point) => assert_eq!(point, &Point::new(x, y, z, w)),
+        ElementType::Color(color) => assert_eq!(color, &Color::new(x, y, z, w)),
+        ElementType::Vector(vector) => assert_eq!(vector, &Vector::new(x, y, z, w)),
         _ => panic!("Not implemented"),
     }
 }
@@ -115,23 +115,14 @@ pub fn tuple_added_to_tuple_equals_tuple(
     z: f32,
     w: f32,
 ) {
-    match (
-        world.get_element_type(&tuple1),
-        world.get_element_type(&tuple2),
-    ) {
-        (Type::Color, Type::Color) => {
+    match (world.get_element(&tuple1), world.get_element(&tuple2)) {
+        (ElementType::Color(color1), ElementType::Color(color2)) => {
             let expected = Color::new(x, y, z, w);
-            let tuple1 = world.get_color(&tuple1);
-            let tuple2 = world.get_color(&tuple2);
-            let result = tuple1 + tuple2;
-            assert_eq!(result, expected);
+            assert_eq!(color1 + color2, expected);
         }
-        (Type::Point, Type::Vector) => {
+        (ElementType::Point(point), ElementType::Vector(vector)) => {
             let expected = Point::new(x, y, z, w);
-            let point = world.get_point(&tuple1);
-            let vector = world.get_vector(&tuple2);
-            let result = point + vector;
-            assert_eq!(result, expected);
+            assert_eq!(point + vector, expected);
         }
 
         _ => panic!("Not implemented"),
@@ -148,27 +139,15 @@ fn tuple_subtracted_to_tuple_equals_vector(
     z: f32,
 ) {
     let expected = Vector::new_vector(x, y, z);
-    match (
-        world.get_element_type(&tuple1),
-        world.get_element_type(&tuple2),
-    ) {
-        (Type::Point, Type::Point) => {
-            let point1 = world.get_point(&tuple1);
-            let point2 = world.get_point(&tuple2);
-            let result = point1 - point2;
-            assert_eq!(result, expected);
+    match (world.get_element(&tuple1), world.get_element(&tuple2)) {
+        (ElementType::Point(point1), ElementType::Point(point2)) => {
+            assert_eq!(point1 - point2, expected);
         }
-        (Type::Color, Type::Color) => {
-            let color1 = world.get_color(&tuple1);
-            let color2 = world.get_color(&tuple2);
-            let result = color1 - color2;
-            assert_eq!(result, expected);
+        (ElementType::Color(color1), ElementType::Color(color2)) => {
+            assert_eq!(color1 - color2, expected);
         }
-        (Type::Vector, Type::Vector) => {
-            let vector1 = world.get_vector(&tuple1);
-            let vector2 = world.get_vector(&tuple2);
-            let result = vector1 - vector2;
-            assert_eq!(result, expected);
+        (ElementType::Vector(vector1), ElementType::Vector(vector2)) => {
+            assert_eq!(vector1 - vector2, expected);
         }
         _ => panic!("Not implemented"),
     }
@@ -212,24 +191,18 @@ fn negated_tuple_equals_tuple(
     z: f32,
     w: f32,
 ) {
-    match world.get_element_type(&tuple) {
-        Type::Point => {
+    match world.get_element(&tuple) {
+        ElementType::Point(point) => {
             let expected = Point::new(x, y, z, w);
-            let tuple = world.get_point(&tuple);
-            let result = -tuple;
-            assert_eq!(result, expected);
+            assert_eq!(-point, expected);
         }
-        Type::Color => {
+        ElementType::Color(color) => {
             let expected = Color::new(x, y, z, w);
-            let tuple = world.get_color(&tuple);
-            let result = -tuple;
-            assert_eq!(result, expected);
+            assert_eq!(-color, expected);
         }
-        Type::Vector => {
+        ElementType::Vector(vector) => {
             let expected = Vector::new(x, y, z, w);
-            let tuple = world.get_vector(&tuple);
-            let result = -tuple;
-            assert_eq!(result, expected);
+            assert_eq!(-vector, expected);
         }
         _ => panic!("Not implemented"),
     }
@@ -245,24 +218,18 @@ fn multiplied_tuple_by_scalar_equals_tuple(
     z: f32,
     w: f32,
 ) {
-    match world.get_element_type(&tuple) {
-        Type::Point => {
+    match world.get_element(&tuple) {
+        ElementType::Point(point) => {
             let expected = Point::new(x, y, z, w);
-            let tuple = world.get_point(&tuple);
-            let result = tuple * scalar;
-            assert_eq!(result, expected);
+            assert_eq!(point * scalar, expected);
         }
-        Type::Color => {
+        ElementType::Color(color) => {
             let expected = Color::new(x, y, z, w);
-            let tuple = world.get_color(&tuple);
-            let result = tuple * scalar;
-            assert_eq!(result, expected);
+            assert_eq!(color * scalar, expected);
         }
-        Type::Vector => {
+        ElementType::Vector(vector) => {
             let expected = Vector::new(x, y, z, w);
-            let tuple = world.get_vector(&tuple);
-            let result = tuple * scalar;
-            assert_eq!(result, expected);
+            assert_eq!(vector * scalar, expected);
         }
         _ => panic!("Not implemented"),
     }
@@ -278,24 +245,18 @@ fn divided_tuple_by_fraction_equals_tuple(
     z: f32,
     w: f32,
 ) {
-    match world.get_element_type(&tuple) {
-        Type::Point => {
+    match world.get_element(&tuple) {
+        ElementType::Point(point) => {
             let expected = Point::new(x, y, z, w);
-            let tuple = world.get_point(&tuple);
-            let result = tuple / fraction;
-            assert_eq!(result, expected);
+            assert_eq!(point / fraction, expected);
         }
-        Type::Color => {
+        ElementType::Color(color) => {
             let expected = Color::new(x, y, z, w);
-            let tuple = world.get_color(&tuple);
-            let result = tuple / fraction;
-            assert_eq!(result, expected);
+            assert_eq!(color / fraction, expected);
         }
-        Type::Vector => {
+        ElementType::Vector(vector) => {
             let expected = Vector::new(x, y, z, w);
-            let tuple = world.get_vector(&tuple);
-            let result = tuple / fraction;
-            assert_eq!(result, expected);
+            assert_eq!(vector / fraction, expected);
         }
         _ => panic!("Not implemented"),
     }

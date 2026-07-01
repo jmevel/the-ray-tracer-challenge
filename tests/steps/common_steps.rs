@@ -1,7 +1,7 @@
 use cucumber::{given, then, when};
 use the_ray_tracer_challenge::Object;
 
-use crate::steps::ray_tracer_world::{RayTracerWorld, Type};
+use crate::steps::ray_tracer_world::{ElementType, RayTracerWorld};
 
 #[given(expr = "{word} ← {word} * {word}")]
 #[when(expr = "{word} ← {word} * {word}")]
@@ -11,39 +11,21 @@ fn entity_is_entity_multiplied_by_entity(
     entity1: String,
     entity2: String,
 ) {
-    match (
-        world.get_element_type(&entity1),
-        world.get_element_type(&entity2),
-    ) {
-        (Type::Matrix((2, 2)), Type::Matrix(_)) => {
-            world.add_matrix2x2(
-                result_entity.clone(),
-                world.get_matrix2x2(&entity1) * world.get_matrix2x2(&entity2),
-            );
+    match (world.get_element(&entity1), world.get_element(&entity2)) {
+        (ElementType::Matrix2x2(entity1), ElementType::Matrix2x2(entity2)) => {
+            world.add_matrix2x2(result_entity.clone(), entity1 * entity2);
         }
-        (Type::Matrix((3, 3)), Type::Matrix(_)) => {
-            world.add_matrix3x3(
-                result_entity.clone(),
-                world.get_matrix3x3(&entity1) * world.get_matrix3x3(&entity2),
-            );
+        (ElementType::Matrix3x3(entity1), ElementType::Matrix3x3(entity2)) => {
+            world.add_matrix3x3(result_entity.clone(), entity1 * entity2);
         }
-        (Type::Matrix((4, 4)), Type::Matrix(_)) => {
-            world.add_matrix4x4(
-                result_entity.clone(),
-                world.get_matrix4x4(&entity1) * world.get_matrix4x4(&entity2),
-            );
+        (ElementType::Matrix4x4(entity1), ElementType::Matrix4x4(entity2)) => {
+            world.add_matrix4x4(result_entity.clone(), entity1 * entity2);
         }
-        (Type::Matrix((4, 4)), Type::Point) => {
-            world.add_point(
-                result_entity.clone(),
-                world.get_matrix4x4(&entity1) * world.get_point(&entity2),
-            );
+        (ElementType::Matrix4x4(matrix), ElementType::Point(point)) => {
+            world.add_point(result_entity.clone(), matrix * point);
         }
-        (Type::Matrix((4, 4)), Type::Vector) => {
-            world.add_vector(
-                result_entity.clone(),
-                world.get_matrix4x4(&entity1) * world.get_vector(&entity2),
-            );
+        (ElementType::Matrix4x4(matrix), ElementType::Vector(vector)) => {
+            world.add_vector(result_entity.clone(), matrix * vector);
         }
         _ => panic!("Not supported"),
     }
@@ -58,30 +40,30 @@ fn entity_is_entity_multiplied_by_entity_multiplied_by_entity(
     entity3: String,
 ) {
     match (
-        world.get_element_type(&entity1),
-        world.get_element_type(&entity2),
-        world.get_element_type(&entity3),
+        world.get_element(&entity1),
+        world.get_element(&entity2),
+        world.get_element(&entity3),
     ) {
-        (Type::Matrix((2, 2)), Type::Matrix(_), Type::Matrix(_)) => {
-            world.add_matrix2x2(
-                result_entity.clone(),
-                &(world.get_matrix2x2(&entity1) * world.get_matrix2x2(&entity2))
-                    * world.get_matrix2x2(&entity3),
-            );
+        (
+            ElementType::Matrix2x2(entity1),
+            ElementType::Matrix2x2(entity2),
+            ElementType::Matrix2x2(entity3),
+        ) => {
+            world.add_matrix2x2(result_entity.clone(), &(entity1 * entity2) * entity3);
         }
-        (Type::Matrix((3, 3)), Type::Matrix(_), Type::Matrix(_)) => {
-            world.add_matrix3x3(
-                result_entity.clone(),
-                &(world.get_matrix3x3(&entity1) * world.get_matrix3x3(&entity2))
-                    * world.get_matrix3x3(&entity3),
-            );
+        (
+            ElementType::Matrix3x3(entity1),
+            ElementType::Matrix3x3(entity2),
+            ElementType::Matrix3x3(entity3),
+        ) => {
+            world.add_matrix3x3(result_entity.clone(), &(entity1 * entity2) * entity3);
         }
-        (Type::Matrix((4, 4)), Type::Matrix(_), Type::Matrix(_)) => {
-            world.add_matrix4x4(
-                result_entity.clone(),
-                &(world.get_matrix4x4(&entity1) * world.get_matrix4x4(&entity2))
-                    * world.get_matrix4x4(&entity3),
-            );
+        (
+            ElementType::Matrix4x4(entity1),
+            ElementType::Matrix4x4(entity2),
+            ElementType::Matrix4x4(entity3),
+        ) => {
+            world.add_matrix4x4(result_entity.clone(), &(entity1 * entity2) * entity3);
         }
         _ => panic!("Not supported"),
     }
@@ -89,30 +71,27 @@ fn entity_is_entity_multiplied_by_entity_multiplied_by_entity(
 
 #[then(regex = r"^([a-zA-Z0-9]*) = ([a-zA-Z0-9]*)$")]
 fn entity_equals_entity(world: &mut RayTracerWorld, entity1: String, entity2: String) {
-    match world.get_element_type(&entity1) {
-        Type::Point => {
-            assert_eq!(world.get_point(&entity1), world.get_point(&entity2));
+    match (world.get_element(&entity1), world.get_element(&entity2)) {
+        (ElementType::Point(entity1), ElementType::Point(entity2)) => {
+            assert_eq!(entity1, entity2);
         }
-        Type::Color => {
-            assert_eq!(world.get_color(&entity1), world.get_color(&entity2));
+        (ElementType::Color(entity1), ElementType::Color(entity2)) => {
+            assert_eq!(entity1, entity2);
         }
-        Type::Vector => {
-            assert_eq!(world.get_vector(&entity1), world.get_vector(&entity2));
+        (ElementType::Vector(entity1), ElementType::Vector(entity2)) => {
+            assert_eq!(entity1, entity2);
         }
-        Type::Matrix((2, 2)) => {
-            assert_eq!(world.get_matrix2x2(&entity1), world.get_matrix2x2(&entity2))
+        (ElementType::Matrix2x2(entity1), ElementType::Matrix2x2(entity2)) => {
+            assert_eq!(entity1, entity2)
         }
-        Type::Matrix((3, 3)) => {
-            assert_eq!(world.get_matrix3x3(&entity1), world.get_matrix3x3(&entity2))
+        (ElementType::Matrix3x3(entity1), ElementType::Matrix3x3(entity2)) => {
+            assert_eq!(entity1, entity2)
         }
-        Type::Matrix((4, 4)) => {
-            assert_eq!(world.get_matrix4x4(&entity1), world.get_matrix4x4(&entity2))
+        (ElementType::Matrix4x4(entity1), ElementType::Matrix4x4(entity2)) => {
+            assert_eq!(entity1, entity2)
         }
-        Type::Intersection => {
-            assert_eq!(
-                world.get_intersection(&entity1),
-                world.get_intersection(&entity2)
-            )
+        (ElementType::Intersection(entity1), ElementType::Intersection(entity2)) => {
+            assert_eq!(entity1, entity2)
         }
         _ => panic!("Not supported"),
     }
@@ -120,26 +99,29 @@ fn entity_equals_entity(world: &mut RayTracerWorld, entity1: String, entity2: St
 
 #[then(regex = r"^([a-zA-Z0-9]*) != ([a-zA-Z0-9]*)$")]
 fn entity_does_not_equal_entity(world: &mut RayTracerWorld, entity1: String, entity2: String) {
-    match world.get_element_type(&entity1) {
-        Type::Point => {
-            assert_ne!(world.get_point(&entity1), world.get_point(&entity2))
+    match (world.get_element(&entity1), world.get_element(&entity2)) {
+        (ElementType::Point(entity1), ElementType::Point(entity2)) => {
+            assert_ne!(entity1, entity2);
         }
-        Type::Color => {
-            assert_ne!(world.get_color(&entity1), world.get_color(&entity2))
+        (ElementType::Color(entity1), ElementType::Color(entity2)) => {
+            assert_ne!(entity1, entity2);
         }
-        Type::Vector => {
-            assert_ne!(world.get_vector(&entity1), world.get_vector(&entity2))
+        (ElementType::Vector(entity1), ElementType::Vector(entity2)) => {
+            assert_ne!(entity1, entity2);
         }
-        Type::Matrix((2, 2)) => {
-            assert_ne!(world.get_matrix2x2(&entity1), world.get_matrix2x2(&entity2))
+        (ElementType::Matrix2x2(entity1), ElementType::Matrix2x2(entity2)) => {
+            assert_ne!(entity1, entity2)
         }
-        Type::Matrix((3, 3)) => {
-            assert_ne!(world.get_matrix3x3(&entity1), world.get_matrix3x3(&entity2))
+        (ElementType::Matrix3x3(entity1), ElementType::Matrix3x3(entity2)) => {
+            assert_ne!(entity1, entity2)
         }
-        Type::Matrix((4, 4)) => {
-            assert_ne!(world.get_matrix4x4(&entity1), world.get_matrix4x4(&entity2))
+        (ElementType::Matrix4x4(entity1), ElementType::Matrix4x4(entity2)) => {
+            assert_ne!(entity1, entity2)
         }
-        _ => panic!("no matrix with given size"),
+        (ElementType::Intersection(entity1), ElementType::Intersection(entity2)) => {
+            assert_ne!(entity1, entity2)
+        }
+        _ => panic!("Not supported"),
     }
 }
 
@@ -151,35 +133,37 @@ fn entity_multiplied_by_entity_equals_entity(
     expected_entity: String,
 ) {
     match (
-        world.get_element_type(&entity1),
-        world.get_element_type(&entity2),
-        world.get_element_type(&expected_entity),
+        world.get_element(&entity1),
+        world.get_element(&entity2),
+        world.get_element(&expected_entity),
     ) {
-        (Type::Matrix(size), Type::Matrix(_), Type::Matrix(_)) if size == &(2usize, 2usize) => {
-            assert_eq!(
-                world.get_matrix2x2(&entity1) * world.get_matrix2x2(&entity2),
-                *world.get_matrix2x2(&entity1)
-            )
+        (
+            ElementType::Matrix2x2(entity1),
+            ElementType::Matrix2x2(entity2),
+            ElementType::Matrix2x2(expected_entity),
+        ) => {
+            assert_eq!(&(entity1 * entity2), expected_entity);
         }
-        (Type::Matrix(size), Type::Matrix(_), Type::Matrix(_)) if size == &(3usize, 3usize) => {
-            assert_eq!(
-                world.get_matrix3x3(&entity1) * world.get_matrix3x3(&entity2),
-                *world.get_matrix3x3(&entity1)
-            )
+        (
+            ElementType::Matrix3x3(entity1),
+            ElementType::Matrix3x3(entity2),
+            ElementType::Matrix3x3(expected_entity),
+        ) => {
+            assert_eq!(&(entity1 * entity2), expected_entity);
         }
-        (Type::Matrix(size), Type::Matrix(_), Type::Matrix(_)) if size == &(4usize, 4usize) => {
-            assert_eq!(
-                world.get_matrix4x4(&entity1) * world.get_matrix4x4(&entity2),
-                *world.get_matrix4x4(&entity1)
-            )
+        (
+            ElementType::Matrix4x4(entity1),
+            ElementType::Matrix4x4(entity2),
+            ElementType::Matrix4x4(expected_entity),
+        ) => {
+            assert_eq!(&(entity1 * entity2), expected_entity);
         }
-        (Type::Matrix((4, 4)), Type::Vector, Type::Vector) => {
-            let transformation = world.get_matrix4x4(&entity1);
-            let vector = world.get_vector(&entity2);
-            let actual = transformation * vector;
-            let expected_entity = world.get_vector(&expected_entity);
-
-            assert_eq!(&actual, expected_entity);
+        (
+            ElementType::Matrix4x4(entity1),
+            ElementType::Vector(entity2),
+            ElementType::Vector(expected_entity),
+        ) => {
+            assert_eq!(&(entity1 * entity2), expected_entity);
         }
         _ => panic!("Not supported"),
     }
@@ -191,14 +175,12 @@ fn collection_count_equals_count(
     collection_name: String,
     count: usize,
 ) {
-    match world.get_element_type(&collection_name) {
-        Type::IntersectionsCollection => {
-            let intersections_collection =
-                world.get_intersections_collection(&collection_name).clone();
+    match world.get_element(&collection_name) {
+        ElementType::IntersectionsCollection(intersections) => {
             if count == 0 {
-                assert!(intersections_collection.is_none());
+                assert!(intersections.is_none());
             } else {
-                assert_eq!(intersections_collection.unwrap().len(), count);
+                assert_eq!(intersections.as_ref().unwrap().len(), count);
             }
         }
         _ => panic!("Not supported"),
@@ -206,20 +188,19 @@ fn collection_count_equals_count(
 }
 
 #[then(regex = r#"^([a-zA-Z0-9_]+)\.object = ([a-zA-Z0-9_]+)$"#)]
-fn object_of_element_equals_object(world: &mut RayTracerWorld, element: String, object: String) {
-    match (
-        world.get_element_type(&element),
-        world.get_element_type(&object),
-    ) {
-        (Type::Intersection, Type::Sphere) => {
-            let intersection = world.get_intersection(&element).as_ref().unwrap();
-            let sphere = world.get_sphere(&object).clone();
-            assert_eq!(intersection.object(), &Object::Sphere(sphere));
+fn object_of_element_equals_object(world: &mut RayTracerWorld, element: String, expected: String) {
+    match (world.get_element(&element), world.get_element(&expected)) {
+        (ElementType::Intersection(element), ElementType::Sphere(expected)) => {
+            assert_eq!(
+                element.as_ref().unwrap().object(),
+                &Object::Sphere(expected.to_owned())
+            );
         }
-        (Type::Computations, Type::Sphere) => {
-            let computations = world.get_computations(&element);
-            let sphere = world.get_sphere(&object).to_owned();
-            assert_eq!(computations.object, &Object::Sphere(sphere));
+        (ElementType::Computations(element), ElementType::Sphere(expected)) => {
+            assert_eq!(
+                element.as_computations().object,
+                &Object::Sphere(expected.to_owned())
+            );
         }
         _ => panic!("Not supported"),
     }
@@ -236,12 +217,11 @@ fn object_at_index_of_intersections_collection_equals_object(
         .get_intersections_collection(&intersections_collection)
         .clone();
 
-    match world.get_element_type(&object_name) {
-        Type::Sphere => {
-            let sphere = world.get_sphere(&object_name).clone();
+    match world.get_element(&object_name) {
+        ElementType::Sphere(sphere) => {
             assert_eq!(
                 intersection.unwrap()[index].object(),
-                &Object::Sphere(sphere)
+                &Object::Sphere(sphere.to_owned())
             );
         }
         _ => panic!("Not supported"),
@@ -250,9 +230,9 @@ fn object_at_index_of_intersections_collection_equals_object(
 
 #[then(expr = "{word} is nothing")]
 fn entity_is_nothing(world: &mut RayTracerWorld, entity: String) {
-    match world.get_element_type(&entity) {
-        Type::Intersection => {
-            assert!(world.get_intersection(&entity).is_none());
+    match world.get_element(&entity) {
+        ElementType::Intersection(intersection) => {
+            assert!(intersection.is_none());
         }
         _ => panic!("Not supported"),
     }
