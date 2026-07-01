@@ -1,6 +1,6 @@
 use crate::{
-    Color, Intersection, Intersections, Material, Matrix, Object, Point, PointLight, Ray,
-    ReflectionValue, Sphere,
+    Color, Computations, Intersection, Intersections, Material, Matrix, Object, Point, PointLight,
+    Ray, ReflectionValue, Sphere,
 };
 
 #[derive(Debug)]
@@ -42,6 +42,17 @@ impl World {
         }
 
         Ok(Some(Intersections { 0: intersections }))
+    }
+
+    pub fn shade_hit(&self, computations: &Computations) -> Color {
+        let Object::Sphere(sphere) = computations.object;
+        Color::lighting(
+            &sphere.material,
+            self.light.as_ref().expect("World does not have any light"),
+            &computations.point,
+            &computations.eye_vector,
+            &computations.normal_vector,
+        )
     }
 }
 

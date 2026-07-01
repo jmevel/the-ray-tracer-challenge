@@ -317,6 +317,17 @@ impl RayTracerWorld {
         world
     }
 
+    pub fn get_mut_world(&mut self, world: &str) -> &mut the_ray_tracer_challenge::World {
+        let ElementType::World(world) = self
+            .elements
+            .get_mut(world)
+            .expect(format!("{world} does not exist").as_str())
+        else {
+            panic!("{world} is not a world");
+        };
+        world
+    }
+
     pub fn add_computations(&mut self, computations_name: String, computations: Computations) {
         self.elements
             .insert(computations_name, ElementType::Computations(computations));

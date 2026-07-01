@@ -1,7 +1,10 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Object, World};
+use the_ray_tracer_challenge::{Color, Object, Point, PointLight, World};
 
-use crate::steps::ray_tracer_world::{ElementType, RayTracerWorld};
+use crate::steps::{
+    ray_tracer_world::{ElementType, RayTracerWorld},
+    utils::Nth,
+};
 
 #[given(expr = "{word} ← world\\()")]
 fn world_is_new_world(world: &mut RayTracerWorld, world_name: String) {
@@ -12,6 +15,37 @@ fn world_is_new_world(world: &mut RayTracerWorld, world_name: String) {
 #[when(expr = "{word} ← default_world\\()")]
 fn world_is_default_world(world: &mut RayTracerWorld, world_name: String) {
     world.add_world(world_name, World::default());
+}
+
+#[given(expr = "{word} ← the {nth} object in {word}")]
+fn shape_is_the_nth_object_in_world(
+    world: &mut RayTracerWorld,
+    shape_name: String,
+    nth: Nth,
+    world_name: String,
+) {
+    let scene_world = world.get_world(&world_name);
+    let Object::Sphere(shape) = scene_world.elements[nth as usize];
+    world.add_sphere(shape_name, shape);
+}
+
+#[given(
+    expr = "{word}.light ← point_light\\(point\\({float}, {float}, {float}), color\\({float}, {float}, {float}))"
+)]
+fn w_light_point_light_point_color(
+    world: &mut RayTracerWorld,
+    world_name: String,
+    x: f32,
+    y: f32,
+    z: f32,
+    red: f32,
+    green: f32,
+    blue: f32,
+) {
+    let position = Point::new_point(x, y, z);
+    let intensity = Color::new_color(red, green, blue);
+    let scene_world = world.get_mut_world(&world_name);
+    scene_world.light = Some(PointLight::new(position, intensity));
 }
 
 #[when(expr = "{word} ← intersect_world\\({word}, {word})")]
@@ -26,6 +60,19 @@ fn intersections_is_world_intersected_with_ray(
     let intersections = scene_world.intersect(&ray).unwrap();
 
     world.add_intersections_collection(intersections_name, intersections);
+}
+
+#[when(expr = "{word} ← shade_hit\\({word}, {word})")]
+fn c_shade_hit_w_comps(
+    world: &mut RayTracerWorld,
+    color_name: String,
+    world_name: String,
+    computations: String,
+) {
+    let scene_world = world.get_world(&world_name);
+    let computations = world.get_computations(&computations);
+    let color = scene_world.shade_hit(computations);
+    world.add_color(color_name, color);
 }
 
 #[then(expr = "{word} contains no objects")]
