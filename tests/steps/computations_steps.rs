@@ -67,7 +67,7 @@ fn computations_t_equals_intersection_t(
     let computations = world.get_computations(&computations);
     let intersection = world.get_intersection(&intersection).as_ref().unwrap();
 
-    assert_eq!(computations.t, intersection.t());
+    assert_eq!(&computations.t, intersection.t());
 }
 
 #[then(expr = "{word}.object = {word}.object")]
@@ -78,5 +78,15 @@ fn computation_object_equals_intersection_object(
 ) {
     let computations = world.get_computations(&computation);
     let intersection = world.get_intersection(&intersection).to_owned().unwrap();
-    assert_eq!(computations.object, intersection.object());
+    assert_eq!(&computations.object, intersection.object());
+}
+
+#[then(regex = r"^([a-zA-Z0-9_]+)\.inside = (true|false)$")]
+fn computation_inside_equals_value(
+    world: &mut RayTracerWorld,
+    computation: String,
+    expected: bool,
+) {
+    let computations = world.get_computations(&computation);
+    assert_eq!(computations.inside, expected);
 }

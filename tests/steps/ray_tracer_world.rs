@@ -2,39 +2,13 @@ use std::collections::HashMap;
 
 use cucumber::World;
 use the_ray_tracer_challenge::{
-    Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Object, Point,
-    PointLight, Ray, Sphere, Vector,
+    Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Point, PointLight,
+    Ray, Sphere, Vector,
 };
 
 #[derive(Debug, Default, World)]
 #[world(init = Self::new)]
 pub struct RayTracerWorld {
-    // canvases: HashMap<String, Canvas>,
-    // points: HashMap<String, Point>,
-    // colors: HashMap<String, Color>,
-    // vectors: HashMap<String, Vector>,
-    // ppms: HashMap<String, String>,
-
-    // matrices2x2: HashMap<String, Matrix<2, 2>>,
-    // matrices3x3: HashMap<String, Matrix<3, 3>>,
-    // matrices4x4: HashMap<String, Matrix<4, 4>>,
-
-    // rays: HashMap<String, Ray>,
-
-    // spheres: HashMap<String, Sphere>,
-
-    // intersections: HashMap<String, Option<Intersection>>,
-    // intersections_collections: HashMap<String, Option<Intersections>>,
-
-    // point_lights: HashMap<String, PointLight>,
-
-    // materials: HashMap<String, Material>,
-
-    // world: the_ray_tracer_challenge::World,
-
-    // computations: HashMap<String, OwnedComputations>,
-
-    // index: HashMap<String, ElementType>,
     elements: HashMap<String, ElementType>,
 }
 
@@ -55,7 +29,7 @@ pub enum ElementType {
     PointLight(PointLight),
     Material(Material),
     World(the_ray_tracer_challenge::World),
-    Computations(OwnedComputations),
+    Computations(Computations),
 }
 
 impl RayTracerWorld {
@@ -344,13 +318,11 @@ impl RayTracerWorld {
     }
 
     pub fn add_computations(&mut self, computations_name: String, computations: Computations) {
-        self.elements.insert(
-            computations_name,
-            ElementType::Computations(OwnedComputations::from(computations)),
-        );
+        self.elements
+            .insert(computations_name, ElementType::Computations(computations));
     }
 
-    pub fn get_computations(&self, computation: &str) -> Computations<'_> {
+    pub fn get_computations(&self, computation: &str) -> &Computations {
         let ElementType::Computations(computation) = self
             .elements
             .get(computation)
@@ -358,39 +330,6 @@ impl RayTracerWorld {
         else {
             panic!("{computation} is not a computation");
         };
-        computation.as_computations()
-    }
-}
-
-#[derive(Debug)]
-pub struct OwnedComputations {
-    t: f32,
-    object: Object,
-    point: Point,
-    eye_vector: Vector,
-    normal_vector: Vector,
-}
-
-impl From<Computations<'_>> for OwnedComputations {
-    fn from(value: Computations<'_>) -> Self {
-        Self {
-            t: *value.t(),
-            object: *value.object(),
-            point: value.point(),
-            eye_vector: value.eye_vector(),
-            normal_vector: value.normal_vector(),
-        }
-    }
-}
-
-impl OwnedComputations {
-    pub fn as_computations(&self) -> Computations<'_> {
-        Computations {
-            t: &self.t,
-            object: &self.object,
-            point: self.point,
-            eye_vector: self.eye_vector,
-            normal_vector: self.normal_vector,
-        }
+        computation
     }
 }

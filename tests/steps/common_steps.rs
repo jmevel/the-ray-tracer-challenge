@@ -197,10 +197,7 @@ fn object_of_element_equals_object(world: &mut RayTracerWorld, element: String, 
             );
         }
         (ElementType::Computations(element), ElementType::Sphere(expected)) => {
-            assert_eq!(
-                element.as_computations().object,
-                &Object::Sphere(expected.to_owned())
-            );
+            assert_eq!(element.object, Object::Sphere(expected.to_owned()));
         }
         _ => panic!("Not supported"),
     }
