@@ -5,7 +5,7 @@ use crate::{
 
 #[derive(Debug)]
 pub struct World {
-    pub light: Option<PointLight>,
+    pub light: Option<Vec<PointLight>>,
     pub elements: Vec<Object>,
 }
 
@@ -46,13 +46,23 @@ impl World {
 
     pub fn shade_hit(&self, computations: &Computations) -> Color {
         let Object::Sphere(sphere) = computations.object;
-        Color::lighting(
-            &sphere.material,
-            self.light.as_ref().expect("World does not have any light"),
-            &computations.point,
-            &computations.eye_vector,
-            &computations.normal_vector,
-        )
+        let colors = match self.light.as_ref() {
+            Some(lights) => lights
+                .iter()
+                .map(|light| {
+                    Color::lighting(
+                        &sphere.material,
+                        light,
+                        &computations.point,
+                        &computations.eye_vector,
+                        &computations.normal_vector,
+                    )
+                })
+                .collect::<Vec<Color>>(),
+            None => panic!("World does not have any light"),
+        };
+
+        colors.into_iter().reduce(|acc, color| acc + color).unwrap()
     }
 }
 
@@ -75,7 +85,7 @@ impl Default for World {
         let elements: Vec<Object> = vec![Object::Sphere(s1), Object::Sphere(s2)];
 
         Self {
-            light: Some(light),
+            light: Some(vec![light]),
             elements,
         }
     }

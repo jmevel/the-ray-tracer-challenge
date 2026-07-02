@@ -45,7 +45,7 @@ fn w_light_point_light_point_color(
     let position = Point::new_point(x, y, z);
     let intensity = Color::new_color(red, green, blue);
     let scene_world = world.get_mut_world(&world_name);
-    scene_world.light = Some(PointLight::new(position, intensity));
+    scene_world.light = Some(vec![PointLight::new(position, intensity)]);
 }
 
 #[when(expr = "{word} ← intersect_world\\({word}, {word})")]
@@ -89,7 +89,10 @@ fn world_has_no_light_source(world: &mut RayTracerWorld, world_name: String) {
 fn world_light_equals_light(world: &mut RayTracerWorld, world_name: String, light: String) {
     let expected = world.get_point_light(&light);
     let scene_world = world.get_world(&world_name);
-    assert_eq!(scene_world.light.as_ref().unwrap(), expected);
+    assert_eq!(
+        scene_world.light.as_ref().unwrap().first().unwrap(),
+        expected
+    );
 }
 
 #[then(expr = "{word} contains {word}")]
