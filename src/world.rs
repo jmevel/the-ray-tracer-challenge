@@ -5,16 +5,20 @@ use crate::{
 
 #[derive(Debug)]
 pub struct World {
-    pub light: Option<Vec<PointLight>>,
+    pub lights: Option<Vec<PointLight>>,
     pub elements: Vec<Object>,
 }
 
 impl World {
     pub fn new() -> World {
         Self {
-            light: None,
+            lights: None,
             elements: Vec::new(),
         }
+    }
+
+    pub fn elements<'a>(&'a self) -> Vec<&'a Object> {
+        self.elements.iter().collect()
     }
 
     pub fn intersect(&self, ray: &Ray) -> Result<Option<Intersections>, String> {
@@ -46,7 +50,7 @@ impl World {
 
     pub fn shade_hit(&self, computations: &Computations) -> Color {
         let Object::Sphere(sphere) = computations.object;
-        let colors = match self.light.as_ref() {
+        let colors = match self.lights.as_ref() {
             Some(lights) => lights
                 .iter()
                 .map(|light| {
@@ -63,6 +67,17 @@ impl World {
         };
 
         colors.into_iter().reduce(|acc, color| acc + color).unwrap()
+    }
+
+    pub fn color_at(&self, ray: &Ray) -> Result<Color, String> {
+        if let Some(intersections) = self.intersect(ray)? {
+            if let Some(hit) = intersections.hit() {
+                let computations = Computations::from_intersection_and_ray(hit, ray);
+                println!("computations: {:?}", computations);
+                return Ok(self.shade_hit(&computations));
+            }
+        }
+        Ok(Color::black())
     }
 }
 
@@ -85,7 +100,7 @@ impl Default for World {
         let elements: Vec<Object> = vec![Object::Sphere(s1), Object::Sphere(s2)];
 
         Self {
-            light: Some(vec![light]),
+            lights: Some(vec![light]),
             elements,
         }
     }

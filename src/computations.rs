@@ -1,4 +1,6 @@
-use crate::{Intersection, Object, Point, Ray, Vector};
+use std::convert::identity;
+
+use crate::{Intersection, Matrix, Object, Point, Ray, Sphere, Vector};
 
 #[derive(Debug)]
 pub struct Computations {
@@ -29,7 +31,8 @@ impl Computations {
 
         Self {
             t: intersection.t().to_owned(),
-            object: intersection.object().to_owned(),
+            // object: intersection.object().clone(),
+            object: Object::Sphere(Sphere::new(None)),
             point,
             eye_vector,
             normal_vector,

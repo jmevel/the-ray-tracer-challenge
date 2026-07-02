@@ -4,7 +4,8 @@ use cucumber::then;
 use the_ray_tracer_challenge::{Color, Tuple, float::float_equals};
 
 use crate::steps::{
-    ray_tracer_world::RayTracerWorld, tuple_steps::tuple_added_to_tuple_equals_tuple,
+    ray_tracer_world::{ElementType, RayTracerWorld},
+    tuple_steps::tuple_added_to_tuple_equals_tuple,
 };
 
 #[then(expr = "{word} is a point")]
@@ -51,4 +52,17 @@ fn multiplied_color_by_color_equals_color(
     };
 
     assert!(float_equals(&result.x(), &expected.x()));
+}
+
+#[then(expr = "{word} = {word}.material.color")]
+fn color_equals_object_material_color(world: &mut RayTracerWorld, color: String, object: String) {
+    let color = world.get_color(&color);
+    let object = world.get_element(&object);
+
+    match object {
+        ElementType::Sphere(sphere) => {
+            assert_eq!(color, &sphere.material.color);
+        }
+        _ => panic!("Not implemented"),
+    };
 }

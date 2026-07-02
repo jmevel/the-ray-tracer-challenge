@@ -2,14 +2,16 @@ use std::collections::HashMap;
 
 use cucumber::World;
 use the_ray_tracer_challenge::{
-    Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Point, PointLight,
-    Ray, Sphere, Vector,
+    Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Object, Point,
+    PointLight, Ray, Sphere, Vector, sphere,
 };
+use uuid::Uuid;
 
 #[derive(Debug, Default, World)]
 #[world(init = Self::new)]
 pub struct RayTracerWorld {
     elements: HashMap<String, ElementType>,
+    object_references: HashMap<String, Uuid>,
 }
 
 #[derive(Debug)]
@@ -30,6 +32,7 @@ pub enum ElementType {
     Material(Material),
     World(the_ray_tracer_challenge::World),
     Computations(Computations),
+    ObjectReference(Object),
 }
 
 impl RayTracerWorld {
@@ -44,6 +47,12 @@ impl RayTracerWorld {
     pub fn get_element(&self, element: &str) -> &ElementType {
         self.elements
             .get(element)
+            .expect(format!("{element} does not exist").as_str())
+    }
+
+    pub fn get_mut_element(&mut self, element: &str) -> &mut ElementType {
+        self.elements
+            .get_mut(element)
             .expect(format!("{element} does not exist").as_str())
     }
 
@@ -294,8 +303,8 @@ impl RayTracerWorld {
     pub fn get_mut_material(&mut self, material: &str) -> &mut Material {
         let ElementType::Material(material) = self
             .elements
-            .get_mut(material)
-            .expect(format!("{material} does not exist").as_str())
+            .entry(material.to_string())
+            .or_insert(ElementType::Material(Material::default()))
         else {
             panic!("{material} is not a material");
         };
@@ -342,5 +351,19 @@ impl RayTracerWorld {
             panic!("{computation} is not a computation");
         };
         computation
+    }
+
+    pub fn replace_object(&mut self, object_name: &str, new_value: Sphere) {
+        let object_id = self
+            .object_references
+            .get(object_name)
+            .expect(format!("{object_name} does not exist").as_str());
+
+        for element in self.elements.values_mut() {
+            if matches!(element, ElementType::Sphere(sphere) if sphere.id == *object_id) {
+                *element = ElementType::Sphere(new_value);
+                break;
+            }
+        }
     }
 }

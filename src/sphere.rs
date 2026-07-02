@@ -4,7 +4,7 @@ use crate::{Intersection, Intersections, Material, Matrix, Object, Point, Ray, V
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Sphere {
-    id: Uuid,
+    pub id: Uuid,
     pub transform: Matrix<4, 4>,
     pub material: Material,
 }

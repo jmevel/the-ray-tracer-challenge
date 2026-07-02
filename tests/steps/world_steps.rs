@@ -24,7 +24,7 @@ fn shape_is_the_nth_object_in_world(
     nth: Nth,
     world_name: String,
 ) {
-    let scene_world = world.get_world(&world_name);
+    let scene_world = world.get_mut_world(&world_name);
     let Object::Sphere(shape) = scene_world.elements[nth as usize];
     world.add_sphere(shape_name, shape);
 }
@@ -32,7 +32,7 @@ fn shape_is_the_nth_object_in_world(
 #[given(
     expr = "{word}.light ← point_light\\(point\\({float}, {float}, {float}), color\\({float}, {float}, {float}))"
 )]
-fn w_light_point_light_point_color(
+fn light_of_world_is(
     world: &mut RayTracerWorld,
     world_name: String,
     x: f32,
@@ -45,7 +45,7 @@ fn w_light_point_light_point_color(
     let position = Point::new_point(x, y, z);
     let intensity = Color::new_color(red, green, blue);
     let scene_world = world.get_mut_world(&world_name);
-    scene_world.light = Some(vec![PointLight::new(position, intensity)]);
+    scene_world.lights = Some(vec![PointLight::new(position, intensity)]);
 }
 
 #[when(expr = "{word} ← intersect_world\\({word}, {word})")]
@@ -63,7 +63,7 @@ fn intersections_is_world_intersected_with_ray(
 }
 
 #[when(expr = "{word} ← shade_hit\\({word}, {word})")]
-fn c_shade_hit_w_comps(
+fn color_is_shade_it_result(
     world: &mut RayTracerWorld,
     color_name: String,
     world_name: String,
@@ -75,6 +75,18 @@ fn c_shade_hit_w_comps(
     world.add_color(color_name, color);
 }
 
+#[when(expr = "{word} ← color_at\\({word}, {word})")]
+fn color_is_color_at(
+    world: &mut RayTracerWorld,
+    color_name: String,
+    world_name: String,
+    ray: String,
+) {
+    let scene_world = world.get_world(&world_name);
+    let ray = world.get_ray(&ray);
+    world.add_color(color_name, scene_world.color_at(ray).unwrap());
+}
+
 #[then(expr = "{word} contains no objects")]
 fn world_contains_no_objects(world: &mut RayTracerWorld, world_name: String) {
     assert!(world.get_world(&world_name).elements.is_empty());
@@ -82,7 +94,7 @@ fn world_contains_no_objects(world: &mut RayTracerWorld, world_name: String) {
 
 #[then(expr = "{word} has no light source")]
 fn world_has_no_light_source(world: &mut RayTracerWorld, world_name: String) {
-    assert!(world.get_world(&world_name).light.is_none());
+    assert!(world.get_world(&world_name).lights.is_none());
 }
 
 #[then(expr = "{word}.light = {word}")]
@@ -90,7 +102,7 @@ fn world_light_equals_light(world: &mut RayTracerWorld, world_name: String, ligh
     let expected = world.get_point_light(&light);
     let scene_world = world.get_world(&world_name);
     assert_eq!(
-        scene_world.light.as_ref().unwrap().first().unwrap(),
+        scene_world.lights.as_ref().unwrap().first().unwrap(),
         expected
     );
 }

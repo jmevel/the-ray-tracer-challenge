@@ -13,7 +13,7 @@ use crate::{Tuple, Vector};
 use std::fmt::{Display, Formatter};
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy)]
 pub struct Color {
     x: f32,
     y: f32,
@@ -109,6 +109,17 @@ impl Tuple for Color {
     }
     fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self { x, y, z, w }
+    }
+}
+
+impl Default for Color {
+    fn default() -> Self {
+        Self {
+            x: Default::default(),
+            y: Default::default(),
+            z: Default::default(),
+            w: 1f32,
+        }
     }
 }
 

@@ -195,7 +195,7 @@
       ],
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--name", "The hit, when an intersection occurs on the inside"],
+    "args": ["--name", "The color with an intersection behind the ray"],
   },
   // Not working
   // https://zed.dev/docs/languages/rust#automatically-locate-a-debug-target-based-on-build-command
