@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use cucumber::World;
 use the_ray_tracer_challenge::{
     Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Object, Point,
-    PointLight, Ray, Sphere, Vector, sphere,
+    PointLight, Ray, Sphere, Vector,
 };
 use uuid::Uuid;
 
@@ -11,7 +11,7 @@ use uuid::Uuid;
 #[world(init = Self::new)]
 pub struct RayTracerWorld {
     elements: HashMap<String, ElementType>,
-    object_references: HashMap<String, Uuid>,
+    // object_references: HashMap<String, Uuid>,
 }
 
 #[derive(Debug)]
@@ -32,7 +32,7 @@ pub enum ElementType {
     Material(Material),
     World(the_ray_tracer_challenge::World),
     Computations(Computations),
-    ObjectReference(Object),
+    SceneWorldObjectReference((String, Uuid)), // String is the name of its parent
 }
 
 impl RayTracerWorld {
@@ -202,13 +202,27 @@ impl RayTracerWorld {
     }
 
     pub fn get_sphere(&self, sphere: &str) -> &Sphere {
-        let ElementType::Sphere(sphere) = self
+        let sphere = match self
             .elements
             .get(sphere)
             .expect(format!("{sphere} does not exist").as_str())
-        else {
-            panic!("{sphere} is not a sphere");
+        {
+            ElementType::Sphere(sphere) => sphere,
+            ElementType::SceneWorldObjectReference((parent_name, uuid)) => {
+                let scene_world = self.get_world(parent_name);
+                let sphere = scene_world
+                    .elements
+                    .iter()
+                    .find_map(|object| match object {
+                        Object::Sphere(sphere) if sphere.id == *uuid => Some(sphere),
+                        _ => None,
+                    })
+                    .expect("Sphere not found");
+                sphere
+            }
+            _ => panic!("{sphere} is not a sphere"),
         };
+
         sphere
     }
 
@@ -353,17 +367,10 @@ impl RayTracerWorld {
         computation
     }
 
-    pub fn replace_object(&mut self, object_name: &str, new_value: Sphere) {
-        let object_id = self
-            .object_references
-            .get(object_name)
-            .expect(format!("{object_name} does not exist").as_str());
-
-        for element in self.elements.values_mut() {
-            if matches!(element, ElementType::Sphere(sphere) if sphere.id == *object_id) {
-                *element = ElementType::Sphere(new_value);
-                break;
-            }
-        }
+    pub fn add_object_reference(&mut self, object_name: String, parent_name: String, id: Uuid) {
+        self.elements.insert(
+            object_name,
+            ElementType::SceneWorldObjectReference((parent_name, id)),
+        );
     }
 }

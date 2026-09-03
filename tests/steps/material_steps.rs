@@ -1,5 +1,5 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Color, Material, Point, PointLight, ReflectionValue};
+use the_ray_tracer_challenge::{Color, Material, Object, Point, PointLight, ReflectionValue};
 
 use crate::steps::ray_tracer_world::{ElementType, RayTracerWorld};
 
@@ -11,29 +11,41 @@ fn material_is(world: &mut RayTracerWorld, material_name: String) {
 
 // material.ambient ← 1.0
 #[given(
-    regex = r#"([a-zA-Z0-9]*)\\.ambient ← ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))"#
+    regex = r#"^([a-zA-Z0-9]*)\.ambient ← ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$"#
 )]
-fn ambien_of_material_is_value(world: &mut RayTracerWorld, material: String, value: f32) {
+fn ambient_of_material_is_value(world: &mut RayTracerWorld, material: String, value: f32) {
     let material = world.get_mut_material(&material);
     material.ambient = ReflectionValue::new(value);
 }
 
 #[given(expr = "{word}.material.ambient ← {float}")]
-fn ambient_of_element_material_is_value(world: &mut RayTracerWorld, element: String, value: f32) {
-    // match world.get_mut_element(&element) {
-    //     ElementType::Sphere(sphere) => {
-    //         sphere.material.ambient = ReflectionValue::new(value);
-    //     }
-    //     _ => panic!("Not implemented"),
-    // };
-    match world.get_element(&element) {
-        ElementType::Sphere(sphere) => {
-            let mut sphere = sphere.to_owned();
-            sphere.material.ambient = ReflectionValue::new(value);
-            world.replace_object(&element, sphere);
-        }
-        _ => panic!("Not implemented"),
+fn ambient_of_element_material_is_value(
+    world: &mut RayTracerWorld,
+    element_name: String,
+    value: f32,
+) {
+    let (parent_name, uuid) = match world.get_element(&element_name) {
+        // values are cloned (becoming owned values instead of references) so the immutable borrow of 'world' can end
+        // meaning we then borrow 'world' as mutable later on
+        ElementType::SceneWorldObjectReference((parent_name, uuid)) => (parent_name.clone(), *uuid),
+        _ => panic!("{element_name} is not a scene world reference"),
     };
+
+    // mutable borrow of 'world' works because the above immutable borrow has ended
+    let ElementType::World(scene_world) = world.get_mut_element(&parent_name) else {
+        panic!("{parent_name} is not a world");
+    };
+
+    let sphere = scene_world
+        .elements
+        .iter_mut()
+        .find_map(|object| match object {
+            Object::Sphere(sphere) if sphere.id == uuid => Some(sphere),
+            _ => None,
+        })
+        .expect("Sphere not found");
+
+    sphere.material.ambient = ReflectionValue::new(value);
 }
 
 #[given(

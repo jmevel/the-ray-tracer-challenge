@@ -1,7 +1,7 @@
 use std::panic;
 
 use cucumber::then;
-use the_ray_tracer_challenge::{Color, Tuple, float::float_equals};
+use the_ray_tracer_challenge::{Color, Object, Tuple, float::float_equals};
 
 use crate::steps::{
     ray_tracer_world::{ElementType, RayTracerWorld},
@@ -59,10 +59,21 @@ fn color_equals_object_material_color(world: &mut RayTracerWorld, color: String,
     let color = world.get_color(&color);
     let object = world.get_element(&object);
 
-    match object {
-        ElementType::Sphere(sphere) => {
-            assert_eq!(color, &sphere.material.color);
+    let sphere = match object {
+        ElementType::Sphere(sphere) => sphere,
+        ElementType::SceneWorldObjectReference((parent_name, uuid)) => {
+            let scene_world = world.get_world(parent_name);
+            let sphere = scene_world
+                .elements
+                .iter()
+                .find_map(|object| match object {
+                    Object::Sphere(sphere) if sphere.id == *uuid => Some(sphere),
+                    _ => None,
+                })
+                .expect("Sphere not found");
+            sphere
         }
         _ => panic!("Not implemented"),
     };
+    assert_eq!(color, &sphere.material.color);
 }

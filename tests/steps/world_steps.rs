@@ -26,7 +26,8 @@ fn shape_is_the_nth_object_in_world(
 ) {
     let scene_world = world.get_mut_world(&world_name);
     let Object::Sphere(shape) = scene_world.elements[nth as usize];
-    world.add_sphere(shape_name, shape);
+    // world.add_sphere(shape_name, shape);
+    world.add_object_reference(shape_name, world_name, shape.id);
 }
 
 #[given(

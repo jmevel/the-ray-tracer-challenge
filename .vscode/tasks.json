@@ -61,7 +61,7 @@
     {
       "label": "Test single scenario",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --name 'The color with an intersection behind the ray'",
+      "command": "cargo test --test cucumber -- --name 'A sphere may be assigned a material'",
     },
   ],
 }
