@@ -1,5 +1,5 @@
 use crate::RayTracerWorld;
-use cucumber::{given, then};
+use cucumber::{given, then, when};
 use std::f32;
 use the_ray_tracer_challenge::{Matrix, Point, Vector};
 
@@ -172,4 +172,20 @@ fn point_multiplied_by_transformation_equals_expected(
     let point = world.get_point(&point);
 
     assert_eq!(point * transformation, expected);
+}
+
+#[when(expr = "{word} ← view_transform\\({word}, {word}, {word})")]
+fn transformation_is_view_transform(
+    world: &mut RayTracerWorld,
+    transformation_name: String,
+    from: String,
+    to: String,
+    up: String,
+) {
+    let transformation = Matrix::<4, 4>::view_transform(
+        world.get_point(&from),
+        world.get_point(&to),
+        world.get_vector(&up),
+    );
+    world.add_matrix4x4(transformation_name, transformation);
 }

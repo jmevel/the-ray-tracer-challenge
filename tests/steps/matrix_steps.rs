@@ -373,3 +373,29 @@ fn get_matrix_size(step: &Step) -> usize {
     let table = step.table.as_ref().unwrap();
     table.rows.iter().count()
 }
+
+#[then(expr = "{word} = scaling\\({float}, {float}, {float})")]
+fn transformation_equals_scaling(
+    world: &mut RayTracerWorld,
+    transformation: String,
+    x: f32,
+    y: f32,
+    z: f32,
+) {
+    let actual = world.get_matrix4x4(&transformation);
+    let expected = Matrix::new_scaling(x, y, z);
+    assert_eq!(actual, &expected);
+}
+
+#[then(expr = "{word} = translation\\({float}, {float}, {float})")]
+fn transformation_equals_translation(
+    world: &mut RayTracerWorld,
+    transformation: String,
+    x: f32,
+    y: f32,
+    z: f32,
+) {
+    let actual = world.get_matrix4x4(&transformation);
+    let expected = Matrix::new_translation(x, y, z);
+    assert_eq!(actual, &expected);
+}
