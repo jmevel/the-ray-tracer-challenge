@@ -1,10 +1,10 @@
 use crate::Matrix;
 
 pub trait Tuple {
-    fn x(&self) -> &f32;
-    fn y(&self) -> &f32;
-    fn z(&self) -> &f32;
-    fn w(&self) -> &f32;
+    fn x(&self) -> f32;
+    fn y(&self) -> f32;
+    fn z(&self) -> f32;
+    fn w(&self) -> f32;
     fn new(x: f32, y: f32, z: f32, w: f32) -> Self;
     fn transform(&self, transformations: &Matrix<4, 4>) -> Self
     where

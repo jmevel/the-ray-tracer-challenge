@@ -1,6 +1,7 @@
 #![allow(incomplete_features)] // required to enable generic_const_exprs without a warning
 #![feature(generic_const_exprs)]
 
+pub mod camera;
 pub mod canvas;
 pub mod color;
 pub mod computations;
@@ -19,6 +20,7 @@ pub mod tuple;
 pub mod vector;
 pub mod world;
 
+pub use crate::camera::Camera;
 pub use crate::canvas::Canvas;
 pub use crate::color::Color;
 pub use crate::computations::Computations;

@@ -4,7 +4,7 @@ use crate::{Intersection, Intersections, Material, Matrix, Object, Point, Ray, V
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Sphere {
-    pub id: Uuid,
+    id: Uuid,
     pub transform: Matrix<4, 4>,
     pub material: Material,
 }
@@ -19,6 +19,18 @@ impl Sphere {
             },
             material: Material::default(),
         }
+    }
+
+    pub fn id(&self) -> &Uuid {
+        &self.id
+    }
+
+    pub fn transform(&self) -> &Matrix<4, 4> {
+        &self.transform
+    }
+
+    pub fn material(&self) -> &Material {
+        &self.material
     }
 
     pub fn intersect(&self, ray: &Ray) -> Result<Option<Intersections>, String> {

@@ -23,17 +23,17 @@ impl Point {
 }
 
 impl Tuple for Point {
-    fn x(&self) -> &f32 {
-        &self.x
+    fn x(&self) -> f32 {
+        self.x
     }
-    fn y(&self) -> &f32 {
-        &self.y
+    fn y(&self) -> f32 {
+        self.y
     }
-    fn z(&self) -> &f32 {
-        &self.z
+    fn z(&self) -> f32 {
+        self.z
     }
-    fn w(&self) -> &f32 {
-        &self.w
+    fn w(&self) -> f32 {
+        self.w
     }
     fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self { x, y, z, w }

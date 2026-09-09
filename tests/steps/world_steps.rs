@@ -27,7 +27,7 @@ fn shape_is_the_nth_object_in_world(
     let scene_world = world.get_mut_world(&world_name);
     let Object::Sphere(shape) = scene_world.elements[nth as usize];
     // world.add_sphere(shape_name, shape);
-    world.add_object_reference(shape_name, world_name, shape.id);
+    world.add_object_reference(shape_name, world_name, *shape.id());
 }
 
 #[given(
@@ -115,7 +115,8 @@ fn world_contains_element(world: &mut RayTracerWorld, world_name: String, elemen
         ElementType::Sphere(expected) => {
             assert!(scene_world.elements.iter().any(|e| {
                 let Object::Sphere(actual) = e;
-                actual.material == expected.material && actual.transform == expected.transform
+                actual.material() == expected.material()
+                    && actual.transform() == expected.transform()
             }));
         }
         _ => panic!("Not implemented"),

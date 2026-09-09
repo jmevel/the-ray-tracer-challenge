@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use cucumber::World;
 use the_ray_tracer_challenge::{
-    Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Object, Point,
-    PointLight, Ray, Sphere, Vector,
+    Camera, Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Object,
+    Point, PointLight, Ray, Sphere, Vector,
 };
 use uuid::Uuid;
 
@@ -11,11 +11,12 @@ use uuid::Uuid;
 #[world(init = Self::new)]
 pub struct RayTracerWorld {
     elements: HashMap<String, ElementType>,
-    // object_references: HashMap<String, Uuid>,
 }
 
 #[derive(Debug)]
 pub enum ElementType {
+    Float(f32),
+    Integer(usize),
     Canvas(Canvas),
     Point(Point),
     Color(Color),
@@ -33,6 +34,7 @@ pub enum ElementType {
     World(the_ray_tracer_challenge::World),
     Computations(Computations),
     SceneWorldObjectReference((String, Uuid)), // String is the name of its parent
+    Camera(Camera),
 }
 
 impl RayTracerWorld {
@@ -54,6 +56,37 @@ impl RayTracerWorld {
         self.elements
             .get_mut(element)
             .expect(format!("{element} does not exist").as_str())
+    }
+
+    pub fn add_integer(&mut self, integer_name: String, value: usize) {
+        self.elements
+            .insert(integer_name, ElementType::Integer(value));
+    }
+
+    pub fn get_integer(&self, integer: &str) -> usize {
+        let ElementType::Integer(value) = self
+            .elements
+            .get(integer)
+            .expect(format!("{integer} does not exist").as_str())
+        else {
+            panic!("{integer} is not an integer")
+        };
+        *value
+    }
+
+    pub fn add_float(&mut self, float_name: String, value: f32) {
+        self.elements.insert(float_name, ElementType::Float(value));
+    }
+
+    pub fn get_float(&self, float: &str) -> f32 {
+        let ElementType::Float(value) = self
+            .elements
+            .get(float)
+            .expect(format!("{float} does not exist").as_str())
+        else {
+            panic!("{float} is not a float")
+        };
+        *value
     }
 
     pub fn add_point(&mut self, point_name: String, point: Point) {
@@ -214,7 +247,7 @@ impl RayTracerWorld {
                     .elements
                     .iter()
                     .find_map(|object| match object {
-                        Object::Sphere(sphere) if sphere.id == *uuid => Some(sphere),
+                        Object::Sphere(sphere) if sphere.id() == uuid => Some(sphere),
                         _ => None,
                     })
                     .expect("Sphere not found");
@@ -372,5 +405,21 @@ impl RayTracerWorld {
             object_name,
             ElementType::SceneWorldObjectReference((parent_name, id)),
         );
+    }
+
+    pub fn add_camera(&mut self, camera_name: String, camera: Camera) {
+        self.elements
+            .insert(camera_name, ElementType::Camera(camera));
+    }
+
+    pub fn get_camera(&self, camera: &str) -> &Camera {
+        let ElementType::Camera(value) = self
+            .elements
+            .get(camera)
+            .expect(format!("{camera} does not exist").as_str())
+        else {
+            panic!("{camera} is not a camera")
+        };
+        value
     }
 }

@@ -13,11 +13,11 @@ pub fn putting_it_together() {
 
     let mut canvas = Canvas::new(900, 550, None);
 
-    while projectile.position.y() > &0f32 {
+    while projectile.position.y() > 0f32 {
         projectile = tick(&environment, &projectile);
         canvas.write_pixel(
-            *projectile.position.x() as usize,
-            canvas.height() - *projectile.position.y() as usize,
+            projectile.position.x() as usize,
+            canvas.height() - projectile.position.y() as usize,
             Color::red(),
         )
     }

@@ -55,7 +55,7 @@ impl World {
                 .iter()
                 .map(|light| {
                     Color::lighting(
-                        &sphere.material,
+                        sphere.material(),
                         light,
                         &computations.point,
                         &computations.eye_vector,

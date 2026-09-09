@@ -12,11 +12,11 @@ pub struct Canvas {
 }
 
 impl Canvas {
-    pub fn width(&self) -> &usize {
-        &self.width
+    pub fn width(&self) -> usize {
+        self.width
     }
-    pub fn height(&self) -> &usize {
-        &self.height
+    pub fn height(&self) -> usize {
+        self.height
     }
     pub fn pixels(&self) -> &HashMap<(usize, usize), Color> {
         &self.pixels
@@ -86,7 +86,7 @@ impl Canvas {
         ppm
     }
 
-    fn scale_color(&self, color: &f32) -> u32 {
+    fn scale_color(&self, color: f32) -> u32 {
         cmp::min((color * self.max_color_value as f32).round() as u32, 255)
     }
 }

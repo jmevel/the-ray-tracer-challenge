@@ -59,6 +59,11 @@
       "command": "cargo test --test cucumber -- --tags '@world'",
     },
     {
+      "label": "Test camera",
+      "type": "shell",
+      "command": "cargo test --test cucumber -- --tags '@camera'",
+    },
+    {
       "label": "Test single scenario",
       "type": "shell",
       "command": "cargo test --test cucumber -- --name 'A sphere may be assigned a material'",

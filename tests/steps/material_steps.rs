@@ -40,7 +40,7 @@ fn ambient_of_element_material_is_value(
         .elements
         .iter_mut()
         .find_map(|object| match object {
-            Object::Sphere(sphere) if sphere.id == uuid => Some(sphere),
+            Object::Sphere(sphere) if sphere.id() == &uuid => Some(sphere),
             _ => None,
         })
         .expect("Sphere not found");

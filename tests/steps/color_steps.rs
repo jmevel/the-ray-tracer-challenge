@@ -67,7 +67,7 @@ fn color_equals_object_material_color(world: &mut RayTracerWorld, color: String,
                 .elements
                 .iter()
                 .find_map(|object| match object {
-                    Object::Sphere(sphere) if sphere.id == *uuid => Some(sphere),
+                    Object::Sphere(sphere) if sphere.id() == uuid => Some(sphere),
                     _ => None,
                 })
                 .expect("Sphere not found");
@@ -75,5 +75,5 @@ fn color_equals_object_material_color(world: &mut RayTracerWorld, color: String,
         }
         _ => panic!("Not implemented"),
     };
-    assert_eq!(color, &sphere.material.color);
+    assert_eq!(color, &sphere.material().color);
 }

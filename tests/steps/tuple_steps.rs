@@ -53,9 +53,9 @@ fn tuple_is_normalization(world: &mut RayTracerWorld, tuple2: String, tuple1: St
 #[then(expr = "{word}.red = {float}")]
 fn x_equal(world: &mut RayTracerWorld, tuple: String, x: f32) {
     match world.get_element(&tuple) {
-        ElementType::Point(point) => assert_eq!(point.x(), &x),
-        ElementType::Color(color) => assert_eq!(color.x(), &x),
-        ElementType::Vector(vector) => assert_eq!(vector.x(), &x),
+        ElementType::Point(point) => assert_eq!(point.x(), x),
+        ElementType::Color(color) => assert_eq!(color.x(), x),
+        ElementType::Vector(vector) => assert_eq!(vector.x(), x),
         _ => panic!("Not implemented"),
     }
 }
@@ -64,9 +64,9 @@ fn x_equal(world: &mut RayTracerWorld, tuple: String, x: f32) {
 #[then(expr = "{word}.green = {float}")]
 fn y_equal(world: &mut RayTracerWorld, tuple: String, y: f32) {
     match world.get_element(&tuple) {
-        ElementType::Point(point) => assert_eq!(point.y(), &y),
-        ElementType::Color(color) => assert_eq!(color.y(), &y),
-        ElementType::Vector(vector) => assert_eq!(vector.y(), &y),
+        ElementType::Point(point) => assert_eq!(point.y(), y),
+        ElementType::Color(color) => assert_eq!(color.y(), y),
+        ElementType::Vector(vector) => assert_eq!(vector.y(), y),
         _ => panic!("Not implemented"),
     }
 }
@@ -75,9 +75,9 @@ fn y_equal(world: &mut RayTracerWorld, tuple: String, y: f32) {
 #[then(expr = "{word}.blue = {float}")]
 fn z_equal(world: &mut RayTracerWorld, tuple: String, z: f32) {
     match world.get_element(&tuple) {
-        ElementType::Point(point) => assert_eq!(point.z(), &z),
-        ElementType::Color(color) => assert_eq!(color.z(), &z),
-        ElementType::Vector(vector) => assert_eq!(vector.z(), &z),
+        ElementType::Point(point) => assert_eq!(point.z(), z),
+        ElementType::Color(color) => assert_eq!(color.z(), z),
+        ElementType::Vector(vector) => assert_eq!(vector.z(), z),
         _ => panic!("Not implemented"),
     }
 }
@@ -85,9 +85,9 @@ fn z_equal(world: &mut RayTracerWorld, tuple: String, z: f32) {
 #[then(expr = "{word}.w = {float}")]
 fn w_equal(world: &mut RayTracerWorld, tuple: String, w: f32) {
     match world.get_element(&tuple) {
-        ElementType::Point(point) => assert_eq!(point.w(), &w),
-        ElementType::Color(color) => assert_eq!(color.w(), &w),
-        ElementType::Vector(vector) => assert_eq!(vector.w(), &w),
+        ElementType::Point(point) => assert_eq!(point.w(), w),
+        ElementType::Color(color) => assert_eq!(color.w(), w),
+        ElementType::Vector(vector) => assert_eq!(vector.w(), w),
         _ => panic!("Not implemented"),
     }
 }

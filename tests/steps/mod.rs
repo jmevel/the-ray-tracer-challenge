@@ -1,3 +1,4 @@
+pub mod camera_steps;
 pub mod canvas_steps;
 pub mod color_steps;
 pub mod common_steps;

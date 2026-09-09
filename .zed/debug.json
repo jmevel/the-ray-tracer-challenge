@@ -180,6 +180,24 @@
     "args": ["--tags", "@world"],
   },
   {
+    "label": "Debug camera tests",
+    "adapter": "CodeLLDB",
+    "request": "launch",
+    "build": {
+      "command": "cargo",
+      "args": [
+        "rustc",
+        "--test",
+        "cucumber",
+        "--",
+        "--emit",
+        "link=target/debug/deps/cucumber",
+      ],
+    },
+    "program": "./target/debug/deps/cucumber",
+    "args": ["--tags", "@camera"],
+  },
+  {
     "label": "Debug single scenario",
     "adapter": "CodeLLDB",
     "request": "launch",

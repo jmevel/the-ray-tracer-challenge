@@ -399,3 +399,22 @@ fn transformation_equals_translation(
     let expected = Matrix::new_translation(x, y, z);
     assert_eq!(actual, &expected);
 }
+
+#[then(expr = "{word}.transform = {word}")]
+fn element_transform_equals_identity_matrix(
+    world: &mut RayTracerWorld,
+    element: String,
+    expected: String,
+) {
+    let transform = match world.get_element(&element) {
+        ElementType::Sphere(sphere) => sphere.transform(),
+        ElementType::Camera(camera) => camera.transform(),
+        _ => panic!("Not implemented"),
+    };
+
+    let expected = match expected.as_str() {
+        "identity_matrix" => &Matrix::identity_matrix(),
+        _ => world.get_matrix4x4(&expected),
+    };
+    assert_eq!(transform, expected);
+}

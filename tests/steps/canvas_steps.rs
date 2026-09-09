@@ -37,12 +37,12 @@ fn every_pixel_of_canvas_is_set_to_color(
 
 #[then(expr = "{word}.width = {int}")]
 fn width_equal(world: &mut RayTracerWorld, canvas: String, width: usize) {
-    assert_eq!(world.get_canvas(&canvas).width(), &width);
+    assert_eq!(world.get_canvas(&canvas).width(), width);
 }
 
 #[then(expr = "{word}.height = {int}")]
 fn height_equal(world: &mut RayTracerWorld, canvas: String, height: usize) {
-    assert_eq!(world.get_canvas(&canvas).height(), &height);
+    assert_eq!(world.get_canvas(&canvas).height(), height);
 }
 
 #[then(expr = "every pixel of {word} is color\\({float}, {float}, {float})")]

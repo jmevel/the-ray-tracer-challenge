@@ -172,7 +172,7 @@ fn n_normal_at_point3(
 #[when(expr = "{word} ← {word}.material")]
 fn material_is_sphere_material(world: &mut RayTracerWorld, material_name: String, sphere: String) {
     let sphere = world.get_sphere(&sphere);
-    world.add_material(material_name, sphere.material.clone());
+    world.add_material(material_name, sphere.material().clone());
 }
 
 #[when(expr = "{word}.material ← {word}")]
@@ -180,20 +180,6 @@ fn material_of_sphere_is(world: &mut RayTracerWorld, sphere: String, material: S
     let material = world.get_material(&material).clone();
     let sphere = world.get_mut_sphere(&sphere);
     sphere.material = material;
-}
-
-#[then(expr = "{word}.transform = {word}")]
-fn sphere_transform_equals_identity_matrix(
-    world: &mut RayTracerWorld,
-    sphere: String,
-    transformation: String,
-) {
-    let sphere = world.get_sphere(&sphere);
-    let expected = match transformation.as_str() {
-        "identity_matrix" => &Matrix::identity_matrix(),
-        _ => world.get_matrix4x4(&transformation),
-    };
-    assert_eq!(&sphere.transform, expected);
 }
 
 #[then(expr = "{word} = material\\()")]
@@ -210,5 +196,5 @@ fn material_of_sphere_equals_material(
 ) {
     let sphere = world.get_sphere(&sphere);
     let expected = world.get_material(&material);
-    assert_eq!(&sphere.material, expected);
+    assert_eq!(sphere.material(), expected);
 }
