@@ -1,5 +1,5 @@
 #![allow(incomplete_features)] // required to enable generic_const_exprs without a warning
-#![feature(generic_const_exprs)]
+#![feature(generic_const_exprs)] // this feature will be replaced by `generic_const_args` in the future: https://github.com/rust-lang/rust/issues/151972
 
 pub mod camera;
 pub mod canvas;

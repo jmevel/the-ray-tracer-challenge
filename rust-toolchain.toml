@@ -1,2 +1,7 @@
 [toolchain]
-channel = "nightly-2026-01-20" # needed for `pub fn submatrix(&self, row_idx: usize, col_idx: usize) -> Matrix<{ ROW_COUNT - 1 }, { COL_COUNT - 1 }>`
+# Needed for the `generic_const_exprs` unstable feature: `pub fn submatrix(&self, row_idx: usize, col_idx: usize) -> Matrix<{ ROW_COUNT - 1 }, { COL_COUNT - 1 }>`
+# The `generic_const_exprs` feature will be replaced by `generic_const_args` in the future: https://github.com/rust-lang/rust/issues/151972
+channel = "nightly"
+# Last working nightly version before the next-generation trait solver was published on nightly thus disabling the `generic_const_exprs` feature because of incompatibility
+# https://github.com/rust-lang/rust/issues/160895
+# channel = "nightly-2026-08-21"

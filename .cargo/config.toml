@@ -1,3 +1,10 @@
+[build]
+# forcing to use thew "old" default trait solver
+rustflags = ["-Znext-solver=coherence"]
+# Next-generation trait solver: https://www.worldprogramming.org/posts/enabling-the-next-generation-trait-solver-on-nightly-cwvkql
+# This new trait solver is currently incompatible with the nightly feature `generic_const_exprs`: https://github.com/rust-lang/rust/issues/160895
+# rustflags = [-Znext-solver]
+
 [alias]
 test_tuples = "cargo test --test cucumber -- -t '@tuples' --fail-fast"
 test_canvases = "cargo test --test cucumber -- -t '@canvases' --fail-fast"
