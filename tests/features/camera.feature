@@ -10,3 +10,11 @@ Scenario: Constructing a camera
     And c.vsize = 120
     And c.field_of_view = π/2
     And c.transform = identity_matrix
+
+Scenario: The pixel size for a horizontal canvas
+  Given c ← camera(200, 125, π/2)
+  Then c.pixel_size = 0.01
+
+Scenario: The pixel size for a vertical canvas
+  Given c ← camera(125, 200, π/2)
+  Then c.pixel_size = 0.01

@@ -18,8 +18,20 @@ fn value_is_float(world: &mut RayTracerWorld, float_name: String, denominator: f
     world.add_float(float_name, f32::consts::PI / denominator);
 }
 
-#[when(expr = "{word} ← camera\\({word}, {word}, {word})")]
+#[given(expr = "{word} ← camera\\({int}, {int}, π\\/{int})")]
 fn camera_is(
+    world: &mut RayTracerWorld,
+    camera_name: String,
+    hsize: usize,
+    vsize: usize,
+    field_of_view_denominator: usize,
+) {
+    let field_of_view = f32::consts::PI / field_of_view_denominator as f32;
+    world.add_camera(camera_name, Camera::new(hsize, vsize, field_of_view));
+}
+
+#[when(expr = "{word} ← camera\\({word}, {word}, {word})")]
+fn camera_is2(
     world: &mut RayTracerWorld,
     camera_name: String,
     hsize: String,
@@ -54,4 +66,10 @@ fn field_of_view_of_camera_equals_value(
     let camera = world.get_camera(&camera);
     let expected = f32::consts::PI / denominator;
     assert_eq!(camera.field_of_view(), expected);
+}
+
+#[then(expr = "{word}.pixel_size = {float}")]
+fn camera_pixel_size_equals(world: &mut RayTracerWorld, camera: String, expected_pixel_size: f32) {
+    let camera = world.get_camera(&camera);
+    assert_eq!(camera.pixel_size(), expected_pixel_size);
 }
