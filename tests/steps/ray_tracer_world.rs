@@ -422,4 +422,15 @@ impl RayTracerWorld {
         };
         value
     }
+
+    pub fn get_mut_camera(&mut self, camera: &str) -> &mut Camera {
+        let ElementType::Camera(value) = self
+            .elements
+            .get_mut(camera)
+            .expect(format!("{camera} does not exist").as_str())
+        else {
+            panic!("{camera} is not a camera")
+        };
+        value
+    }
 }

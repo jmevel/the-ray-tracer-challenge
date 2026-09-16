@@ -1,11 +1,11 @@
-use crate::Matrix;
+use crate::{Matrix, Point, Ray};
 
 #[derive(Debug)]
 pub struct Camera {
     hsize: usize,
     vsize: usize,
     field_of_view: f32,
-    transform: Matrix<4, 4>,
+    pub transform: Matrix<4, 4>,
     half_width: f32,
     half_height: f32,
     pixel_size: f32,
@@ -59,5 +59,24 @@ impl Camera {
 
     pub fn pixel_size(&self) -> f32 {
         self.pixel_size
+    }
+
+    pub fn ray_for_pixel(&self, pixel_x: usize, pixel_y: usize) -> Ray {
+        // The offset from the edge of the camera to the pixel's center
+        let offset_x = (pixel_x as f32 + 0.5) * self.pixel_size();
+        let offset_y = (pixel_y as f32 + 0.5) * self.pixel_size();
+
+        // The untransformed coordinates of the pixel in world space
+        // Reminder: the camera looks toward -z, so +x is to the left
+        let world_x = self.half_width() - offset_x;
+        let world_y = self.half_height() - offset_y;
+
+        // Using the camera matrix, transform the canvas point and the origin and then compute the ray's direction vector
+        // Reminder: the canvas is at z=-1
+        let pixel = self.transform().invert().unwrap() * Point::new_point(world_x, world_y, -1f32);
+        let origin = self.transform().invert().unwrap() * Point::new_point(0f32, 0f32, 0f32);
+        let direction = (pixel - origin).normalize();
+
+        Ray::new(origin, direction)
     }
 }

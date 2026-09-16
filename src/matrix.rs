@@ -144,6 +144,9 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT
             .unwrap()
     }
 
+    // A matrix multiplication actually applies the transformations in reverse order (eg: rotation * translation => the translation will be applied FIRST and then the rotation)
+    // Meaning if we want to apply the translate function on an existing matrix, we need to apply it first in the multiplication
+    // This comment is obviously true for all the following functions (scale, rotate_x, rotate_y, rotate_z, and shear)
     pub fn translate(&self, x: f32, y: f32, z: f32) -> Matrix<ROW_COUNT, COL_COUNT> {
         let translation = Matrix::new_translation(x, y, z);
         &translation * self

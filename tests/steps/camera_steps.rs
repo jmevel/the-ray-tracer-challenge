@@ -1,7 +1,7 @@
 use std::f32;
 
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::Camera;
+use the_ray_tracer_challenge::{Camera, Matrix};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
@@ -72,4 +72,32 @@ fn field_of_view_of_camera_equals_value(
 fn camera_pixel_size_equals(world: &mut RayTracerWorld, camera: String, expected_pixel_size: f32) {
     let camera = world.get_camera(&camera);
     assert_eq!(camera.pixel_size(), expected_pixel_size);
+}
+
+#[when(expr = "{word} ← ray_for_pixel\\({word}, {int}, {int})")]
+fn ray_is_ray_for_pixel(
+    world: &mut RayTracerWorld,
+    ray_name: String,
+    camera: String,
+    pixel_x: usize,
+    pixel_y: usize,
+) {
+    let camera = world.get_camera(&camera);
+    let ray = camera.ray_for_pixel(pixel_x, pixel_y);
+    world.add_ray(ray_name, ray);
+}
+
+#[when(expr = "{word}.transform ← rotation_y\\(π\\/{int}) * translation\\({int}, {int}, {int})")]
+fn camera_transform_is_rotation_y_and_translation(
+    world: &mut RayTracerWorld,
+    camera: String,
+    rotation_y_denominator: f32,
+    translation_x: f32,
+    translation_y: f32,
+    translation_z: f32,
+) {
+    let camera = world.get_mut_camera(&camera);
+    let transformation = Matrix::new_rotation_y(f32::consts::PI / rotation_y_denominator)
+        * Matrix::new_translation(translation_x, translation_y, translation_z);
+    camera.transform = transformation;
 }
