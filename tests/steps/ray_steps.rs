@@ -90,7 +90,7 @@ fn ray_direction_equals_vector(world: &mut RayTracerWorld, ray: String, x: f32, 
     assert_eq!(ray.direction(), &expected);
 }
 
-#[then(expr = "{word}.direction = vector\\(√{int}\\/{int}, {int}, -√{int}\\/{int})")]
+#[then(expr = "{word}.direction = vector\\(-√{int}\\/{int}, {int}, √{int}\\/{int})")]
 fn ray_direction_equals_vector2(
     world: &mut RayTracerWorld,
     ray: String,
@@ -102,9 +102,9 @@ fn ray_direction_equals_vector2(
 ) {
     let ray = world.get_ray(&ray);
     let expected_direction = Vector::new_vector(
-        f32::sqrt(x_numerator) / x_denominator,
+        -f32::sqrt(x_numerator) / x_denominator,
         y,
-        -f32::sqrt(z_numerator) / z_denominator,
+        f32::sqrt(z_numerator) / z_denominator,
     );
     assert_eq!(ray.direction(), &expected_direction);
 }

@@ -4,10 +4,14 @@
 
 This project is an ongoing Rust implementation of [The Ray Tracer Challenge](http://raytracerchallenge.com) book.
 
+## Implementation details
+
+This project is using the *left-handed* system just like the book, however one major difference is that I used the **+Z** convention for the camera unlike the book which is using the **-Z** one.
+
 ## Gherking / Cucumber
 
 Tests are written in [Cucumber](https://cucumber.io) using [cucumber-rs](https://github.com/cucumber-rs/cucumber). 
-Gherkin scenarios are *strictly* copied from the given scenarios in the book.
+Gherkin scenarios are copied from the given scenarios in the book. I only adapted the values in some steps due to my choice of diverging regarding the +Z/-Z convention, all the rest is *strictly* identical.
 
 ### Setup
 
