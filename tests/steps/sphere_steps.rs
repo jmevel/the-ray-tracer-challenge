@@ -7,7 +7,7 @@ use crate::steps::ray_tracer_world::RayTracerWorld;
 
 #[given(expr = "{word} ← sphere\\()")]
 fn sphere_is(world: &mut RayTracerWorld, sphere_name: String) {
-    let sphere = Sphere::new(None);
+    let sphere = Sphere::new(None, None);
     world.add_sphere(sphere_name, sphere);
 }
 
@@ -35,7 +35,7 @@ fn transformation_is_scaling_and_rotation_z(
 #[given(expr = "{word} ← sphere\\() with:")]
 fn sphere_is_sphere_with(world: &mut RayTracerWorld, sphere_name: String, step: &Step) {
     if let Some(table) = step.table.as_ref() {
-        let mut sphere = Sphere::new(None);
+        let mut sphere = Sphere::new(None, None);
         let mut material = Material::default();
         let mut transform: Matrix<4, 4> = Matrix::identity_matrix();
         for row in table.rows.iter() {

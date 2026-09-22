@@ -67,7 +67,7 @@ fn show_sphere_shadow_on_a_wall(transformation: Option<Matrix<4, 4>>, file_name:
     let half = wall_size / 2.0;
 
     let color = Color::new_color(1.0, 0.0, 0.0);
-    let shape = Sphere::new(transformation);
+    let shape = Sphere::new(transformation, None);
 
     // for each row of pixels in the canvas
     for y in 0..canvas_pixels {

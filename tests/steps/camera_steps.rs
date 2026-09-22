@@ -27,7 +27,7 @@ fn camera_is(
     field_of_view_denominator: usize,
 ) {
     let field_of_view = f32::consts::PI / field_of_view_denominator as f32;
-    world.add_camera(camera_name, Camera::new(hsize, vsize, field_of_view));
+    world.add_camera(camera_name, Camera::new(hsize, vsize, field_of_view, None));
 }
 
 #[given(expr = "{word}.transform ← view_transform\\({word}, {word}, {word})")]
@@ -60,7 +60,7 @@ fn camera_is2(
     let vsize = world.get_integer(&vsize);
     let field_of_view = world.get_float(&field_of_view);
 
-    world.add_camera(camera_name, Camera::new(hsize, vsize, field_of_view));
+    world.add_camera(camera_name, Camera::new(hsize, vsize, field_of_view, None));
 }
 
 #[then(expr = "{word}.hsize = {int}")]

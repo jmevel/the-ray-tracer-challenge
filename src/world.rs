@@ -85,7 +85,7 @@ impl Default for World {
         let light_position = Point::new_point(-10.0, 10.0, -10.0);
         let light = PointLight::new(light_position, Color::white());
 
-        let mut s1 = Sphere::new(None);
+        let mut s1 = Sphere::new(None, None);
         let s1_material = Material::new(
             Some(Color::new_color(0.8, 1.0, 0.6)),
             None,
@@ -95,7 +95,7 @@ impl Default for World {
         );
         s1.material = s1_material;
 
-        let s2 = Sphere::new(Some(Matrix::new_scaling(0.5, 0.5, 0.5)));
+        let s2 = Sphere::new(Some(Matrix::new_scaling(0.5, 0.5, 0.5)), None);
         let elements: Vec<Object> = vec![Object::Sphere(s1), Object::Sphere(s2)];
 
         Self {

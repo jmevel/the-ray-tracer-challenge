@@ -23,7 +23,7 @@ pub fn putting_it_together() {
 
     let mut material = Material::default();
     material.color = Color::new_color(1.0, 0.2, 1.0); // purple
-    let mut sphere = Sphere::new(None);
+    let mut sphere = Sphere::new(None, None);
     sphere.material = material.clone();
 
     let light_positon = Point::new_point(-10.0, 10.0, -10.0);

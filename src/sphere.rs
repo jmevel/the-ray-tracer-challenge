@@ -10,14 +10,17 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(transformation: Option<Matrix<4, 4>>) -> Self {
+    pub fn new(transformation: Option<Matrix<4, 4>>, material: Option<Material>) -> Self {
         Self {
             id: Uuid::new_v4(),
             transform: match transformation {
                 Some(transformation) => transformation,
                 None => Matrix::identity_matrix(),
             },
-            material: Material::default(),
+            material: match material {
+                Some(material) => material,
+                None => Material::default(),
+            },
         }
     }
 

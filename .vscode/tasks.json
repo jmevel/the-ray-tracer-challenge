@@ -66,7 +66,7 @@
     {
       "label": "Test single scenario",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --name 'The transformation matrix for the default orientation'",
+      "command": "cargo test --test cucumber -- --name 'Constructing a ray through a corner of the canvas'",
     },
   ],
 }

@@ -12,7 +12,12 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new(hsize: usize, vsize: usize, field_of_view: f32) -> Self {
+    pub fn new(
+        hsize: usize,
+        vsize: usize,
+        field_of_view: f32,
+        transform: Option<Matrix<4, 4>>,
+    ) -> Self {
         let half_view = f32::tan(field_of_view / 2.0);
         let aspect = hsize as f32 / vsize as f32;
         let (half_width, half_height) = if aspect >= 1.0 {
@@ -26,7 +31,10 @@ impl Camera {
             hsize,
             vsize,
             field_of_view,
-            transform: Matrix::identity_matrix(),
+            transform: match transform {
+                Some(transform) => transform,
+                None => Matrix::identity_matrix(),
+            },
             half_width,
             half_height,
             pixel_size,
@@ -68,7 +76,7 @@ impl Camera {
 
         // The untransformed coordinates of the pixel in world space
         // REMINDER: unlike the book using the -Z convention, in this project the camera looks toward +Z, so +X is to the right
-        let world_x = self.half_width() - offset_x;
+        let world_x = -self.half_width() + offset_x; // For the -Z convention: let world_x = self.half_width() - offset_x;
         let world_y = self.half_height() - offset_y;
 
         // Using the camera matrix, transform the canvas point and the origin and then compute the ray's direction vector

@@ -29,7 +29,8 @@ Scenario: Constructing a ray through a corner of the canvas
   Given c ← camera(201, 101, π/2)
   When r ← ray_for_pixel(c, 0, 0)
   Then r.origin = point(0, 0, 0)
-    And r.direction = vector(0.66519, 0.33259, 0.66851)
+    # For the -Z convention: And r.direction = vector(0.66519, 0.33259, 0.66851)
+    And r.direction = vector(-0.66519, 0.33259, 0.66851)
 
 Scenario: Constructing a ray when the camera is transformed
   Given c ← camera(201, 101, π/2)
