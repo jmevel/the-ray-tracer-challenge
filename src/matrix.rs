@@ -256,21 +256,22 @@ impl Matrix<row_count, col_count> {
         up: &Vector,
     ) -> Matrix<ROW_COUNT, COL_COUNT> {
         let forward = (to - from).normalize();
-        let left = forward.cross_product(&up.normalize());
-        let true_up = left.cross_product(&forward);
+        let right = up.normalize().cross_product(&forward); // for -Z convention: let left = forward.cross_product(&up.normalize());
+        let true_up = forward.cross_product(&right); // for -Z convention: let true_up = right.cross_product(&forward);
+
         let mut orientation = Matrix::identity_matrix();
 
-        orientation.data[0][0] = left.x();
-        orientation.data[0][1] = left.y();
-        orientation.data[0][2] = left.z();
+        orientation.data[0][0] = right.x();
+        orientation.data[0][1] = right.y();
+        orientation.data[0][2] = right.z();
 
         orientation.data[1][0] = true_up.x();
         orientation.data[1][1] = true_up.y();
         orientation.data[1][2] = true_up.z();
 
-        orientation.data[2][0] = -forward.x();
-        orientation.data[2][1] = -forward.y();
-        orientation.data[2][2] = -forward.z();
+        orientation.data[2][0] = forward.x();
+        orientation.data[2][1] = forward.y();
+        orientation.data[2][2] = forward.z();
 
         orientation * Matrix::new_translation(-from.x(), -from.y(), -from.z())
     }

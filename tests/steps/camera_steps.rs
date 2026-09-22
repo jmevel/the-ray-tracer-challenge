@@ -30,6 +30,24 @@ fn camera_is(
     world.add_camera(camera_name, Camera::new(hsize, vsize, field_of_view));
 }
 
+#[given(expr = "{word}.transform ← view_transform\\({word}, {word}, {word})")]
+fn camera_transform_is_view_transform_result(
+    world: &mut RayTracerWorld,
+    camera: String,
+    from: String,
+    to: String,
+    up: String,
+) {
+    let transform = Matrix::<4, 4>::view_transform(
+        world.get_point(&from),
+        world.get_point(&to),
+        world.get_vector(&up),
+    );
+
+    let camera = world.get_mut_camera(&camera);
+    camera.transform = transform;
+}
+
 #[when(expr = "{word} ← camera\\({word}, {word}, {word})")]
 fn camera_is2(
     world: &mut RayTracerWorld,
@@ -100,4 +118,18 @@ fn camera_transform_is_rotation_y_and_translation(
     let transformation = Matrix::new_rotation_y(f32::consts::PI / rotation_y_denominator)
         * Matrix::new_translation(translation_x, translation_y, translation_z);
     camera.transform = transformation;
+}
+
+#[when(expr = "{word} ← render\\({word}, {word})")]
+fn canvas_is_render_of_camera_and_world(
+    world: &mut RayTracerWorld,
+    canvas_name: String,
+    camera: String,
+    ray_tracer_world: String,
+) {
+    let camera = world.get_camera(&camera);
+    let ray_tracer_world = world.get_world(&ray_tracer_world);
+    let canvas = camera.render(ray_tracer_world);
+
+    world.add_canvas(canvas_name, canvas);
 }

@@ -125,7 +125,7 @@ fn matrix_multiplied_by_matrix_is_the_following_matrix(
     }
 }
 
-// Then A * B is the following 4x4 matrix:
+// Then A is the following 4x4 matrix:
 #[then(
     regex = r"^([a-zA-Z0-9]*) is the following ((?:-?\d+)|(?:\d+))x((?:-?\d+)|(?:\d+)) matrix:$"
 )]

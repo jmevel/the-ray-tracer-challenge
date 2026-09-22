@@ -73,7 +73,6 @@ impl World {
         if let Some(intersections) = self.intersect(ray)? {
             if let Some(hit) = intersections.hit() {
                 let computations = Computations::from_intersection_and_ray(hit, ray);
-                println!("computations: {:?}", computations);
                 return Ok(self.shade_hit(&computations));
             }
         }

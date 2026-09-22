@@ -1,4 +1,4 @@
-use crate::{Matrix, Point, Ray};
+use crate::{Canvas, Matrix, Point, Ray, World};
 
 #[derive(Debug)]
 pub struct Camera {
@@ -78,5 +78,18 @@ impl Camera {
         let direction = (pixel - origin).normalize();
 
         Ray::new(origin, direction)
+    }
+
+    pub fn render(&self, world: &World) -> Canvas {
+        let mut image = Canvas::new(self.hsize(), self.vsize(), None);
+
+        for y in 0..self.vsize() {
+            for x in 0..self.hsize() {
+                let ray = self.ray_for_pixel(x, y);
+                let color = world.color_at(&ray).unwrap();
+                image.write_pixel(x, y, color);
+            }
+        }
+        image
     }
 }

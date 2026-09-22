@@ -69,6 +69,24 @@ fn pixel_at(world: &mut RayTracerWorld, canvas: String, x: usize, y: usize, colo
     );
 }
 
+// pixel_at(image, 5, 5) = color(0.38066, 0.47583, 0.2855)
+#[then(expr = "pixel_at\\({word}, {int}, {int}) = color\\({float}, {float}, {float})")]
+fn pixel_at2(
+    world: &mut RayTracerWorld,
+    canvas: String,
+    x: usize,
+    y: usize,
+    red: f32,
+    green: f32,
+    blue: f32,
+) {
+    let expected = Color::new_color(red, green, blue);
+    assert_eq!(
+        world.get_canvas(&canvas).pixels().get(&(x, y)).unwrap(),
+        &expected
+    );
+}
+
 #[then(expr = "lines {int}-{int} of {word} are")]
 fn lines_of_ppm_are(
     world: &mut RayTracerWorld,
