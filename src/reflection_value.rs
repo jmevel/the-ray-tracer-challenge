@@ -7,7 +7,7 @@ pub struct ReflectionValue {
 
 impl ReflectionValue {
     pub fn new(value: f32) -> ReflectionValue {
-        if value < 0f32 || value > 1f32 {
+        if value < 0.0 || value > 1.0 {
             panic!("{value} must be between 0 and 1");
         }
 

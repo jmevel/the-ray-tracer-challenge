@@ -9,10 +9,10 @@ pub fn putting_it_together() {
 
     let matrix = Matrix {
         data: [
-            [0f32, 9f32, 3f32, 0f32],
-            [9f32, 8f32, 0f32, 8f32],
-            [1f32, 8f32, 5f32, 3f32],
-            [0f32, 0f32, 3f32, 8f32],
+            [0.0, 9.0, 3.0, 0.0],
+            [9.0, 8.0, 0.0, 8.0],
+            [1.0, 8.0, 5.0, 3.0],
+            [0.0, 0.0, 3.0, 8.0],
         ],
     };
 
@@ -26,12 +26,12 @@ pub fn putting_it_together() {
     assert_eq!(transpose_of_inverse, inverse_of_transpose);
     println!("The transpose of the inverse of a matrix is equal to its inverse of its transpose");
 
-    let tuple = Vector::new(1f32, 2f32, 3f32, 4f32);
+    let tuple = Vector::new(1.0, 2.0, 3.0, 4.0);
     let tuple_multiplied_by_identity_matrix = &tuple * &identity_matrix;
     assert_eq!(tuple_multiplied_by_identity_matrix, tuple);
     println!("A tuple multiplied by the identity matrix is equal to the initial tuple");
     let mut data = identity_matrix.data;
-    data[2][3] = 2f32;
+    data[2][3] = 2.0;
     let identity_matrix_modified = Matrix { data };
     let _tuple_multiplied_by_modified_identity_matrix = &tuple * &identity_matrix_modified;
     println!(

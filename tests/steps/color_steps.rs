@@ -28,7 +28,7 @@ fn color_added_to_color_equals_color(
     green: f32,
     blue: f32,
 ) {
-    tuple_added_to_tuple_equals_tuple(world, tuple1, tuple2, red, green, blue, 1f32);
+    tuple_added_to_tuple_equals_tuple(world, tuple1, tuple2, red, green, blue, 1.0);
 }
 
 #[then(expr = "{word} * {word} = color\\({float}, {float}, {float})")]

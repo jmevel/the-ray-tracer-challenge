@@ -19,7 +19,7 @@ impl Computations {
         };
 
         let inside = {
-            if normal_vector.dot_product(&eye_vector) < 0f32 {
+            if normal_vector.dot_product(&eye_vector) < 0.0 {
                 normal_vector = -normal_vector;
                 true
             } else {

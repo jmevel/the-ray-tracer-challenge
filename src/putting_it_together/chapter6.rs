@@ -5,11 +5,11 @@ use the_ray_tracer_challenge::{Canvas, Color, Material, Object, Point, PointLigh
 #[allow(dead_code)]
 pub fn putting_it_together() {
     // start the ray at z = -5
-    let ray_origin = Point::new_point(0f32, 0f32, -5f32);
+    let ray_origin = Point::new_point(0.0, 0.0, -5.0);
 
     // put the wall at z = 10
-    let wall_z = 10f32;
-    let wall_size = 7f32;
+    let wall_z = 10.0;
+    let wall_size = 7.0;
 
     let canvas_pixels = 1000;
     let mut canvas = Canvas::new(canvas_pixels, canvas_pixels, None);
@@ -19,14 +19,14 @@ pub fn putting_it_together() {
 
     // since the wall is centered at origin (because the sphere is at the origin)
     // it means that 'half' describes the minimum and maximum x and y coordinates of the wall
-    let half = wall_size / 2f32;
+    let half = wall_size / 2.0;
 
     let mut material = Material::default();
-    material.color = Color::new_color(1f32, 0.2, 1f32); // purple
+    material.color = Color::new_color(1.0, 0.2, 1.0); // purple
     let mut sphere = Sphere::new(None);
     sphere.material = material.clone();
 
-    let light_positon = Point::new_point(-10f32, 10f32, -10f32);
+    let light_positon = Point::new_point(-10.0, 10.0, -10.0);
     let light_color = Color::white();
     let light = PointLight::new(light_positon, light_color);
 

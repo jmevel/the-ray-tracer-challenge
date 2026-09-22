@@ -31,9 +31,9 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> fmt::Display for Matrix<ROW
 
 impl<const ROW_COUNT: usize, const COL_COUNT: usize> Matrix<ROW_COUNT, COL_COUNT> {
     pub fn identity_matrix() -> Matrix<ROW_COUNT, COL_COUNT> {
-        let mut data: [[f32; COL_COUNT]; ROW_COUNT] = [[0f32; COL_COUNT]; ROW_COUNT];
+        let mut data: [[f32; COL_COUNT]; ROW_COUNT] = [[0.0; COL_COUNT]; ROW_COUNT];
         for i in 0..ROW_COUNT {
-            data[i][i] = 1f32;
+            data[i][i] = 1.0;
         }
 
         Matrix { data }
@@ -192,7 +192,7 @@ impl Matrix<2, 2> {
     }
 
     pub fn is_invertible(&self) -> bool {
-        self.determinant() != 0f32
+        self.determinant() != 0.0
     }
 }
 
@@ -207,7 +207,7 @@ impl Matrix<row_count, col_count> {
         self.data[row_idx]
             .iter()
             .enumerate()
-            .fold(0f32, |acc, (col_idx, &value)| {
+            .fold(0.0, |acc, (col_idx, &value)| {
                 acc + value * self.cofactor(row_idx, col_idx)
             })
     }
@@ -223,7 +223,7 @@ impl Matrix<row_count, col_count> {
     }
 
     pub fn is_invertible(&self) -> bool {
-        self.determinant() != 0f32
+        self.determinant() != 0.0
     }
 
     pub fn invert(&self) -> Result<Matrix<row_count, col_count>, String> {
@@ -305,7 +305,7 @@ impl<const ROW_COUNT: usize, const COL_COUNT: usize> Mul<&Matrix<ROW_COUNT, COL_
         let mut data: [[f32; COL_COUNT]; ROW_COUNT] = self.data;
         for row_idx in 0..ROW_COUNT {
             for col_idx in 0..COL_COUNT {
-                data[row_idx][col_idx] = (0..ROW_COUNT).fold(0f32, |acc, idx| {
+                data[row_idx][col_idx] = (0..ROW_COUNT).fold(0.0, |acc, idx| {
                     acc + self.data[row_idx][idx] * rhs.data[idx][col_idx]
                 });
             }

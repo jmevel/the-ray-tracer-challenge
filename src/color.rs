@@ -32,7 +32,7 @@ impl Color {
     }
 
     pub fn white() -> Color {
-        Color::new_color(1f32, 1f32, 1f32)
+        Color::new_color(1.0, 1.0, 1.0)
     }
 
     pub fn black() -> Color {
@@ -40,7 +40,7 @@ impl Color {
     }
 
     pub fn red() -> Color {
-        Color::new_color(1f32, 0f32, 0f32)
+        Color::new_color(1.0, 0.0, 0.0)
     }
 
     pub fn lighting(
@@ -67,7 +67,7 @@ impl Color {
         // Light_dot_normal represents the cosine of the angle between the light vector and the normal vector
         // A negative numer means the light is on the other side of the surface
         let light_dot_normal = light_vector.dot_product(normal_vector);
-        if light_dot_normal < 0f32 {
+        if light_dot_normal < 0.0 {
             _diffuse = Color::black();
             _specular = Color::black();
         } else {
@@ -79,7 +79,7 @@ impl Color {
             let reflect_vector = (-light_vector).reflect(normal_vector);
             let reflect_dot_eye = reflect_vector.dot_product(eye_vector);
 
-            if reflect_dot_eye <= 0f32 {
+            if reflect_dot_eye <= 0.0 {
                 _specular = Color::black();
             } else {
                 // Compute the specular contribution
@@ -118,7 +118,7 @@ impl Default for Color {
             x: Default::default(),
             y: Default::default(),
             z: Default::default(),
-            w: 1f32,
+            w: 1.0,
         }
     }
 }

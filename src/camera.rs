@@ -13,14 +13,14 @@ pub struct Camera {
 
 impl Camera {
     pub fn new(hsize: usize, vsize: usize, field_of_view: f32) -> Self {
-        let half_view = f32::tan(field_of_view / 2f32);
+        let half_view = f32::tan(field_of_view / 2.0);
         let aspect = hsize as f32 / vsize as f32;
-        let (half_width, half_height) = if aspect >= 1f32 {
+        let (half_width, half_height) = if aspect >= 1.0 {
             (half_view, half_view / aspect)
         } else {
             (half_view * aspect, half_view)
         };
-        let pixel_size = (half_width * 2f32) / hsize as f32;
+        let pixel_size = (half_width * 2.0) / hsize as f32;
 
         Self {
             hsize,

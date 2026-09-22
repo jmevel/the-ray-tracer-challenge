@@ -12,7 +12,7 @@ pub fn putting_it_together() {
     // shrinked along the y axis
     let shrink_y_axis_thread = thread::spawn(move || {
         show_sphere_shadow_on_a_wall(
-            Some(Matrix::new_scaling(1f32, 0.5, 1f32)),
+            Some(Matrix::new_scaling(1.0, 0.5, 1.0)),
             "chapter5_shrinked_y_axis",
         );
         println!("shrinked along the y axis finished");
@@ -21,7 +21,7 @@ pub fn putting_it_together() {
     // shrinked along the x axis
     let shrink_x_axis_thread = thread::spawn(move || {
         show_sphere_shadow_on_a_wall(
-            Some(Matrix::new_scaling(0.5, 1f32, 1f32)),
+            Some(Matrix::new_scaling(0.5, 1.0, 1.0)),
             "chapter5_shrinked_x_axis",
         );
         println!("shrinked along the x axis finished");
@@ -29,15 +29,14 @@ pub fn putting_it_together() {
 
     // shrinked and rotated
     let shrink_and_rotate_tread = thread::spawn(move || {
-        let transformation = Matrix::new_scaling(0.5, 1f32, 1f32).rotate_z(f32::consts::PI / 4f32);
+        let transformation = Matrix::new_scaling(0.5, 1.0, 1.0).rotate_z(f32::consts::PI / 4.0);
         show_sphere_shadow_on_a_wall(Some(transformation), "chapter5_shrinked_and_rotated");
         println!("shrinked and rotated finished");
     });
 
     // shrinked and skewed
     let shrink_and_skew_thread = thread::spawn(move || {
-        let transformation =
-            Matrix::new_scaling(0.5, 1f32, 1f32).shear(1f32, 0f32, 0f32, 0f32, 0f32, 0f32);
+        let transformation = Matrix::new_scaling(0.5, 1.0, 1.0).shear(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
         show_sphere_shadow_on_a_wall(Some(transformation), "chapter5_shrinked_and_skewed");
         println!("shrinked and skewed finished");
     });
@@ -51,11 +50,11 @@ pub fn putting_it_together() {
 
 fn show_sphere_shadow_on_a_wall(transformation: Option<Matrix<4, 4>>, file_name: &str) {
     // start the ray at z = -5
-    let ray_origin = Point::new_point(0f32, 0f32, -5f32);
+    let ray_origin = Point::new_point(0.0, 0.0, -5.0);
 
     // put the wall at z = 10
-    let wall_z = 10f32;
-    let wall_size = 7f32;
+    let wall_z = 10.0;
+    let wall_size = 7.0;
 
     let canvas_pixels = 500;
     let mut canvas = Canvas::new(canvas_pixels, canvas_pixels, None);
@@ -65,9 +64,9 @@ fn show_sphere_shadow_on_a_wall(transformation: Option<Matrix<4, 4>>, file_name:
 
     // since the wall is centered at origin (because the sphere is at the origin)
     // it means that 'half' describes the minimum and maximum x and y coordinates of the wall
-    let half = wall_size / 2f32;
+    let half = wall_size / 2.0;
 
-    let color = Color::new_color(1f32, 0f32, 0f32);
+    let color = Color::new_color(1.0, 0.0, 0.0);
     let shape = Sphere::new(transformation);
 
     // for each row of pixels in the canvas

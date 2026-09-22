@@ -3,17 +3,17 @@ use the_ray_tracer_challenge::{Canvas, Color, Point, Tuple, Vector};
 
 #[allow(dead_code)]
 pub fn putting_it_together() {
-    let position = Point::new_point(0f32, 1f32, 0f32);
-    let velocity = Vector::new_vector(1f32, 1.8, 0f32).normalize() * 11.25;
+    let position = Point::new_point(0.0, 1.0, 0.0);
+    let velocity = Vector::new_vector(1.0, 1.8, 0.0).normalize() * 11.25;
     let mut projectile = Projectile::new(position, velocity);
 
-    let gravity = Vector::new_vector(0f32, -0.1, 0f32);
-    let wind = Vector::new_vector(-0.01, 0f32, 0f32);
+    let gravity = Vector::new_vector(0.0, -0.1, 0.0);
+    let wind = Vector::new_vector(-0.01, 0.0, 0.0);
     let environment = Environment::new(gravity, wind);
 
     let mut canvas = Canvas::new(900, 550, None);
 
-    while projectile.position.y() > 0f32 {
+    while projectile.position.y() > 0.0 {
         projectile = tick(&environment, &projectile);
         canvas.write_pixel(
             projectile.position.x() as usize,

@@ -35,7 +35,7 @@ impl Vector {
 
     pub fn normalize(&self) -> Vector {
         let mag = self.magnitude();
-        if mag == 0f32 {
+        if mag == 0.0 {
             panic!("Magnitude is 0");
         }
         Self {
@@ -61,7 +61,7 @@ impl Vector {
 
     pub fn reflect(&self, normal: &Vector) -> Vector {
         let dot_product = self.dot_product(normal);
-        self - &(normal * 2f32 * dot_product)
+        self - &(normal * 2.0 * dot_product)
     }
 }
 

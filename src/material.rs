@@ -33,11 +33,11 @@ impl Material {
 impl Default for Material {
     fn default() -> Self {
         Self {
-            color: Color::new_color(1f32, 1f32, 1f32),
+            color: Color::new_color(1.0, 1.0, 1.0),
             ambient: ReflectionValue::new(0.1),
             diffuse: ReflectionValue::new(0.9),
             specular: ReflectionValue::new(0.9),
-            shininess: 200f32,
+            shininess: 200.0,
         }
     }
 }

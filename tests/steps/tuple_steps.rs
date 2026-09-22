@@ -8,7 +8,7 @@ use the_ray_tracer_challenge::{Color, Point, Tuple, Vector};
 #[given(expr = "{word} ← tuple\\({float}, {float}, {float}, {float})")]
 fn tuple_is(world: &mut RayTracerWorld, tuple: String, x: f32, y: f32, z: f32, w: f32) {
     match w {
-        1f32 => world.add_point(tuple, Point::new(x, y, z, w)),
+        1.0 => world.add_point(tuple, Point::new(x, y, z, w)),
         _ => world.add_vector(tuple, Vector::new(x, y, z, w)),
     }
 }
