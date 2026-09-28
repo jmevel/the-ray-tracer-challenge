@@ -86,8 +86,8 @@ pub fn putting_it_together() {
     ];
 
     let camera = Camera::new(
-        2000,
-        1000,
+        500,
+        250,
         f32::consts::PI / 3.0,
         Some(Matrix::<4, 4>::view_transform(
             &Point::new_point(0.0, 1.5, -5.0),
