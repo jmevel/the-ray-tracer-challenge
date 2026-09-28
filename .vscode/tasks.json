@@ -4,6 +4,11 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Run in Release",
+      "type": "shell",
+      "command": "cargo run -p the-ray-tracer-challenge --release",
+    },
+    {
       "label": "Test all",
       "type": "shell",
       "command": "cargo test --test cucumber",
