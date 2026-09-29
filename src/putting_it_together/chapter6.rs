@@ -54,8 +54,14 @@ pub fn putting_it_together() {
                             let normal = sphere.normal_at(&point);
                             let eye = -ray.direction();
 
-                            let color =
-                                Color::lighting(&sphere.material, &light, &point, &eye, &normal);
+                            let color = Color::lighting(
+                                &sphere.material,
+                                &light,
+                                &point,
+                                &eye,
+                                &normal,
+                                false,
+                            );
 
                             canvas.write_pixel(x, y, color);
                         }

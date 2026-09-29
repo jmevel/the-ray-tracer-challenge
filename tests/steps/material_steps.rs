@@ -9,6 +9,11 @@ fn material_is(world: &mut RayTracerWorld, material_name: String) {
     world.add_material(material_name, material);
 }
 
+#[given(regex = r"^(\w+) ← (true|false)$")]
+fn boolean_is(world: &mut RayTracerWorld, boolean_name: String, value: bool) {
+    world.add_boolean(boolean_name, value);
+}
+
 // material.ambient ← 1.0
 #[given(
     regex = r#"^([a-zA-Z0-9]*)\.ambient ← ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$"#
@@ -67,7 +72,7 @@ fn point_light_is(
     world.add_point_light(point_light_name, point_light);
 }
 
-#[when(expr = "{word} ← lighting\\({word}, {word}, {word}, {word}, {word})")]
+#[when(expr = "{word} ← lighting\\({word}, {word}, {word}, {word}, {word}, {word})")]
 fn lighting_is(
     world: &mut RayTracerWorld,
     lighting_name: String,
@@ -76,14 +81,23 @@ fn lighting_is(
     position: String,
     eye_vector: String,
     normal_vector: String,
+    in_shadow: String,
 ) {
     let material = world.get_material(&material);
     let light_point = world.get_point_light(&light_point);
     let position = world.get_point(&position);
     let eye_vector = world.get_vector(&eye_vector);
     let normal_vector = world.get_vector(&normal_vector);
+    let in_shadow = world.get_boolean(&in_shadow);
 
-    let lighting = Color::lighting(material, light_point, position, eye_vector, normal_vector);
+    let lighting = Color::lighting(
+        material,
+        light_point,
+        position,
+        eye_vector,
+        normal_vector,
+        in_shadow,
+    );
     world.add_color(lighting_name, lighting);
 }
 
