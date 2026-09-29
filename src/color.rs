@@ -7,7 +7,6 @@ use crate::impl_div_f32_for_tuple;
 use crate::impl_mul_f32_for_tuple;
 use crate::impl_mul_for_tuple;
 use crate::impl_neg_for_tuple;
-use crate::impl_partial_eq_for_tuple;
 use crate::impl_sub_for_tuple;
 use crate::{Tuple, Vector};
 use std::fmt::{Display, Formatter};
@@ -49,6 +48,7 @@ impl Color {
         position: &Point,
         eye_vector: &Vector,
         normal_vector: &Vector,
+        in_shadow: bool,
     ) -> Color {
         // combine the surface's color with the light's color/intensity
         let effective_color = &material.color * light.intensity();
@@ -58,6 +58,11 @@ impl Color {
 
         // compute the ambient contribution
         let ambient = effective_color * *material.ambient;
+
+        // We ignore the diffuse and specular when the object is in shadow
+        if in_shadow {
+            return ambient;
+        }
 
         // These variables are used but the compiler is warning me that 'Color::default()' value is assigned to the variables but the value is never read
         // Which is true but I don't want to over-complicate the logic here. I prefer to keep it as is and simply prefix the variables with a '_' to make the compiler happy
@@ -139,8 +144,16 @@ impl Add for Color {
     }
 }
 
+impl PartialEq for Color {
+    fn eq(&self, other: &Self) -> bool {
+        // w doesn't really matter for a Color, only Red, Green and Blue do
+        float_equals(&self.x, &other.x)
+            && float_equals(&self.y, &other.y)
+            && float_equals(&self.z, &other.z)
+    }
+}
+
 impl_display_for_tuple!(Color);
-impl_partial_eq_for_tuple!(Color);
 impl_sub_for_tuple!(Color);
 impl_neg_for_tuple!(Color);
 impl_mul_f32_for_tuple!(Color);

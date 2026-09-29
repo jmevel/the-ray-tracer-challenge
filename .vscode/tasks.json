@@ -71,7 +71,7 @@
     {
       "label": "Test single scenario",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --name 'Constructing a ray through a corner of the canvas'",
+      "command": "cargo test --test cucumber -- --name 'Lighting with the surface in shadow'",
     },
   ],
 }

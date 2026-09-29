@@ -60,6 +60,7 @@ impl World {
                         &computations.point,
                         &computations.eye_vector,
                         &computations.normal_vector,
+                        false, // TODO: fix in_shadow here
                     )
                 })
                 .collect::<Vec<Color>>(),

@@ -15,8 +15,9 @@ pub struct RayTracerWorld {
 
 #[derive(Debug)]
 pub enum ElementType {
-    Float(f32),
     Integer(usize),
+    Boolean(bool),
+    Float(f32),
     Canvas(Canvas),
     Point(Point),
     Color(Color),
@@ -56,6 +57,22 @@ impl RayTracerWorld {
         self.elements
             .get_mut(element)
             .expect(format!("{element} does not exist").as_str())
+    }
+
+    pub fn add_boolean(&mut self, boolean_name: String, value: bool) {
+        self.elements
+            .insert(boolean_name, ElementType::Boolean(value));
+    }
+
+    pub fn get_boolean(&self, boolean: &str) -> bool {
+        let ElementType::Boolean(value) = self
+            .elements
+            .get(boolean)
+            .expect(format!("{boolean} does not exist").as_str())
+        else {
+            panic!("{boolean} is not a boolean")
+        };
+        *value
     }
 
     pub fn add_integer(&mut self, integer_name: String, value: usize) {
