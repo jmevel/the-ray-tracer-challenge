@@ -71,7 +71,7 @@
     {
       "label": "Test single scenario",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --name 'Lighting with the surface in shadow'",
+      "command": "cargo test --test cucumber -- --name 'shade_hit\\(\\) is given an intersection in shadow'",
     },
   ],
 }

@@ -2,7 +2,10 @@ use cucumber::{given, then, when};
 use the_ray_tracer_challenge::{Color, Object, Point, PointLight, World};
 
 use crate::steps::{
-    ray_tracer_world::{ElementType, RayTracerWorld},
+    ray_tracer_world::{
+        ElementType::{self},
+        RayTracerWorld,
+    },
     utils::Nth,
 };
 
@@ -30,6 +33,7 @@ fn shape_is_the_nth_object_in_world(
     world.add_object_reference(shape_name, world_name, *shape.id());
 }
 
+// w.light ← point_light(point(0, 0.25, 0), color(1, 1, 1))
 #[given(
     expr = "{word}.light ← point_light\\(point\\({float}, {float}, {float}), color\\({float}, {float}, {float}))"
 )]
@@ -130,4 +134,14 @@ fn is_shadowed_is(world: &mut RayTracerWorld, scene_world: String, point: String
     let point = world.get_point(&point);
 
     assert_eq!(scene_world.is_shadowed(point), expected);
+}
+
+#[given(expr = "{word} is added to {word}")]
+fn element_is_added_to_world(world: &mut RayTracerWorld, element: String, scene_world: String) {
+    let object = match world.get_element(&element) {
+        ElementType::Sphere(sphere) => Object::Sphere(sphere.clone()),
+        _ => panic!("Not implemented"),
+    };
+    let scene_world = world.get_mut_world(&scene_world);
+    scene_world.elements.push(object);
 }

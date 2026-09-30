@@ -1,3 +1,4 @@
+use crate::float::EPSILON;
 use crate::{Intersection, Object, Point, Ray, Vector};
 
 #[derive(Debug)]
@@ -5,6 +6,7 @@ pub struct Computations {
     pub t: f32,
     pub object: Object,
     pub point: Point,
+    pub over_point: Point,
     pub eye_vector: Vector,
     pub normal_vector: Vector,
     pub inside: bool,
@@ -27,10 +29,13 @@ impl Computations {
             }
         };
 
+        let over_point = &point + &(normal_vector * EPSILON);
+
         Self {
             t: intersection.t().to_owned(),
             object: intersection.object().clone(),
             point,
+            over_point,
             eye_vector,
             normal_vector,
             inside,

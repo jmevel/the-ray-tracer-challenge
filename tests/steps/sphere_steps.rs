@@ -34,6 +34,16 @@ fn transformation_is_scaling_and_rotation_z(
 
 #[given(expr = "{word} ← sphere\\() with:")]
 fn sphere_is_sphere_with(world: &mut RayTracerWorld, sphere_name: String, step: &Step) {
+    let trim_f32_tuple = |transform_type: &str, field_value: &str| {
+        field_value
+            .trim_start_matches(transform_type)
+            .trim_matches('(')
+            .trim_matches(')')
+            .split(',')
+            .map(|s| s.trim().parse::<f32>().unwrap())
+            .collect::<Vec<f32>>()
+    };
+
     if let Some(table) = step.table.as_ref() {
         let mut sphere = Sphere::new(None, None);
         let mut material = Material::default();
@@ -44,12 +54,7 @@ fn sphere_is_sphere_with(world: &mut RayTracerWorld, sphere_name: String, step: 
                 obj if obj.starts_with("material") => {
                     match obj {
                         field_name if field_name.ends_with("color") => {
-                            let color_values = field_value
-                                .trim_matches('(')
-                                .trim_matches(')')
-                                .split(',')
-                                .map(|s| s.trim().parse::<f32>().unwrap())
-                                .collect::<Vec<f32>>();
+                            let color_values = trim_f32_tuple("color", field_value);
                             material.color =
                                 Color::new_color(color_values[0], color_values[1], color_values[2]);
                         }
@@ -68,18 +73,19 @@ fn sphere_is_sphere_with(world: &mut RayTracerWorld, sphere_name: String, step: 
                 obj if obj.starts_with("transform") => {
                     match field_value {
                         transform_type if transform_type.starts_with("scaling") => {
-                            let scaling_values = field_value
-                                .trim_start_matches("scaling")
-                                .trim_matches('(')
-                                .trim_matches(')')
-                                .split(',')
-                                .map(|s| s.trim().parse::<f32>().unwrap())
-                                .collect::<Vec<f32>>();
-
+                            let scaling_values = trim_f32_tuple("scaling", field_value);
                             transform = transform.scale(
                                 scaling_values[0],
                                 scaling_values[1],
                                 scaling_values[2],
+                            );
+                        }
+                        transform_type if transform_type.starts_with("translation") => {
+                            let translation_values = trim_f32_tuple("translation", field_value);
+                            transform = transform.translate(
+                                translation_values[0],
+                                translation_values[1],
+                                translation_values[2],
                             );
                         }
                         _ => panic!("Not implemented"),
