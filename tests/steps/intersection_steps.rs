@@ -65,9 +65,7 @@ fn entity_is_hit(world: &mut RayTracerWorld, hit_name: String, intersections_col
     world.add_intersection(hit_name, hit);
 }
 
-#[then(
-    regex = r#"^([a-zA-Z0-9_]+)\.t = ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$"#
-)]
+#[then(regex = r"^(\w+)\.t = ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$")]
 fn t_of_intersection_equals(world: &mut RayTracerWorld, intersection_name: String, t: f32) {
     let intersection = world.get_intersection(&intersection_name).clone().unwrap();
     assert_eq!(intersection.t(), &t);

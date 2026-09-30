@@ -79,6 +79,29 @@ impl World {
         }
         Ok(Color::black())
     }
+
+    pub fn is_shadowed(&self, point: &Point) -> bool {
+        let v = self.lights.as_ref().unwrap().first().unwrap().position() - point;
+        let distance = v.magnitude();
+        let direction = v.normalize();
+
+        let ray = Ray::new(point.clone(), direction);
+        let intersections = self.intersect(&ray).unwrap();
+
+        match intersections {
+            Some(intersections) => match intersections.hit() {
+                Some(hit) => {
+                    if hit.t() < &distance {
+                        true
+                    } else {
+                        false
+                    }
+                }
+                None => false,
+            },
+            None => false,
+        }
+    }
 }
 
 impl Default for World {

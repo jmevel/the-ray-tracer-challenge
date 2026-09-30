@@ -81,7 +81,7 @@ fn computation_object_equals_intersection_object(
     assert_eq!(&computations.object, intersection.object());
 }
 
-#[then(regex = r"^([a-zA-Z0-9_]+)\.inside = (true|false)$")]
+#[then(regex = r"^(\w+)\.inside = (true|false)$")]
 fn computation_inside_equals_value(
     world: &mut RayTracerWorld,
     computation: String,
