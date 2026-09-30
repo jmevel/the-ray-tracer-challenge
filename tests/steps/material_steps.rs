@@ -16,7 +16,7 @@ fn boolean_is(world: &mut RayTracerWorld, boolean_name: String, value: bool) {
 
 // material.ambient ← 1.0
 #[given(
-    regex = r#"^([a-zA-Z0-9]*)\.ambient ← ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$"#
+    regex = r"^(\w+)\.ambient ← ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$"
 )]
 fn ambient_of_material_is_value(world: &mut RayTracerWorld, material: String, value: f32) {
     let material = world.get_mut_material(&material);
@@ -140,7 +140,7 @@ fn shininess_of_material_equal_value(world: &mut RayTracerWorld, material: Strin
 
 // color = color(0.0, 0.0, 0.0)
 #[then(
-    regex = r"^([a-zA-Z0-9]*) = color\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
+    regex = r"^(\w+) = color\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
 )]
 fn color_equals_color(world: &mut RayTracerWorld, color: String, red: f32, green: f32, blue: f32) {
     let actual = world.get_color(&color);

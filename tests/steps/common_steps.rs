@@ -69,7 +69,8 @@ fn entity_is_entity_multiplied_by_entity_multiplied_by_entity(
     }
 }
 
-#[then(regex = r"^([a-zA-Z0-9]*) = ([a-zA-Z0-9]*)$")]
+// for the right-hand side, we don't want to match words with an underscore like `identity_matrix`
+#[then(regex = r"^(\w+) = ([a-zA-Z0-9]*)$")]
 fn entity_equals_entity(world: &mut RayTracerWorld, entity1: String, entity2: String) {
     match (world.get_element(&entity1), world.get_element(&entity2)) {
         (ElementType::Point(entity1), ElementType::Point(entity2)) => {
@@ -97,7 +98,8 @@ fn entity_equals_entity(world: &mut RayTracerWorld, entity1: String, entity2: St
     }
 }
 
-#[then(regex = r"^([a-zA-Z0-9]*) != ([a-zA-Z0-9]*)$")]
+// for the right-hand side, we don't want to match words with an underscore like `identity_matrix`
+#[then(regex = r"^(\w+) != ([a-zA-Z0-9]*)$")]
 fn entity_does_not_equal_entity(world: &mut RayTracerWorld, entity1: String, entity2: String) {
     match (world.get_element(&entity1), world.get_element(&entity2)) {
         (ElementType::Point(entity1), ElementType::Point(entity2)) => {
@@ -125,7 +127,7 @@ fn entity_does_not_equal_entity(world: &mut RayTracerWorld, entity1: String, ent
     }
 }
 
-#[then(regex = r"^([a-zA-Z0-9_]+) \* ([a-zA-Z0-9_]+) = ([a-zA-Z0-9_]+)$")]
+#[then(regex = r"^(\w+) \* (\w+) = (\w+)$")]
 fn entity_multiplied_by_entity_equals_entity(
     world: &mut RayTracerWorld,
     entity1: String,
@@ -187,7 +189,7 @@ fn collection_count_equals_count(
     }
 }
 
-#[then(regex = r#"^([a-zA-Z0-9_]+)\.object = ([a-zA-Z0-9_]+)$"#)]
+#[then(regex = r"^(\w+)\.object = (\w+)$")]
 fn object_of_element_equals_object(world: &mut RayTracerWorld, element: String, expected: String) {
     match (world.get_element(&element), world.get_element(&expected)) {
         (ElementType::Intersection(element), ElementType::Sphere(expected)) => {

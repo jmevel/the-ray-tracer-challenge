@@ -6,9 +6,7 @@ use the_ray_tracer_challenge::{Camera, Matrix};
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
 // v ← 2
-#[given(
-    regex = r#"^([a-zA-Z0-9]*) ← ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$"#
-)]
+#[given(regex = r"^(\w+) ← ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$")]
 fn value_is_integer(world: &mut RayTracerWorld, integer_name: String, value: usize) {
     world.add_integer(integer_name, value);
 }
