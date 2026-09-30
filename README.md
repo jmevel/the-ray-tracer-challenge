@@ -1,6 +1,6 @@
 # The Ray Tracer Challenge: A Test-Driven Guide to Your First 3D Renderer
 
-![Cover image](resources/images/chapter%207/chapter7.png)
+![Cover image](resources/images/chapter%208/chapter8.png)
 
 This project is an ongoing Rust implementation of [The Ray Tracer Challenge](http://raytracerchallenge.com) book.
 

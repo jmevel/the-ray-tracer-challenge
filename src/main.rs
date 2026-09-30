@@ -6,7 +6,8 @@ mod putting_it_together;
 // use putting_it_together::chapter5;
 // use putting_it_together::chapter6;
 // use putting_it_together::chapter7;
-use crate::putting_it_together::chapter7_secret;
+// use crate::putting_it_together::chapter7_secret;
+use putting_it_together::chapter8;
 
 fn main() {
     // chapter2::putting_it_together();
@@ -15,5 +16,6 @@ fn main() {
     // chapter5::putting_it_together();
     // chapter6::putting_it_together();
     // chapter7::putting_it_together();
-    chapter7_secret::putting_it_together();
+    // chapter7_secret::putting_it_together();
+    chapter8::putting_it_together();
 }

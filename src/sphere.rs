@@ -45,7 +45,7 @@ impl Sphere {
         let sphere_to_ray = ray.origin() - &Point::new_point(0.0, 0.0, 0.0);
         let a = ray.direction().dot_product(ray.direction());
         let b = 2.0 * ray.direction().dot_product(&sphere_to_ray);
-        let c = sphere_to_ray.dot_product(&sphere_to_ray) - Self::DEFAULT_RADIUS;
+        let c = sphere_to_ray.dot_product(&sphere_to_ray) - Self::DEFAULT_RADIUS.powi(2);
         let discriminant = b.powi(2) - (4.0 * a * c);
 
         if discriminant < 0.0 {

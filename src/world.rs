@@ -48,6 +48,16 @@ impl World {
         Ok(Some(Intersections { 0: intersections }))
     }
 
+    pub fn color_at(&self, ray: &Ray) -> Result<Color, String> {
+        if let Some(intersections) = self.intersect(ray)? {
+            if let Some(hit) = intersections.hit() {
+                let computations = Computations::from_intersection_and_ray(hit, ray);
+                return Ok(self.shade_hit(&computations));
+            }
+        }
+        Ok(Color::black())
+    }
+
     pub fn shade_hit(&self, computations: &Computations) -> Color {
         let shadowed = self.is_shadowed(&computations.over_point);
         let Object::Sphere(sphere) = computations.object;
@@ -69,16 +79,6 @@ impl World {
         };
 
         colors.into_iter().reduce(|acc, color| acc + color).unwrap()
-    }
-
-    pub fn color_at(&self, ray: &Ray) -> Result<Color, String> {
-        if let Some(intersections) = self.intersect(ray)? {
-            if let Some(hit) = intersections.hit() {
-                let computations = Computations::from_intersection_and_ray(hit, ray);
-                return Ok(self.shade_hit(&computations));
-            }
-        }
-        Ok(Color::black())
     }
 
     pub fn is_shadowed(&self, point: &Point) -> bool {

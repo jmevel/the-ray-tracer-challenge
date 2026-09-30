@@ -1,4 +1,3 @@
-use crate::float::EPSILON;
 use crate::{Intersection, Object, Point, Ray, Vector};
 
 #[derive(Debug)]
@@ -29,7 +28,10 @@ impl Computations {
             }
         };
 
-        let over_point = &point + &(normal_vector * EPSILON);
+        // Somehow the global EPSILON value was still too big and lots of black dots were appearing on the floor and walls
+        // Raising the value only here fixed the issue. Should I use some f64 in some places? I'm a bit lost
+        const SPECIAL_EPSILON: f32 = 0.002;
+        let over_point = &point + &(normal_vector * SPECIAL_EPSILON);
 
         Self {
             t: intersection.t().to_owned(),
