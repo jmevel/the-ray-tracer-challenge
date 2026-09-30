@@ -1,5 +1,5 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Intersection, Intersections, Object};
+use the_ray_tracer_challenge::{Intersection, Intersections, Object, Tuple};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
@@ -84,4 +84,36 @@ fn t_of_intersection_at_index_equals(
         .unwrap();
     let actual = intersections[index].t();
     assert_eq!(actual, &t);
+}
+
+#[then(expr = "{word}.over_point.z < -EPSILON\\/{int}")]
+fn computations_over_point_z_over_minus_epsilon_divided_by_integer(
+    world: &mut RayTracerWorld,
+    computations: String,
+    expected_denominator: f32,
+) {
+    let computations = world.get_computations(&computations);
+    let expected = f32::EPSILON / expected_denominator;
+
+    assert!(
+        computations.over_point.z() < expected,
+        "Expected {} to be greater than {}",
+        computations.over_point.z(),
+        expected
+    );
+}
+
+#[then(expr = "{word}.point.z > {word}.over_point.z")]
+fn comps_point_z_lt_comps_over_point_z(
+    world: &mut RayTracerWorld,
+    computations: String,
+    _computations: String,
+) {
+    let computations = world.get_computations(&computations);
+    assert!(
+        computations.point.z() > computations.over_point.z(),
+        "Expected {} to be over {}",
+        computations.point.z(),
+        computations.over_point.z()
+    );
 }

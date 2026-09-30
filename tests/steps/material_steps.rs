@@ -1,5 +1,5 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Color, Material, Object, Point, PointLight, ReflectionValue};
+use the_ray_tracer_challenge::{Color, Material, Object, ReflectionValue};
 
 use crate::steps::ray_tracer_world::{ElementType, RayTracerWorld};
 
@@ -51,25 +51,6 @@ fn ambient_of_element_material_is_value(
         .expect("Sphere not found");
 
     sphere.material.ambient = ReflectionValue::new(value);
-}
-
-#[given(
-    expr = "{word} ← point_light\\(point\\({int}, {int}, {int}), color\\({int}, {int}, {int}))"
-)]
-fn point_light_is(
-    world: &mut RayTracerWorld,
-    point_light_name: String,
-    x: f32,
-    y: f32,
-    z: f32,
-    red: f32,
-    green: f32,
-    blue: f32,
-) {
-    let position = Point::new_point(x, y, z);
-    let color = Color::new_color(red, green, blue);
-    let point_light = PointLight::new(position, color);
-    world.add_point_light(point_light_name, point_light);
 }
 
 #[when(expr = "{word} ← lighting\\({word}, {word}, {word}, {word}, {word}, {word})")]

@@ -10,6 +10,8 @@ pub struct Sphere {
 }
 
 impl Sphere {
+    const DEFAULT_RADIUS: f32 = 1.0;
+
     pub fn new(transformation: Option<Matrix<4, 4>>, material: Option<Material>) -> Self {
         Self {
             id: Uuid::new_v4(),
@@ -43,7 +45,7 @@ impl Sphere {
         let sphere_to_ray = ray.origin() - &Point::new_point(0.0, 0.0, 0.0);
         let a = ray.direction().dot_product(ray.direction());
         let b = 2.0 * ray.direction().dot_product(&sphere_to_ray);
-        let c = sphere_to_ray.dot_product(&sphere_to_ray) - 1.0;
+        let c = sphere_to_ray.dot_product(&sphere_to_ray) - Self::DEFAULT_RADIUS;
         let discriminant = b.powi(2) - (4.0 * a * c);
 
         if discriminant < 0.0 {

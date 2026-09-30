@@ -49,6 +49,7 @@ impl World {
     }
 
     pub fn shade_hit(&self, computations: &Computations) -> Color {
+        let shadowed = self.is_shadowed(&computations.over_point);
         let Object::Sphere(sphere) = computations.object;
         let colors = match self.lights.as_ref() {
             Some(lights) => lights
@@ -60,7 +61,7 @@ impl World {
                         &computations.point,
                         &computations.eye_vector,
                         &computations.normal_vector,
-                        false, // TODO: fix in_shadow here
+                        shadowed,
                     )
                 })
                 .collect::<Vec<Color>>(),
