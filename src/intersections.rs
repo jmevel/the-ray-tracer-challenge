@@ -7,11 +7,7 @@ pub struct Intersections(pub Vec<Intersection>);
 
 impl Intersections {
     pub fn hit(&self) -> Option<&Intersection> {
-        let mut positive_elements = self
-            .0
-            .iter()
-            .filter(|i| i.t().is_sign_positive())
-            .peekable();
+        let mut positive_elements = self.0.iter().filter(|i| i.t() >= &0f32).peekable();
 
         if positive_elements.peek().is_none() {
             return None;
