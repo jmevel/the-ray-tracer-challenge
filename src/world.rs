@@ -59,12 +59,12 @@ impl World {
     }
 
     pub fn shade_hit(&self, computations: &Computations) -> Color {
-        let shadowed = self.is_shadowed(&computations.over_point);
         let Object::Sphere(sphere) = computations.object;
         let colors = match self.lights.as_ref() {
             Some(lights) => lights
                 .iter()
                 .map(|light| {
+                    let shadowed = self.is_shadowed(&computations.over_point, light);
                     Color::lighting(
                         sphere.material(),
                         light,
@@ -81,8 +81,8 @@ impl World {
         colors.into_iter().reduce(|acc, color| acc + color).unwrap()
     }
 
-    pub fn is_shadowed(&self, point: &Point) -> bool {
-        let v = self.lights.as_ref().unwrap().first().unwrap().position() - point;
+    pub fn is_shadowed(&self, point: &Point, light: &PointLight) -> bool {
+        let v = light.position() - point;
         let distance = v.magnitude();
         let direction = v.normalize();
 

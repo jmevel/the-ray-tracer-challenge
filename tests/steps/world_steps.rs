@@ -131,9 +131,10 @@ fn world_contains_element(world: &mut RayTracerWorld, world_name: String, elemen
 #[then(regex = r"^is_shadowed\((\w+), (\w+)\) is (true|false)$")]
 fn is_shadowed_is(world: &mut RayTracerWorld, scene_world: String, point: String, expected: bool) {
     let scene_world = world.get_world(&scene_world);
+    let light = scene_world.lights.as_ref().unwrap().first().unwrap();
     let point = world.get_point(&point);
 
-    assert_eq!(scene_world.is_shadowed(point), expected);
+    assert_eq!(scene_world.is_shadowed(point, light), expected);
 }
 
 #[given(expr = "{word} is added to {word}")]
