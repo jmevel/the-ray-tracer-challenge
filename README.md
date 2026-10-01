@@ -27,7 +27,7 @@ You can get full support by simply installing [the official Cucumber extension](
     ```sh
     npm install -g @cucumber/language-server
     ```
-3. Clone [this fork](https://github.com/jmevel/zed-extension-cucumber)
+3. Clone [this repository](https://github.com/thlcodes/zed-extension-cucumber) (the [published extension](https://zed.dev/extensions/cucumber) is outdated)
 4. Reopen Zed then `Extensions` -> `Install Dev Extension` -> Select the root path of `zed-extension-cucumber`
 5. Cucumber should be fully working now, giving you Gherkin syntax highliting, `Go to definition`, `Define in ...` and other nice features
 

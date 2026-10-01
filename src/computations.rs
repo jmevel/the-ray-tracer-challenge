@@ -1,9 +1,9 @@
-use crate::{Intersection, Object, Point, Ray, Vector};
+use crate::{Intersection, Point, Ray, Shape, Vector};
 
 #[derive(Debug)]
 pub struct Computations {
     pub t: f32,
-    pub object: Object,
+    pub object: Shape,
     pub point: Point,
     pub over_point: Point,
     pub eye_vector: Vector,
@@ -15,9 +15,7 @@ impl Computations {
     pub fn from_intersection_and_ray(intersection: &Intersection, ray: &Ray) -> Computations {
         let point = ray.position(intersection.t());
         let eye_vector = -ray.direction();
-        let mut normal_vector = match intersection.object() {
-            Object::Sphere(sphere) => sphere.normal_at(&point.clone()),
-        };
+        let mut normal_vector = intersection.shape().normal_at(&point.clone());
 
         let inside = {
             if normal_vector.dot_product(&eye_vector) < 0.0 {
@@ -35,7 +33,7 @@ impl Computations {
 
         Self {
             t: intersection.t().to_owned(),
-            object: intersection.object().clone(),
+            object: intersection.shape().clone(),
             point,
             over_point,
             eye_vector,

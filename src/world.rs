@@ -1,12 +1,12 @@
 use crate::{
-    Color, Computations, Intersection, Intersections, Material, Matrix, Object, Point, PointLight,
-    Ray, ReflectionValue, Sphere,
+    Color, Computations, Intersection, Intersections, Material, Matrix, Point, PointLight, Ray,
+    ReflectionValue, Shape, Sphere,
 };
 
 #[derive(Debug)]
 pub struct World {
     pub lights: Option<Vec<PointLight>>,
-    pub elements: Vec<Object>,
+    pub elements: Vec<Shape>,
 }
 
 impl World {
@@ -17,7 +17,7 @@ impl World {
         }
     }
 
-    pub fn elements<'a>(&'a self) -> Vec<&'a Object> {
+    pub fn elements<'a>(&'a self) -> Vec<&'a Shape> {
         self.elements.iter().collect()
     }
 
@@ -25,14 +25,9 @@ impl World {
         let mut intersections = self
             .elements
             .iter()
-            // TODO: use a match when the Object enum will contain other value(s) than Sphere
-            // .map(|e| match e {
-            //     Object::Sphere(sphere) => sphere.intersect(ray),
-            //     _ => panic!("Not implemented"),
-            // })
-            .map(|e| {
-                let Object::Sphere(sphere) = e;
-                sphere.intersect(ray)
+            .map(|e| match e {
+                Shape::Sphere(sphere) => sphere.intersect(ray),
+                Shape::TestShape(_) => panic!("Not implemented"),
             })
             .collect::<Result<Vec<Option<Intersections>>, String>>()? // collect can transform a Vec<Result<T>> into a Result<Vec<T>>
             .into_iter()
@@ -59,14 +54,13 @@ impl World {
     }
 
     pub fn shade_hit(&self, computations: &Computations) -> Color {
-        let Object::Sphere(sphere) = computations.object;
         let colors = match self.lights.as_ref() {
             Some(lights) => lights
                 .iter()
                 .map(|light| {
                     let shadowed = self.is_shadowed(&computations.over_point, light);
                     Color::lighting(
-                        sphere.material(),
+                        computations.object.material(),
                         light,
                         &computations.point,
                         &computations.eye_vector,
@@ -121,7 +115,7 @@ impl Default for World {
         s1.material = s1_material;
 
         let s2 = Sphere::new(Some(Matrix::new_scaling(0.5, 0.5, 0.5)), None);
-        let elements: Vec<Object> = vec![Object::Sphere(s1), Object::Sphere(s2)];
+        let elements: Vec<Shape> = vec![Shape::Sphere(s1), Shape::Sphere(s2)];
 
         Self {
             lights: Some(vec![light]),

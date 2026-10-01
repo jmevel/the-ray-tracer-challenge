@@ -1,13 +1,13 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Intersection, Intersections, Object, Tuple};
+use the_ray_tracer_challenge::{Intersection, Intersections, Tuple};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
 #[given(expr = "{word} ← intersection\\({float}, {word})")]
 #[when(expr = "{word} ← intersection\\({float}, {word})")]
-fn intersection_is(world: &mut RayTracerWorld, intersection_name: String, t: f32, sphere: String) {
-    let sphere = world.get_sphere(&sphere).clone();
-    let intersection = Intersection::new(t, Object::Sphere(sphere));
+fn intersection_is(world: &mut RayTracerWorld, intersection_name: String, t: f32, shape: String) {
+    let shape = world.get_shape(&shape).clone();
+    let intersection = Intersection::new(t, shape);
     world.add_intersection(intersection_name, Some(intersection));
 }
 
@@ -65,7 +65,8 @@ fn entity_is_hit(world: &mut RayTracerWorld, hit_name: String, intersections_col
     world.add_intersection(hit_name, hit);
 }
 
-#[then(regex = r"^(\w+)\.t = ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$")]
+// i.t = 3.5
+#[then(regex = r"^(\w+)\.t = ([+-]?\d+(?:\.\d+)?)$")]
 fn t_of_intersection_equals(world: &mut RayTracerWorld, intersection_name: String, t: f32) {
     let intersection = world.get_intersection(&intersection_name).clone().unwrap();
     assert_eq!(intersection.t(), &t);

@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use cucumber::World;
 use the_ray_tracer_challenge::{
-    Camera, Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Object,
-    Point, PointLight, Ray, Sphere, Vector,
+    Camera, Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Point,
+    PointLight, Ray, Shape, Vector,
 };
 use uuid::Uuid;
 
@@ -27,7 +27,8 @@ pub enum ElementType {
     Matrix3x3(Matrix<3, 3>),
     Matrix4x4(Matrix<4, 4>),
     Ray(Ray),
-    Sphere(Sphere),
+    // Sphere(Sphere),
+    Shape(Shape),
     Intersection(Option<Intersection>),
     IntersectionsCollection(Option<Intersections>),
     PointLight(PointLight),
@@ -246,45 +247,41 @@ impl RayTracerWorld {
         ray
     }
 
-    pub fn add_sphere(&mut self, sphere_name: String, sphere: Sphere) {
-        self.elements
-            .insert(sphere_name, ElementType::Sphere(sphere));
+    pub fn add_shape(&mut self, shape_name: String, shape: Shape) {
+        self.elements.insert(shape_name, ElementType::Shape(shape));
     }
 
-    pub fn get_sphere(&self, sphere: &str) -> &Sphere {
-        let sphere = match self
+    pub fn get_shape(&self, shape: &str) -> &Shape {
+        let shape = match self
             .elements
-            .get(sphere)
-            .expect(format!("{sphere} does not exist").as_str())
+            .get(shape)
+            .expect(format!("{shape} does not exist").as_str())
         {
-            ElementType::Sphere(sphere) => sphere,
+            ElementType::Shape(shape) => shape,
             ElementType::SceneWorldObjectReference((parent_name, uuid)) => {
                 let scene_world = self.get_world(parent_name);
-                let sphere = scene_world
+                let shape = scene_world
                     .elements
                     .iter()
-                    .find_map(|object| match object {
-                        Object::Sphere(sphere) if sphere.id() == uuid => Some(sphere),
-                        _ => None,
-                    })
+                    .find(|shape| shape.id() == uuid)
                     .expect("Sphere not found");
-                sphere
+                shape
             }
-            _ => panic!("{sphere} is not a sphere"),
+            _ => panic!("{shape} is not a sphere"),
         };
 
-        sphere
+        shape
     }
 
-    pub fn get_mut_sphere(&mut self, sphere: &str) -> &mut Sphere {
-        let ElementType::Sphere(sphere) = self
+    pub fn get_mut_shape(&mut self, shape: &str) -> &mut Shape {
+        let ElementType::Shape(shape) = self
             .elements
-            .get_mut(sphere)
-            .expect(format!("{sphere} does not exist").as_str())
+            .get_mut(shape)
+            .expect(format!("{shape} does not exist").as_str())
         else {
-            panic!("{sphere} is not a sphere");
+            panic!("{shape} is not a sphere");
         };
-        sphere
+        shape
     }
 
     pub fn add_intersection(

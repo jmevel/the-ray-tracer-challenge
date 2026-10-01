@@ -1,5 +1,4 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::Object;
 
 use crate::steps::ray_tracer_world::{ElementType, RayTracerWorld};
 
@@ -192,14 +191,11 @@ fn collection_count_equals_count(
 #[then(regex = r"^(\w+)\.object = (\w+)$")]
 fn object_of_element_equals_object(world: &mut RayTracerWorld, element: String, expected: String) {
     match (world.get_element(&element), world.get_element(&expected)) {
-        (ElementType::Intersection(element), ElementType::Sphere(expected)) => {
-            assert_eq!(
-                element.as_ref().unwrap().object(),
-                &Object::Sphere(expected.to_owned())
-            );
+        (ElementType::Intersection(element), ElementType::Shape(expected)) => {
+            assert_eq!(element.as_ref().unwrap().shape(), expected);
         }
-        (ElementType::Computations(element), ElementType::Sphere(expected)) => {
-            assert_eq!(element.object, Object::Sphere(expected.to_owned()));
+        (ElementType::Computations(element), ElementType::Shape(expected)) => {
+            assert_eq!(&element.object, expected);
         }
         _ => panic!("Not supported"),
     }
@@ -217,11 +213,8 @@ fn object_at_index_of_intersections_collection_equals_object(
         .clone();
 
     match world.get_element(&object_name) {
-        ElementType::Sphere(sphere) => {
-            assert_eq!(
-                intersection.unwrap()[index].object(),
-                &Object::Sphere(sphere.to_owned())
-            );
+        ElementType::Shape(shape) => {
+            assert_eq!(intersection.unwrap()[index].shape(), shape);
         }
         _ => panic!("Not supported"),
     }

@@ -78,7 +78,7 @@ fn computation_object_equals_intersection_object(
 ) {
     let computations = world.get_computations(&computation);
     let intersection = world.get_intersection(&intersection).to_owned().unwrap();
-    assert_eq!(&computations.object, intersection.object());
+    assert_eq!(&computations.object, intersection.shape());
 }
 
 #[then(regex = r"^(\w+)\.inside = (true|false)$")]

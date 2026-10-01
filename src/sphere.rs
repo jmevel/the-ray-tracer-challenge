@@ -1,6 +1,6 @@
 use uuid::Uuid;
 
-use crate::{Intersection, Intersections, Material, Matrix, Object, Point, Ray, Vector};
+use crate::{Intersection, Intersections, Material, Matrix, Point, Ray, Shape};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Sphere {
@@ -57,17 +57,9 @@ impl Sphere {
 
         Ok(Some(Intersections {
             0: vec![
-                Intersection::new(t1, Object::Sphere(self.clone())),
-                Intersection::new(t2, Object::Sphere(self.clone())),
+                Intersection::new(t1, Shape::Sphere(self.clone())),
+                Intersection::new(t2, Shape::Sphere(self.clone())),
             ],
         }))
-    }
-
-    pub fn normal_at(&self, world_point: &Point) -> Vector {
-        let object_point = &self.transform.invert().unwrap() * world_point;
-        let object_normal = object_point - Point::new_point(0.0, 0.0, 0.0);
-        let world_normal = &self.transform.invert().unwrap().transpose() * &object_normal;
-
-        world_normal.with_w(0.0).normalize()
     }
 }

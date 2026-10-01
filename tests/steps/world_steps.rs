@@ -1,5 +1,5 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Color, Object, Point, PointLight, World};
+use the_ray_tracer_challenge::{Color, Point, PointLight, Shape, World};
 
 use crate::steps::{
     ray_tracer_world::{
@@ -21,16 +21,17 @@ fn world_is_default_world(world: &mut RayTracerWorld, world_name: String) {
 }
 
 #[given(expr = "{word} ← the {nth} object in {word}")]
-fn shape_is_the_nth_object_in_world(
+fn shape_is_the_nth_element_in_world(
     world: &mut RayTracerWorld,
     shape_name: String,
     nth: Nth,
     world_name: String,
 ) {
     let scene_world = world.get_mut_world(&world_name);
-    let Object::Sphere(shape) = scene_world.elements[nth as usize];
-    // world.add_sphere(shape_name, shape);
-    world.add_object_reference(shape_name, world_name, *shape.id());
+    match scene_world.elements[nth as usize] {
+        Shape::Sphere(sphere) => world.add_object_reference(shape_name, world_name, *sphere.id()),
+        Shape::TestShape(_) => panic!("Not implemented"),
+    };
 }
 
 // w.light ← point_light(point(0, 0.25, 0), color(1, 1, 1))
@@ -116,9 +117,8 @@ fn world_light_equals_light(world: &mut RayTracerWorld, world_name: String, ligh
 fn world_contains_element(world: &mut RayTracerWorld, world_name: String, element: String) {
     let scene_world = world.get_world(&world_name);
     match world.get_element(&element) {
-        ElementType::Sphere(expected) => {
-            assert!(scene_world.elements.iter().any(|e| {
-                let Object::Sphere(actual) = e;
+        ElementType::Shape(expected) => {
+            assert!(scene_world.elements.iter().any(|actual| {
                 actual.material() == expected.material()
                     && actual.transform() == expected.transform()
             }));
@@ -140,7 +140,7 @@ fn is_shadowed_is(world: &mut RayTracerWorld, scene_world: String, point: String
 #[given(expr = "{word} is added to {word}")]
 fn element_is_added_to_world(world: &mut RayTracerWorld, element: String, scene_world: String) {
     let object = match world.get_element(&element) {
-        ElementType::Sphere(sphere) => Object::Sphere(sphere.clone()),
+        ElementType::Shape(shape) => shape.clone(),
         _ => panic!("Not implemented"),
     };
     let scene_world = world.get_mut_world(&scene_world);

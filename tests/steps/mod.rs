@@ -10,6 +10,7 @@ pub mod matrix_steps;
 pub mod point_steps;
 pub mod ray_steps;
 pub mod ray_tracer_world;
+pub mod shape_steps;
 pub mod sphere_steps;
 pub mod transformation_steps;
 pub mod tuple_steps;

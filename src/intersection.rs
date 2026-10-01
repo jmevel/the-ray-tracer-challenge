@@ -1,24 +1,24 @@
 use std::cmp::Ordering;
 
-use crate::Object;
+use crate::Shape;
 
 #[derive(Debug, Clone)]
 pub struct Intersection {
     t: f32,
-    object: Object,
+    shape: Shape,
 }
 
 impl Intersection {
-    pub fn new(t: f32, object: Object) -> Self {
-        Self { t, object }
+    pub fn new(t: f32, shape: Shape) -> Self {
+        Self { t, shape }
     }
 
     pub fn t(&self) -> &f32 {
         &self.t
     }
 
-    pub fn object(&self) -> &Object {
-        &self.object
+    pub fn shape(&self) -> &Shape {
+        &self.shape
     }
 }
 

@@ -69,6 +69,11 @@
       "command": "cargo test --test cucumber -- --tags '@camera'",
     },
     {
+      "label": "Test shape",
+      "type": "shell",
+      "command": "cargo test --test cucumber -- --tags '@shape'",
+    },
+    {
       "label": "Test single scenario",
       "type": "shell",
       "command": "cargo test --test cucumber -- --name 'shade_hit\\(\\) is given an intersection in shadow'",

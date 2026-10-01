@@ -1,6 +1,6 @@
 use std::fs;
 
-use the_ray_tracer_challenge::{Canvas, Color, Material, Object, Point, PointLight, Ray, Sphere};
+use the_ray_tracer_challenge::{Canvas, Color, Material, Point, PointLight, Ray, Sphere};
 
 #[allow(dead_code)]
 pub fn putting_it_together() {
@@ -50,12 +50,11 @@ pub fn putting_it_together() {
                     if let Some(intersections) = intersections {
                         if let Some(hit) = intersections.hit() {
                             let point = ray.position(hit.t());
-                            let Object::Sphere(sphere) = hit.object();
-                            let normal = sphere.normal_at(&point);
+                            let normal = hit.shape().normal_at(&point);
                             let eye = -ray.direction();
 
                             let color = Color::lighting(
-                                &sphere.material,
+                                sphere.material(),
                                 &light,
                                 &point,
                                 &eye,

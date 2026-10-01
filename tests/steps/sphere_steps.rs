@@ -1,35 +1,14 @@
 use std::f32;
 
 use cucumber::{gherkin::Step, given, then, when};
-use the_ray_tracer_challenge::{Color, Material, Matrix, Point, ReflectionValue, Sphere};
+use the_ray_tracer_challenge::{Color, Material, Matrix, Point, ReflectionValue, Shape, Sphere};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
 #[given(expr = "{word} ← sphere\\()")]
 fn sphere_is(world: &mut RayTracerWorld, sphere_name: String) {
     let sphere = Sphere::new(None, None);
-    world.add_sphere(sphere_name, sphere);
-}
-
-#[given(expr = "set_transform\\({word}, translation\\({float}, {float}, {float}))")]
-fn set_transform_s_translation(world: &mut RayTracerWorld, sphere: String, x: f32, y: f32, z: f32) {
-    let sphere = world.get_mut_sphere(&sphere);
-    let transformation = Matrix::new_translation(x, y, z);
-    sphere.transform = transformation;
-}
-
-#[given(expr = "{word} ← scaling\\({float}, {float}, {float}) * rotation_z\\(π\\/{float})")]
-fn transformation_is_scaling_and_rotation_z(
-    world: &mut RayTracerWorld,
-    transformation_name: String,
-    x: f32,
-    y: f32,
-    z: f32,
-    denominator: f32,
-) {
-    let transformation: Matrix<4, 4> =
-        Matrix::new_rotation_z(f32::consts::PI / denominator).scale(x, y, z);
-    world.add_matrix4x4(transformation_name, transformation);
+    world.add_shape(sphere_name, Shape::Sphere(sphere));
 }
 
 #[given(expr = "{word} ← sphere\\() with:")]
@@ -95,7 +74,7 @@ fn sphere_is_sphere_with(world: &mut RayTracerWorld, sphere_name: String, step: 
                 _ => panic!("Not implemented"),
             }
         }
-        world.add_sphere(sphere_name, sphere);
+        world.add_shape(sphere_name, Shape::Sphere(sphere));
     } else {
         panic!("Missing table");
     }
@@ -103,9 +82,16 @@ fn sphere_is_sphere_with(world: &mut RayTracerWorld, sphere_name: String, step: 
 
 #[given(expr = "set_transform\\({word}, {word})")]
 #[when(expr = "set_transform\\({word}, {word})")]
-fn set_transform_s_t(world: &mut RayTracerWorld, sphere: String, transformation: String) {
-    let transformation = world.get_matrix4x4(&transformation);
-    world.get_mut_sphere(&sphere).transform = transformation.clone();
+fn set_transform_sphere_transformation(
+    world: &mut RayTracerWorld,
+    sphere: String,
+    transformation: String,
+) {
+    let transformation = world.get_matrix4x4(&transformation).clone();
+    let Shape::Sphere(sphere) = world.get_mut_shape(&sphere) else {
+        panic!("{sphere} is not a sphere");
+    };
+    sphere.transform = transformation;
 }
 
 #[when(expr = "{word} ← intersect\\({word}, {word})")]
@@ -115,7 +101,7 @@ fn intersection_is_intersect_of_sphere_and_ray(
     sphere_name: String,
     ray_name: String,
 ) -> Result<(), String> {
-    let sphere = world.get_sphere(&sphere_name);
+    let sphere = world.get_shape(&sphere_name);
     let ray = world.get_ray(&ray_name);
     let intersections = sphere.intersect(ray);
     world.add_intersections_collection(intersect_name, intersections?);
@@ -131,7 +117,7 @@ fn n_normal_at_point(
     y: f32,
     z: f32,
 ) {
-    let sphere = world.get_sphere(&sphere);
+    let sphere = world.get_shape(&sphere);
     let point = Point::new_point(x, y, z);
     let normal = sphere.normal_at(&point);
     world.add_vector(normal_name, normal);
@@ -177,14 +163,16 @@ fn n_normal_at_point3(
 
 #[when(expr = "{word} ← {word}.material")]
 fn material_is_sphere_material(world: &mut RayTracerWorld, material_name: String, sphere: String) {
-    let sphere = world.get_sphere(&sphere);
+    let sphere = world.get_shape(&sphere);
     world.add_material(material_name, sphere.material().clone());
 }
 
 #[when(expr = "{word}.material ← {word}")]
 fn material_of_sphere_is(world: &mut RayTracerWorld, sphere: String, material: String) {
     let material = world.get_material(&material).clone();
-    let sphere = world.get_mut_sphere(&sphere);
+    let Shape::Sphere(sphere) = world.get_mut_shape(&sphere) else {
+        panic!("{sphere} is not a sphere")
+    };
     sphere.material = material;
 }
 
@@ -200,7 +188,7 @@ fn material_of_sphere_equals_material(
     sphere: String,
     material: String,
 ) {
-    let sphere = world.get_sphere(&sphere);
+    let sphere = world.get_shape(&sphere);
     let expected = world.get_material(&material);
     assert_eq!(sphere.material(), expected);
 }

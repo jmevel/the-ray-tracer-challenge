@@ -51,7 +51,7 @@ fn vector_is_reflect_of_vector_and_vector(
 }
 
 #[then(
-    regex = r"^(\w+) = vector\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
+    regex = r"^(\w+) = vector\(([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?)\)$"
 )]
 fn vector_equals_vector(world: &mut RayTracerWorld, vector: String, x: f32, y: f32, z: f32) {
     let actual = world.get_vector(&vector);

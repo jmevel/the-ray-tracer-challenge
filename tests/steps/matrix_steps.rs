@@ -79,6 +79,20 @@ fn matrix_is_inverse_of_matrix(
     }
 }
 
+#[given(expr = "{word} ← scaling\\({float}, {float}, {float}) * rotation_z\\(π\\/{float})")]
+fn transformation_is_scaling_and_rotation_z(
+    world: &mut RayTracerWorld,
+    transformation_name: String,
+    x: f32,
+    y: f32,
+    z: f32,
+    denominator: f32,
+) {
+    let transformation: Matrix<4, 4> =
+        Matrix::new_rotation_z(std::f32::consts::PI / denominator).scale(x, y, z);
+    world.add_matrix4x4(transformation_name, transformation);
+}
+
 #[then(expr = "{word}[{int},{int}] = {float}")]
 fn matrix_index_equals(
     world: &mut RayTracerWorld,
@@ -150,9 +164,9 @@ fn matrix_is_the_following_matrix(
     }
 }
 
+// A * b = tuple(18, 24, 33, 1)
 #[then(
-    // A * b = tuple(18, 24, 33, 1)
-    regex = r"^(\w+) \* (\w+) = tuple\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
+    regex = r"^(\w+) \* (\w+) = tuple\(([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?)\)$"
 )]
 fn matrix_multiplied_by_tuple_equals_tuple(
     world: &mut RayTracerWorld,
@@ -385,7 +399,8 @@ fn transformation_equals_scaling(
     assert_eq!(actual, &expected);
 }
 
-#[then(expr = "{word} = translation\\({float}, {float}, {float})")]
+// transform = translation(-10, 0, 4)
+#[then(regex = r"^(\w+) = translation\((-?\d+), (-?\d+), (-?\d+)\)")]
 fn transformation_equals_translation(
     world: &mut RayTracerWorld,
     transformation: String,
@@ -405,7 +420,7 @@ fn element_transform_equals_identity_matrix(
     expected: String,
 ) {
     let transform = match world.get_element(&element) {
-        ElementType::Sphere(sphere) => sphere.transform(),
+        ElementType::Shape(shape) => shape.transform(),
         ElementType::Camera(camera) => camera.transform(),
         _ => panic!("Not implemented"),
     };

@@ -1,5 +1,5 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Color, Material, Object, ReflectionValue};
+use the_ray_tracer_challenge::{Color, Material, ReflectionValue, Shape};
 
 use crate::steps::ray_tracer_world::{ElementType, RayTracerWorld};
 
@@ -15,9 +15,7 @@ fn boolean_is(world: &mut RayTracerWorld, boolean_name: String, value: bool) {
 }
 
 // material.ambient ← 1.0
-#[given(
-    regex = r"^(\w+)\.ambient ← ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))$"
-)]
+#[given(regex = r"^(\w+)\.ambient ← ([+-]?\d+(?:\.\d+)?)$")]
 fn ambient_of_material_is_value(world: &mut RayTracerWorld, material: String, value: f32) {
     let material = world.get_mut_material(&material);
     material.ambient = ReflectionValue::new(value);
@@ -41,16 +39,16 @@ fn ambient_of_element_material_is_value(
         panic!("{parent_name} is not a world");
     };
 
-    let sphere = scene_world
+    let new_ambient = ReflectionValue::new(value);
+    match scene_world
         .elements
         .iter_mut()
-        .find_map(|object| match object {
-            Object::Sphere(sphere) if sphere.id() == &uuid => Some(sphere),
-            _ => None,
-        })
-        .expect("Sphere not found");
-
-    sphere.material.ambient = ReflectionValue::new(value);
+        .find(|shape| shape.id() == &uuid)
+        .expect("Shape not found")
+    {
+        Shape::Sphere(sphere) => sphere.material.ambient = new_ambient,
+        Shape::TestShape(test_shape) => test_shape.material.ambient = new_ambient,
+    };
 }
 
 #[when(expr = "{word} ← lighting\\({word}, {word}, {word}, {word}, {word}, {word})")]
@@ -121,7 +119,7 @@ fn shininess_of_material_equal_value(world: &mut RayTracerWorld, material: Strin
 
 // color = color(0.0, 0.0, 0.0)
 #[then(
-    regex = r"^(\w+) = color\(([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?)), ([+-]?(?:inf|NaN|(?:\d+|\d+\.\d*|\d*\.\d+)(?:[eE][+-]?\d+)?))\)$"
+    regex = r"^(\w+) = color\(([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?)\)$"
 )]
 fn color_equals_color(world: &mut RayTracerWorld, color: String, red: f32, green: f32, blue: f32) {
     let actual = world.get_color(&color);

@@ -1,7 +1,7 @@
 use std::{f32, fs};
 
 use the_ray_tracer_challenge::{
-    Camera, Color, Material, Matrix, Object, Point, PointLight, ReflectionValue, Sphere, Vector,
+    Camera, Color, Material, Matrix, Point, PointLight, ReflectionValue, Shape, Sphere, Vector,
     World,
 };
 
@@ -77,12 +77,12 @@ pub fn putting_it_together() {
         Color::white(),
     )]);
     world.elements = vec![
-        Object::Sphere(floor),
-        Object::Sphere(left_wall),
-        Object::Sphere(right_wall),
-        Object::Sphere(middle),
-        Object::Sphere(right),
-        Object::Sphere(left),
+        Shape::Sphere(floor),
+        Shape::Sphere(left_wall),
+        Shape::Sphere(right_wall),
+        Shape::Sphere(middle),
+        Shape::Sphere(right),
+        Shape::Sphere(left),
     ];
 
     let camera = Camera::new(
