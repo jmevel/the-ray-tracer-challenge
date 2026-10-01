@@ -6,3 +6,4 @@ pub mod chapter6;
 pub mod chapter7;
 pub mod chapter7_secret;
 pub mod chapter8;
+pub mod chapter8_secret;
