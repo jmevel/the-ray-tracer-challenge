@@ -30,7 +30,15 @@ impl Vector {
     }
 
     pub fn magnitude(&self) -> f32 {
-        (self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)).sqrt()
+        (self
+            .x
+            .powi(2)
+            // https://blog.rust-lang.org/2026/08/20/Rust-1.98.0/#algebraic-floating-point-methods
+            // https://github.com/rust-lang/libs-team/issues/532
+            .algebraic_add(self.y.powi(2))
+            .algebraic_add(self.z.powi(2))
+            .algebraic_add(self.w.powi(2)))
+        .sqrt()
     }
 
     pub fn normalize(&self) -> Vector {
