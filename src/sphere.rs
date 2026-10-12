@@ -39,9 +39,6 @@ impl Sphere {
     }
 
     pub fn intersect(&self, ray: &Ray) -> Result<Option<Intersections>, String> {
-        // If the sphere has been transformed, the inverse of the transformation must be applied to the ray as well before calculating the intersections
-        let ray = ray.transform(&self.transform.invert()?);
-
         let sphere_to_ray = ray.origin() - &Point::new_point(0.0, 0.0, 0.0);
         let a = ray.direction().dot_product(ray.direction());
         let b = 2.0 * ray.direction().dot_product(&sphere_to_ray);

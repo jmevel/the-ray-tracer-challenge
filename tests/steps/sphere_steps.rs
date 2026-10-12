@@ -94,20 +94,6 @@ fn set_transform_sphere_transformation(
     sphere.transform = transformation;
 }
 
-#[when(expr = "{word} ← intersect\\({word}, {word})")]
-fn intersection_is_intersect_of_sphere_and_ray(
-    world: &mut RayTracerWorld,
-    intersect_name: String,
-    sphere_name: String,
-    ray_name: String,
-) -> Result<(), String> {
-    let sphere = world.get_shape(&sphere_name);
-    let ray = world.get_ray(&ray_name);
-    let intersections = sphere.intersect(ray);
-    world.add_intersections_collection(intersect_name, intersections?);
-    Ok(())
-}
-
 #[when(expr = "{word} ← normal_at\\({word}, point\\({float}, {float}, {float}))")]
 fn n_normal_at_point(
     world: &mut RayTracerWorld,

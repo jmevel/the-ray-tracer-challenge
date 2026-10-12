@@ -45,8 +45,11 @@ impl Shape {
     }
 
     pub fn intersect(&self, ray: &Ray) -> Result<Option<Intersections>, String> {
+        // If the shape has been transformed, the inverse of the transformation must be applied to the ray as well before calculating the intersections
+        let ray = ray.transform(self.transform().invert().as_ref()?);
+
         match self {
-            Self::Sphere(sphere) => sphere.intersect(ray),
+            Self::Sphere(sphere) => sphere.intersect(&ray),
             Self::TestShape(test_shape) => test_shape.intersect(),
         }
     }

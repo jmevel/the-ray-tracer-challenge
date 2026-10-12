@@ -25,10 +25,7 @@ impl World {
         let mut intersections = self
             .elements
             .iter()
-            .map(|e| match e {
-                Shape::Sphere(sphere) => sphere.intersect(ray),
-                Shape::TestShape(_) => panic!("Not implemented"),
-            })
+            .map(|shape| shape.intersect(ray))
             .collect::<Result<Vec<Option<Intersections>>, String>>()? // collect can transform a Vec<Result<T>> into a Result<Vec<T>>
             .into_iter()
             .flatten()

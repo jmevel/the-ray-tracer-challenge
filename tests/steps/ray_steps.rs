@@ -76,7 +76,10 @@ fn position_of_ray_equals_point(
     assert_eq!(ray.position(&position), expected_position);
 }
 
-#[then(expr = "{word}.origin = point\\({float}, {float}, {float})")]
+// r.origin = point(0, 2, -5)
+#[then(
+    regex = r"^(\w+)\.origin = point\(([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?)\)$"
+)]
 fn ray_origin_equals_point(world: &mut RayTracerWorld, ray: String, x: f32, y: f32, z: f32) {
     let expected = Point::new_point(x, y, z);
     let ray = world.get_ray(&ray);

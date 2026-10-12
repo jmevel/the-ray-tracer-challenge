@@ -6,77 +6,77 @@
     {
       "label": "Run in Release",
       "type": "shell",
-      "command": "cargo run -p the-ray-tracer-challenge --release",
+      "command": "cargo run -p the-ray-tracer-challenge --release"
     },
     {
       "label": "Test all",
       "type": "shell",
-      "command": "cargo test --test cucumber",
+      "command": "cargo test --test cucumber"
     },
     {
       "label": "Test tuple",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@tuple'",
+      "command": "cargo test --test cucumber -- --tags '@tuple'"
     },
     {
       "label": "Test canvas",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@canvas'",
+      "command": "cargo test --test cucumber -- --tags '@canvas'"
     },
     {
       "label": "Test matrix",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@matrix'",
+      "command": "cargo test --test cucumber -- --tags '@matrix'"
     },
     {
       "label": "Test transformation",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@transformation'",
+      "command": "cargo test --test cucumber -- --tags '@transformation'"
     },
     {
       "label": "Test ray",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@ray'",
+      "command": "cargo test --test cucumber -- --tags '@ray'"
     },
     {
       "label": "Test sphere",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@sphere'",
+      "command": "cargo test --test cucumber -- --tags '@sphere'"
     },
     {
       "label": "Test intersection",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@intersection'",
+      "command": "cargo test --test cucumber -- --tags '@intersection'"
     },
     {
       "label": "Test light",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@light'",
+      "command": "cargo test --test cucumber -- --tags '@light'"
     },
     {
       "label": "Test material",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@material'",
+      "command": "cargo test --test cucumber -- --tags '@material'"
     },
     {
       "label": "Test world",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@world'",
+      "command": "cargo test --test cucumber -- --tags '@world'"
     },
     {
       "label": "Test camera",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@camera'",
+      "command": "cargo test --test cucumber -- --tags '@camera'"
     },
     {
       "label": "Test shape",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --tags '@shape'",
+      "command": "cargo test --test cucumber -- --tags '@shape'"
     },
     {
       "label": "Test single scenario",
       "type": "shell",
-      "command": "cargo test --test cucumber -- --name 'shade_hit\\(\\) is given an intersection in shadow'",
-    },
-  ],
+      "command": "cargo test --test cucumber -- --name 'The color with an intersection behind the ray'"
+    }
+  ]
 }
