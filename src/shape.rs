@@ -54,20 +54,15 @@ impl Shape {
         }
     }
 
-    pub fn normal_at(&self, world_point: &Point) -> Vector {
-        match self {
-            Self::Sphere(sphere) => self.normal_at_common(world_point, sphere.transform()),
-            Self::TestShape(test_shape) => {
-                self.normal_at_common(world_point, test_shape.transform())
-            }
-        }
-    }
-
-    fn normal_at_common(&self, world_point: &Point, transform: &Matrix<4, 4>) -> Vector {
-        let object_point = &transform.invert().unwrap() * world_point;
-        let object_normal = object_point - Point::new_point(0.0, 0.0, 0.0);
-        let world_normal = &transform.invert().unwrap().transpose() * &object_normal;
-        world_normal.with_w(0.0).normalize()
+    pub fn normal_at(&self, world_point: &Point) -> Result<Vector, String> {
+        let transformation = self.transform().invert()?;
+        let local_point = &transformation * world_point;
+        let local_normal = match self {
+            Self::Sphere(sphere) => sphere.normal_at(&local_point),
+            Self::TestShape(test_shape) => test_shape.normal_at(&local_point),
+        };
+        let world_normal = transformation.transpose() * local_normal;
+        Ok(world_normal.with_w(0.0).normalize())
     }
 }
 

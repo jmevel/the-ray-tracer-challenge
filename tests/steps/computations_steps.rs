@@ -14,7 +14,7 @@ fn computations_is_prepare_computations_result(
     let ray = world.get_ray(&ray).clone();
     let computations = Computations::from_intersection_and_ray(&intersection, &ray);
 
-    world.add_computations(computations_name, computations);
+    world.add_computations(computations_name, computations.unwrap());
 }
 
 #[then(expr = "{word}.normalv = vector\\({int}, {int}, {int})")]

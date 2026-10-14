@@ -1,6 +1,6 @@
 use uuid::Uuid;
 
-use crate::{Intersections, Material, Matrix};
+use crate::{Intersections, Material, Matrix, Point, Vector};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct TestShape {
@@ -38,5 +38,9 @@ impl TestShape {
 
     pub fn intersect(&self) -> Result<Option<Intersections>, String> {
         Ok(None)
+    }
+
+    pub fn normal_at(&self, local_point: &Point) -> Vector {
+        Vector::new_vector(local_point.x, local_point.y, local_point.z)
     }
 }

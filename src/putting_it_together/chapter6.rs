@@ -58,7 +58,7 @@ pub fn putting_it_together() {
                                 &light,
                                 &point,
                                 &eye,
-                                &normal,
+                                &normal.unwrap(),
                                 false,
                             );
 

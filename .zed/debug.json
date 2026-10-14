@@ -11,11 +11,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@tuple"],
+    "args": ["--tags", "@tuple"]
   },
   {
     "label": "Debug canvas tests",
@@ -29,11 +29,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@canvas"],
+    "args": ["--tags", "@canvas"]
   },
   {
     "label": "Debug matrix tests",
@@ -47,11 +47,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@matrix"],
+    "args": ["--tags", "@matrix"]
   },
   {
     "label": "Debug transformation tests",
@@ -65,11 +65,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@transformation"],
+    "args": ["--tags", "@transformation"]
   },
   {
     "label": "Debug ray tests",
@@ -83,11 +83,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@ray"],
+    "args": ["--tags", "@ray"]
   },
   {
     "label": "Debug sphere tests",
@@ -101,11 +101,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@sphere"],
+    "args": ["--tags", "@sphere"]
   },
   {
     "label": "Debug intersection tests",
@@ -119,11 +119,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@intersection"],
+    "args": ["--tags", "@intersection"]
   },
   {
     "label": "Debug light tests",
@@ -137,11 +137,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@light"],
+    "args": ["--tags", "@light"]
   },
   {
     "label": "Debug material tests",
@@ -155,11 +155,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@material"],
+    "args": ["--tags", "@material"]
   },
   {
     "label": "Debug world tests",
@@ -173,11 +173,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@world"],
+    "args": ["--tags", "@world"]
   },
   {
     "label": "Debug camera tests",
@@ -191,11 +191,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@camera"],
+    "args": ["--tags", "@camera"]
   },
   {
     "label": "Debug shape tests",
@@ -209,11 +209,11 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--tags", "@shape"],
+    "args": ["--tags", "@shape"]
   },
   {
     "label": "Debug single scenario",
@@ -227,12 +227,12 @@
         "cucumber",
         "--",
         "--emit",
-        "link=target/debug/deps/cucumber",
-      ],
+        "link=target/debug/deps/cucumber"
+      ]
     },
     "program": "./target/debug/deps/cucumber",
-    "args": ["--name", "The color with an intersection behind the ray"],
-  },
+    "args": ["--name", "Computing the normal on a translated shape"]
+  }
   // Not working
   // https://zed.dev/docs/languages/rust#automatically-locate-a-debug-target-based-on-build-command
   // https://github.com/zed-industries/zed/issues/56641

@@ -12,10 +12,13 @@ pub struct Computations {
 }
 
 impl Computations {
-    pub fn from_intersection_and_ray(intersection: &Intersection, ray: &Ray) -> Computations {
+    pub fn from_intersection_and_ray(
+        intersection: &Intersection,
+        ray: &Ray,
+    ) -> Result<Computations, String> {
         let point = ray.position(intersection.t());
         let eye_vector = -ray.direction();
-        let mut normal_vector = intersection.shape().normal_at(&point.clone());
+        let mut normal_vector = intersection.shape().normal_at(&point.clone())?;
 
         let inside = {
             if normal_vector.dot_product(&eye_vector) < 0.0 {
@@ -31,7 +34,7 @@ impl Computations {
         const SPECIAL_EPSILON: f32 = 0.002;
         let over_point = &point + &(normal_vector * SPECIAL_EPSILON);
 
-        Self {
+        Ok(Self {
             t: intersection.t().to_owned(),
             object: intersection.shape().clone(),
             point,
@@ -39,6 +42,6 @@ impl Computations {
             eye_vector,
             normal_vector,
             inside,
-        }
+        })
     }
 }

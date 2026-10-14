@@ -1,7 +1,7 @@
 use std::f32;
 
-use cucumber::{gherkin::Step, given, then, when};
-use the_ray_tracer_challenge::{Color, Material, Matrix, Point, ReflectionValue, Shape, Sphere};
+use cucumber::{gherkin::Step, given};
+use the_ray_tracer_challenge::{Color, Material, Matrix, ReflectionValue, Shape, Sphere};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
@@ -78,103 +78,4 @@ fn sphere_is_sphere_with(world: &mut RayTracerWorld, sphere_name: String, step: 
     } else {
         panic!("Missing table");
     }
-}
-
-#[given(expr = "set_transform\\({word}, {word})")]
-#[when(expr = "set_transform\\({word}, {word})")]
-fn set_transform_sphere_transformation(
-    world: &mut RayTracerWorld,
-    sphere: String,
-    transformation: String,
-) {
-    let transformation = world.get_matrix4x4(&transformation).clone();
-    let Shape::Sphere(sphere) = world.get_mut_shape(&sphere) else {
-        panic!("{sphere} is not a sphere");
-    };
-    sphere.transform = transformation;
-}
-
-#[when(expr = "{word} ← normal_at\\({word}, point\\({float}, {float}, {float}))")]
-fn n_normal_at_point(
-    world: &mut RayTracerWorld,
-    normal_name: String,
-    sphere: String,
-    x: f32,
-    y: f32,
-    z: f32,
-) {
-    let sphere = world.get_shape(&sphere);
-    let point = Point::new_point(x, y, z);
-    let normal = sphere.normal_at(&point);
-    world.add_vector(normal_name, normal);
-}
-
-#[when(
-    expr = "{word} ← normal_at\\({word}, point\\(√{float}\\/{float}, √{float}\\/{float}, √{float}\\/{float}))"
-)]
-fn n_normal_at_point2(
-    world: &mut RayTracerWorld,
-    normal_name: String,
-    sphere: String,
-    x_numerator: f32,
-    x_denominator: f32,
-    y_numerator: f32,
-    y_denominator: f32,
-    z_numerator: f32,
-    z_denominator: f32,
-) {
-    let x = f32::sqrt(x_numerator) / x_denominator;
-    let y = f32::sqrt(y_numerator) / y_denominator;
-    let z = f32::sqrt(z_numerator) / z_denominator;
-    n_normal_at_point(world, normal_name, sphere, x, y, z);
-}
-
-#[when(
-    expr = "{word} ← normal_at\\({word}, point\\({float}, √{float}\\/{float}, -√{float}\\/{float}))"
-)]
-fn n_normal_at_point3(
-    world: &mut RayTracerWorld,
-    normal_name: String,
-    sphere: String,
-    x: f32,
-    y_numerator: f32,
-    y_denominator: f32,
-    z_numerator: f32,
-    z_denominator: f32,
-) {
-    let y = f32::sqrt(y_numerator) / y_denominator;
-    let z = -f32::sqrt(z_numerator) / z_denominator;
-    n_normal_at_point(world, normal_name, sphere, x, y, z);
-}
-
-#[when(expr = "{word} ← {word}.material")]
-fn material_is_sphere_material(world: &mut RayTracerWorld, material_name: String, sphere: String) {
-    let sphere = world.get_shape(&sphere);
-    world.add_material(material_name, sphere.material().clone());
-}
-
-#[when(expr = "{word}.material ← {word}")]
-fn material_of_sphere_is(world: &mut RayTracerWorld, sphere: String, material: String) {
-    let material = world.get_material(&material).clone();
-    let Shape::Sphere(sphere) = world.get_mut_shape(&sphere) else {
-        panic!("{sphere} is not a sphere")
-    };
-    sphere.material = material;
-}
-
-#[then(expr = "{word} = material\\()")]
-fn material_equals_default_material(world: &mut RayTracerWorld, material: String) {
-    let actual = world.get_material(&material);
-    assert_eq!(actual, &Material::default());
-}
-
-#[then(expr = "{word}.material = {word}")]
-fn material_of_sphere_equals_material(
-    world: &mut RayTracerWorld,
-    sphere: String,
-    material: String,
-) {
-    let sphere = world.get_shape(&sphere);
-    let expected = world.get_material(&material);
-    assert_eq!(sphere.material(), expected);
 }

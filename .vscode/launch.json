@@ -12,15 +12,15 @@
         "args": [
           "build",
           "--bin=the-ray-tracer-challenge",
-          "--package=the-ray-tracer-challenge",
+          "--package=the-ray-tracer-challenge"
         ],
         "filter": {
           "name": "the-ray-tracer-challenge",
-          "kind": "bin",
-        },
+          "kind": "bin"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -31,15 +31,15 @@
           "test",
           "--no-run",
           "--test=cucumber",
-          "--package=the-ray-tracer-challenge",
+          "--package=the-ray-tracer-challenge"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -52,15 +52,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@tuple'",
+          "--tags='@tuple'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -73,15 +73,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@canvas'",
+          "--tags='@canvas'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -94,15 +94,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@matrix'",
+          "--tags='@matrix'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -115,15 +115,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@transformation'",
+          "--tags='@transformation'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -136,15 +136,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@ray'",
+          "--tags='@ray'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -157,15 +157,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@sphere'",
+          "--tags='@sphere'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -178,15 +178,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@intersection'",
+          "--tags='@intersection'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -199,15 +199,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@light'",
+          "--tags='@light'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -220,15 +220,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@material'",
+          "--tags='@material'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -241,15 +241,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@world'",
+          "--tags='@world'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -262,15 +262,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@camerak",
+          "--tags='@camerak"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
@@ -283,15 +283,15 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--name='Individual transformations are applied in sequence'",
+          "--name='Individual transformations are applied in sequence'"
         ],
         "filter": {
           "name": "cucumber",
-          "kind": "test",
-        },
+          "kind": "test"
+        }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
-    },
-  ],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
 }

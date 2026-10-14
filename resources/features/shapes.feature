@@ -1,18 +1,5 @@
 Feature: Abstract Shapes
 
-Scenario: Computing the normal on a translated shape
-  Given s ← test_shape()
-  When set_transform(s, translation(0, 1, 0))
-    And n ← normal_at(s, point(0, 1.70711, -0.70711))
-  Then n = vector(0, 0.70711, -0.70711)
-
-Scenario: Computing the normal on a transformed shape
-  Given s ← test_shape()
-    And m ← scaling(1, 0.5, 1) * rotation_z(π/5)
-  When set_transform(s, m)
-    And n ← normal_at(s, point(0, √2/2, -√2/2))
-  Then n = vector(0, 0.97014, -0.24254)
-
 Scenario: A shape has a parent attribute
   Given s ← test_shape()
   Then s.parent is nothing

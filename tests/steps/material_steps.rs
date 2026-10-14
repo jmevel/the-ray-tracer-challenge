@@ -80,6 +80,12 @@ fn lighting_is(
     world.add_color(lighting_name, lighting);
 }
 
+#[then(expr = "{word} = material\\()")]
+fn material_equals_default_material(world: &mut RayTracerWorld, material: String) {
+    let actual = world.get_material(&material);
+    assert_eq!(actual, &Material::default());
+}
+
 #[then(expr = "{word}.color = color\\({int}, {int}, {int})")]
 fn color_of_material_equals_color(
     world: &mut RayTracerWorld,

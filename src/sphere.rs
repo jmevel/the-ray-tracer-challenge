@@ -1,6 +1,6 @@
 use uuid::Uuid;
 
-use crate::{Intersection, Intersections, Material, Matrix, Point, Ray, Shape};
+use crate::{Intersection, Intersections, Material, Matrix, Point, Ray, Shape, Vector};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Sphere {
@@ -11,6 +11,7 @@ pub struct Sphere {
 
 impl Sphere {
     const DEFAULT_RADIUS: f32 = 1.0;
+    const QUADRATIC_DISCRIMANT_FACTOR: f32 = 4.0; // https://en.wikipedia.org/wiki/Discriminant
 
     pub fn new(transformation: Option<Matrix<4, 4>>, material: Option<Material>) -> Self {
         Self {
@@ -43,7 +44,7 @@ impl Sphere {
         let a = ray.direction().dot_product(ray.direction());
         let b = 2.0 * ray.direction().dot_product(&sphere_to_ray);
         let c = sphere_to_ray.dot_product(&sphere_to_ray) - Self::DEFAULT_RADIUS.powi(2);
-        let discriminant = b.powi(2) - (4.0 * a * c);
+        let discriminant = b.powi(2) - (Self::QUADRATIC_DISCRIMANT_FACTOR * a * c);
 
         if discriminant < 0.0 {
             return Ok(None);
@@ -58,5 +59,9 @@ impl Sphere {
                 Intersection::new(t2, Shape::Sphere(self.clone())),
             ],
         }))
+    }
+
+    pub fn normal_at(&self, local_point: &Point) -> Vector {
+        local_point - &Point::new_point(0.0, 0.0, 0.0)
     }
 }
