@@ -262,7 +262,28 @@
           "--test=cucumber",
           "--package=the-ray-tracer-challenge",
           "--",
-          "--tags='@camerak"
+          "--tags='@camera"
+        ],
+        "filter": {
+          "name": "cucumber",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug plane tests",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=cucumber",
+          "--package=the-ray-tracer-challenge",
+          "--",
+          "--tags='@plane"
         ],
         "filter": {
           "name": "cucumber",

@@ -1,5 +1,5 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Color, Material, ReflectionValue, Shape};
+use the_ray_tracer_challenge::{Color, Material, ReflectionValue};
 
 use crate::steps::ray_tracer_world::{ElementType, RayTracerWorld};
 
@@ -40,15 +40,14 @@ fn ambient_of_element_material_is_value(
     };
 
     let new_ambient = ReflectionValue::new(value);
-    match scene_world
+    let shape = scene_world
         .elements
         .iter_mut()
         .find(|shape| shape.id() == &uuid)
-        .expect("Shape not found")
-    {
-        Shape::Sphere(sphere) => sphere.material.ambient = new_ambient,
-        Shape::TestShape(test_shape) => test_shape.material.ambient = new_ambient,
-    };
+        .expect("Shape not found");
+    let mut new_material = shape.material().clone();
+    new_material.ambient = new_ambient;
+    shape.set_material(new_material);
 }
 
 #[when(expr = "{word} ← lighting\\({word}, {word}, {word}, {word}, {word}, {word})")]

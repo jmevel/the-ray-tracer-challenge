@@ -1,5 +1,5 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Matrix, Point, Shape, TestShape};
+use the_ray_tracer_challenge::{Matrix, Plane, Point, Shape, TestShape};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
@@ -7,6 +7,11 @@ use crate::steps::ray_tracer_world::RayTracerWorld;
 fn shape_is_test_shape(world: &mut RayTracerWorld, test_shape_name: String) {
     let test_shape = Shape::TestShape(TestShape::new(None, None));
     world.add_shape(test_shape_name, test_shape);
+}
+
+#[given(expr = "{word} ← plane\\(\\)")]
+fn shape_is_plane(world: &mut RayTracerWorld, test_shape_name: String) {
+    world.add_shape(test_shape_name, Shape::Plane(Plane::new(None, None)));
 }
 
 #[given(expr = "set_transform\\({word}, translation\\({float}, {float}, {float}))")]
@@ -61,6 +66,7 @@ fn intersection_is_intersect_of_shape_and_ray(
 }
 
 #[when(expr = "{word} ← normal_at\\({word}, point\\({float}, {float}, {float}))")]
+#[when(expr = "{word} ← local_normal_at\\({word}, point\\({float}, {float}, {float}))")]
 fn n_normal_at_point(
     world: &mut RayTracerWorld,
     normal_name: String,

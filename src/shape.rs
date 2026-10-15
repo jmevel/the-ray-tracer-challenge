@@ -1,10 +1,11 @@
 use uuid::Uuid;
 
-use crate::{Intersections, Material, Matrix, Point, Ray, Sphere, TestShape, Vector};
+use crate::{Intersections, Material, Matrix, Plane, Point, Ray, Sphere, TestShape, Vector};
 
 #[derive(Debug, Clone)]
 pub enum Shape {
     Sphere(Sphere),
+    Plane(Plane),
     TestShape(TestShape),
 }
 
@@ -12,6 +13,7 @@ impl Shape {
     pub fn id(&self) -> &Uuid {
         match self {
             Self::Sphere(sphere) => &sphere.id(),
+            Self::Plane(plane) => &plane.id(),
             Self::TestShape(test_shape) => test_shape.id(),
         }
     }
@@ -19,6 +21,7 @@ impl Shape {
     pub fn transform(&self) -> &Matrix<4, 4> {
         match self {
             Self::Sphere(sphere) => &sphere.transform(),
+            Self::Plane(plane) => &plane.transform(),
             Self::TestShape(test_shape) => test_shape.transform(),
         }
     }
@@ -26,6 +29,7 @@ impl Shape {
     pub fn set_transform(&mut self, transformation: Matrix<4, 4>) {
         match self {
             Shape::Sphere(sphere) => sphere.transform = transformation,
+            Shape::Plane(plane) => plane.transform = transformation,
             Shape::TestShape(test_shape) => test_shape.transform = transformation,
         }
     }
@@ -33,6 +37,7 @@ impl Shape {
     pub fn material(&self) -> &Material {
         match self {
             Self::Sphere(sphere) => sphere.material(),
+            Self::Plane(plane) => plane.material(),
             Self::TestShape(test_shape) => test_shape.material(),
         }
     }
@@ -40,6 +45,7 @@ impl Shape {
     pub fn set_material(&mut self, material: Material) {
         match self {
             Shape::Sphere(sphere) => sphere.material = material,
+            Shape::Plane(plane) => plane.material = material,
             Shape::TestShape(test_shape) => test_shape.material = material,
         }
     }
@@ -50,6 +56,7 @@ impl Shape {
 
         match self {
             Self::Sphere(sphere) => sphere.intersect(&ray),
+            Self::Plane(plane) => plane.intersect(&ray),
             Self::TestShape(test_shape) => test_shape.intersect(),
         }
     }
@@ -59,6 +66,7 @@ impl Shape {
         let local_point = &transformation * world_point;
         let local_normal = match self {
             Self::Sphere(sphere) => sphere.normal_at(&local_point),
+            Self::Plane(plane) => plane.normal_at(),
             Self::TestShape(test_shape) => test_shape.normal_at(&local_point),
         };
         let world_normal = transformation.transpose() * local_normal;

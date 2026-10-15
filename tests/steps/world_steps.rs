@@ -1,5 +1,5 @@
 use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Color, Point, PointLight, Shape, World};
+use the_ray_tracer_challenge::{Color, Point, PointLight, World};
 
 use crate::steps::{
     ray_tracer_world::{
@@ -27,11 +27,16 @@ fn shape_is_the_nth_element_in_world(
     nth: Nth,
     world_name: String,
 ) {
-    let scene_world = world.get_mut_world(&world_name);
-    match scene_world.elements[nth as usize] {
-        Shape::Sphere(sphere) => world.add_object_reference(shape_name, world_name, *sphere.id()),
-        Shape::TestShape(_) => panic!("Not implemented"),
+    let shape_id = {
+        let scene_world = world.get_mut_world(&world_name); // First mutable borrow of world
+        let shape = &scene_world.elements[nth as usize];
+        // shape.id() returns a reference which in this case is tied to the MUTABLE borrow of world
+        // Uuid is Copy so we can actually clone it to obtain an owned value and the mutable borrow of world is dropped at the end of this block
+        // This allows us to later borrow world again as mutable to add the object reference
+        shape.id().clone()
     };
+
+    world.add_object_reference(shape_name, world_name, shape_id); // Second mutable borrow of world
 }
 
 // w.light ← point_light(point(0, 0.25, 0), color(1, 1, 1))
