@@ -78,6 +78,7 @@ impl PartialEq for Shape {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
             (Self::Sphere(this_sphere), Self::Sphere(that_sphere)) => this_sphere == that_sphere,
+            (Self::Plane(this_plane), Self::Plane(that_plane)) => this_plane == that_plane,
             (Self::TestShape(this_test_shape), Self::TestShape(that_test_shape)) => {
                 this_test_shape == that_test_shape
             }

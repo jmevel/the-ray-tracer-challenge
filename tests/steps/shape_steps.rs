@@ -52,6 +52,7 @@ fn set_transform_sphere_transformation(
 }
 
 #[when(expr = "{word} ← intersect\\({word}, {word})")]
+#[when(expr = "{word} ← local_intersect\\({word}, {word})")]
 fn intersection_is_intersect_of_shape_and_ray(
     world: &mut RayTracerWorld,
     intersect_name: String,
@@ -67,7 +68,7 @@ fn intersection_is_intersect_of_shape_and_ray(
 
 #[when(expr = "{word} ← normal_at\\({word}, point\\({float}, {float}, {float}))")]
 #[when(expr = "{word} ← local_normal_at\\({word}, point\\({float}, {float}, {float}))")]
-fn n_normal_at_point(
+fn normal_is_normal_at(
     world: &mut RayTracerWorld,
     normal_name: String,
     sphere: String,
@@ -98,7 +99,7 @@ fn n_normal_at_point2(
     let x = f32::sqrt(x_numerator) / x_denominator;
     let y = f32::sqrt(y_numerator) / y_denominator;
     let z = f32::sqrt(z_numerator) / z_denominator;
-    n_normal_at_point(world, normal_name, sphere, x, y, z);
+    normal_is_normal_at(world, normal_name, sphere, x, y, z);
 }
 
 #[when(
@@ -116,7 +117,7 @@ fn n_normal_at_point3(
 ) {
     let y = f32::sqrt(y_numerator) / y_denominator;
     let z = -f32::sqrt(z_numerator) / z_denominator;
-    n_normal_at_point(world, normal_name, shape, x, y, z);
+    normal_is_normal_at(world, normal_name, shape, x, y, z);
 }
 
 #[when(expr = "{word} ← {word}.material")]
@@ -156,4 +157,10 @@ fn shape_transform_equals_translation(
     let actual = world.get_shape(&shape);
     let expected = Matrix::new_translation(x, y, z);
     assert_eq!(actual.transform(), &expected);
+}
+
+#[then(expr = "{word} is empty")]
+fn intersections_collection_is_empty(world: &mut RayTracerWorld, intersections_collection: String) {
+    let intersections_collection = world.get_intersections_collection(&intersections_collection);
+    assert!(intersections_collection.is_none());
 }

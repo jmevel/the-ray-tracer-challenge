@@ -1,8 +1,10 @@
 use uuid::Uuid;
 
-use crate::{Intersections, Material, Matrix, Ray, Vector};
+use crate::{
+    Intersection, Intersections, Material, Matrix, Ray, Shape, Tuple, Vector, float::EPSILON,
+};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Plane {
     id: Uuid,
     pub transform: Matrix<4, 4>,
@@ -36,8 +38,14 @@ impl Plane {
         &self.material
     }
 
-    pub fn intersect(&self, _ray: &Ray) -> Result<Option<Intersections>, String> {
-        Ok(None)
+    pub fn intersect(&self, ray: &Ray) -> Result<Option<Intersections>, String> {
+        if ray.direction().y().abs() < EPSILON {
+            return Ok(None);
+        }
+        let t = -ray.origin().y / ray.direction().y();
+        Ok(Some(Intersections {
+            0: vec![Intersection::new(t, Shape::Plane(self.clone()))],
+        }))
     }
 
     pub fn normal_at(&self) -> Vector {

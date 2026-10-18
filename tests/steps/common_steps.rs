@@ -208,13 +208,13 @@ fn object_at_index_of_intersections_collection_equals_object(
     index: usize,
     object_name: String,
 ) {
-    let intersection = world
+    let intersections_collection = world
         .get_intersections_collection(&intersections_collection)
         .clone();
 
     match world.get_element(&object_name) {
         ElementType::Shape(shape) => {
-            assert_eq!(intersection.unwrap()[index].shape(), shape);
+            assert_eq!(intersections_collection.unwrap()[index].shape(), shape);
         }
         _ => panic!("Not supported"),
     }
