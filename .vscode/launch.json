@@ -296,6 +296,27 @@
     {
       "type": "lldb",
       "request": "launch",
+      "name": "Debug pattern tests",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=cucumber",
+          "--package=the-ray-tracer-challenge",
+          "--",
+          "--tags='@pattern"
+        ],
+        "filter": {
+          "name": "cucumber",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
       "name": "Debug single scenario",
       "cargo": {
         "args": [

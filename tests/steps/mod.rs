@@ -7,6 +7,7 @@ pub mod intersection_steps;
 pub mod light_steps;
 pub mod material_steps;
 pub mod matrix_steps;
+pub mod pattern_steps;
 pub mod point_steps;
 pub mod ray_steps;
 pub mod ray_tracer_world;

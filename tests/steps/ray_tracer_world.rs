@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use cucumber::World;
 use the_ray_tracer_challenge::{
     Camera, Canvas, Color, Computations, Intersection, Intersections, Material, Matrix, Point,
-    PointLight, Ray, Shape, Vector,
+    PointLight, Ray, Shape, StripePattern, Vector,
 };
 use uuid::Uuid;
 
@@ -27,7 +27,6 @@ pub enum ElementType {
     Matrix3x3(Matrix<3, 3>),
     Matrix4x4(Matrix<4, 4>),
     Ray(Ray),
-    // Sphere(Sphere),
     Shape(Shape),
     Intersection(Option<Intersection>),
     IntersectionsCollection(Option<Intersections>),
@@ -37,6 +36,7 @@ pub enum ElementType {
     Computations(Computations),
     SceneWorldObjectReference((String, Uuid)), // String is the name of its parent
     Camera(Camera),
+    Pattern(StripePattern),
 }
 
 impl RayTracerWorld {
@@ -444,6 +444,22 @@ impl RayTracerWorld {
             .expect(format!("{camera} does not exist").as_str())
         else {
             panic!("{camera} is not a camera")
+        };
+        value
+    }
+
+    pub fn add_pattern(&mut self, pattern_name: String, pattern: StripePattern) {
+        self.elements
+            .insert(pattern_name, ElementType::Pattern(pattern));
+    }
+
+    pub fn get_pattern(&self, pattern: &str) -> &StripePattern {
+        let ElementType::Pattern(value) = self
+            .elements
+            .get(pattern)
+            .expect(format!("{pattern} does not exist").as_str())
+        else {
+            panic!("{pattern} is not a pattern")
         };
         value
     }

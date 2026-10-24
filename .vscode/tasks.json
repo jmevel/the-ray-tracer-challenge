@@ -79,6 +79,11 @@
       "command": "cargo test --test cucumber -- --tags '@plane'"
     },
     {
+      "label": "Test pattern",
+      "type": "shell",
+      "command": "cargo test --test cucumber -- --tags '@pattern'"
+    },
+    {
       "label": "Test single scenario",
       "type": "shell",
       "command": "cargo test --test cucumber -- --name 'The color with an intersection behind the ray'"
