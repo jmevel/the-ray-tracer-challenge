@@ -1,12 +1,74 @@
 use std::panic;
 
-use cucumber::then;
-use the_ray_tracer_challenge::{Color, Tuple, float::float_equals};
+use cucumber::{then, when};
+use the_ray_tracer_challenge::{Color, Point, Tuple, float::float_equals};
 
 use crate::steps::{
     ray_tracer_world::{ElementType, RayTracerWorld},
     tuple_steps::tuple_added_to_tuple_equals_tuple,
 };
+
+#[when(expr = "{word} ← lighting\\({word}, {word}, {word}, {word}, {word}, {word})")]
+fn color_is_lighting(
+    world: &mut RayTracerWorld,
+    lighting_name: String,
+    material: String,
+    light_point: String,
+    position: String,
+    eye_vector: String,
+    normal_vector: String,
+    in_shadow: String,
+) {
+    let material = world.get_material(&material);
+    let light_point = world.get_point_light(&light_point);
+    let position = world.get_point(&position);
+    let eye_vector = world.get_vector(&eye_vector);
+    let normal_vector = world.get_vector(&normal_vector);
+    let in_shadow = world.get_boolean(&in_shadow);
+
+    let lighting = Color::lighting(
+        material,
+        light_point,
+        position,
+        eye_vector,
+        normal_vector,
+        in_shadow,
+    );
+    world.add_color(lighting_name, lighting);
+}
+
+// c1 ← lighting(m, light, point(0.9, 0, 0), eyev, normalv, false)
+#[when(
+    regex = r"^(\w+) ← lighting\((\w+), (\w+), point\(([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?), ([+-]?\d+(?:\.\d+)?)\), (\w+), (\w+), (true|false)\)$"
+)]
+fn color_is_lighting2(
+    world: &mut RayTracerWorld,
+    color_name: String,
+    material: String,
+    light_point: String,
+    x: f32,
+    y: f32,
+    z: f32,
+    eye_vector: String,
+    normal_vector: String,
+    in_shadow: bool,
+) {
+    let material = world.get_material(&material);
+    let light_point = world.get_point_light(&light_point);
+    let position = &Point::new_point(x, y, z);
+    let eye_vector = world.get_vector(&eye_vector);
+    let normal_vector = world.get_vector(&normal_vector);
+
+    let lighting = Color::lighting(
+        material,
+        light_point,
+        position,
+        eye_vector,
+        normal_vector,
+        in_shadow,
+    );
+    world.add_color(color_name, lighting);
+}
 
 #[then(expr = "{word} is a point")]
 fn is_a_point(world: &mut RayTracerWorld, tuple: String) {

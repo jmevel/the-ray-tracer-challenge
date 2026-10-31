@@ -1,4 +1,4 @@
-use crate::{Color, ReflectionValue};
+use crate::{Color, Pattern, ReflectionValue};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Material {
@@ -7,6 +7,7 @@ pub struct Material {
     pub diffuse: ReflectionValue,
     pub specular: ReflectionValue,
     pub shininess: f32,
+    pub pattern: Option<Pattern>,
 }
 
 impl Material {
@@ -16,6 +17,7 @@ impl Material {
         diffuse: Option<ReflectionValue>,
         specular: Option<ReflectionValue>,
         shininess: Option<f32>,
+        pattern: Option<Pattern>,
     ) -> Self {
         // In the scenarion 'The default world' in 'world.feature', the test is unclear if we are supposed to use the values from a 'default' material or not
         // For now, I'll assume that's the case and that 'ambient' and 'shininess' have their 'default' values even though they aren't mentioned in the test
@@ -26,6 +28,7 @@ impl Material {
             diffuse: diffuse.unwrap_or(default.diffuse),
             specular: specular.unwrap_or(default.specular),
             shininess: shininess.unwrap_or(default.shininess),
+            pattern,
         }
     }
 }
@@ -38,6 +41,7 @@ impl Default for Material {
             diffuse: ReflectionValue::new(0.9),
             specular: ReflectionValue::new(0.9),
             shininess: 200.0,
+            pattern: None,
         }
     }
 }

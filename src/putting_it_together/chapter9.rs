@@ -15,6 +15,7 @@ pub fn putting_it_together() {
             None,
             Some(ReflectionValue::new(0.0)),
             None,
+            None,
         )),
     );
 
@@ -25,6 +26,7 @@ pub fn putting_it_together() {
             None,
             Some(ReflectionValue::new(0.7)),
             Some(ReflectionValue::new(0.7)),
+            None,
             None,
         )),
     );
@@ -37,6 +39,7 @@ pub fn putting_it_together() {
             Some(ReflectionValue::new(0.7)),
             Some(ReflectionValue::new(0.3)),
             None,
+            None,
         )),
     );
 
@@ -47,6 +50,7 @@ pub fn putting_it_together() {
             None,
             Some(ReflectionValue::new(0.7)),
             Some(ReflectionValue::new(0.3)),
+            None,
             None,
         )),
     );

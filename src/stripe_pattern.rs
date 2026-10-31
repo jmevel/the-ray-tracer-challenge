@@ -1,6 +1,6 @@
 use crate::{Color, Point};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct StripePattern {
     color_1: Color,
     color_2: Color,

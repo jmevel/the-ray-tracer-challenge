@@ -1,4 +1,5 @@
 use crate::Material;
+use crate::Pattern;
 use crate::Point;
 use crate::PointLight;
 use crate::float::float_equals;
@@ -50,8 +51,15 @@ impl Color {
         normal_vector: &Vector,
         in_shadow: bool,
     ) -> Color {
+        let color = match material.pattern {
+            Some(pattern) => match pattern {
+                Pattern::SripePattern(stripe_pattern) => stripe_pattern.stripe_at(position).clone(),
+            },
+            None => material.color,
+        };
+
         // combine the surface's color with the light's color/intensity
-        let effective_color = &material.color * light.intensity();
+        let effective_color = &color * light.intensity();
 
         // find the direction to the light source
         let light_vector = (light.position() - position).normalize();

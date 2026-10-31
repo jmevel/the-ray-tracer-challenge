@@ -1,5 +1,5 @@
-use cucumber::{given, then, when};
-use the_ray_tracer_challenge::{Color, Material, ReflectionValue};
+use cucumber::{given, then};
+use the_ray_tracer_challenge::{Color, Material, Pattern, ReflectionValue, StripePattern};
 
 use crate::steps::ray_tracer_world::{ElementType, RayTracerWorld};
 
@@ -19,6 +19,20 @@ fn boolean_is(world: &mut RayTracerWorld, boolean_name: String, value: bool) {
 fn ambient_of_material_is_value(world: &mut RayTracerWorld, material: String, value: f32) {
     let material = world.get_mut_material(&material);
     material.ambient = ReflectionValue::new(value);
+}
+
+// material.specular ← 1.0
+#[given(regex = r"^(\w+)\.specular ← ([+-]?\d+(?:\.\d+)?)$")]
+fn specular_of_material_is_value(world: &mut RayTracerWorld, material: String, value: f32) {
+    let material = world.get_mut_material(&material);
+    material.specular = ReflectionValue::new(value);
+}
+
+// material.diffuse ← 1.0
+#[given(regex = r"^(\w+)\.diffuse ← ([+-]?\d+(?:\.\d+)?)$")]
+fn diffuse_of_material_is_value(world: &mut RayTracerWorld, material: String, value: f32) {
+    let material = world.get_mut_material(&material);
+    material.diffuse = ReflectionValue::new(value);
 }
 
 #[given(expr = "{word}.material.ambient ← {float}")]
@@ -50,33 +64,24 @@ fn ambient_of_element_material_is_value(
     shape.set_material(new_material);
 }
 
-#[when(expr = "{word} ← lighting\\({word}, {word}, {word}, {word}, {word}, {word})")]
-fn lighting_is(
+#[given(
+    expr = "{word}.pattern ← stripe_pattern\\(color\\({float}, {float}, {float}), color\\({float}, {float}, {float}))"
+)]
+fn material_pattern_is_stripe_pattern(
     world: &mut RayTracerWorld,
-    lighting_name: String,
     material: String,
-    light_point: String,
-    position: String,
-    eye_vector: String,
-    normal_vector: String,
-    in_shadow: String,
+    color1_red: f32,
+    color1_green: f32,
+    color1_blue: f32,
+    color2_red: f32,
+    color2_green: f32,
+    color2_blue: f32,
 ) {
-    let material = world.get_material(&material);
-    let light_point = world.get_point_light(&light_point);
-    let position = world.get_point(&position);
-    let eye_vector = world.get_vector(&eye_vector);
-    let normal_vector = world.get_vector(&normal_vector);
-    let in_shadow = world.get_boolean(&in_shadow);
-
-    let lighting = Color::lighting(
-        material,
-        light_point,
-        position,
-        eye_vector,
-        normal_vector,
-        in_shadow,
-    );
-    world.add_color(lighting_name, lighting);
+    let material = world.get_mut_material(&material);
+    material.pattern = Some(Pattern::SripePattern(StripePattern::new(
+        Color::new_color(color1_red, color1_green, color1_blue),
+        Color::new_color(color2_red, color2_green, color2_blue),
+    )));
 }
 
 #[then(expr = "{word} = material\\()")]

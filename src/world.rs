@@ -108,6 +108,7 @@ impl Default for World {
             Some(ReflectionValue::new(0.7)),
             Some(ReflectionValue::new(0.2)),
             None,
+            None,
         );
         s1.material = s1_material;
 
