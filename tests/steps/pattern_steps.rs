@@ -1,5 +1,5 @@
 use cucumber::{given, then};
-use the_ray_tracer_challenge::StripePattern;
+use the_ray_tracer_challenge::{Point, StripePattern};
 
 use crate::steps::ray_tracer_world::RayTracerWorld;
 
@@ -28,4 +28,20 @@ fn pattern_color_2_is_color(world: &mut RayTracerWorld, pattern: String, expecte
     let pattern = world.get_pattern(&pattern);
     let expected_color = world.get_color(&expected_color);
     assert_eq!(pattern.color_2(), expected_color);
+}
+
+#[then(expr = "stripe_at\\({word}, point\\({float}, {float}, {float})) = {word}")]
+fn stripe_at_equals_color(
+    world: &mut RayTracerWorld,
+    pattern: String,
+    x: f32,
+    y: f32,
+    z: f32,
+    expected_color: String,
+) {
+    let pattern = world.get_pattern(&pattern);
+    let point = Point::new_point(x, y, z);
+    let expected_color = world.get_color(&expected_color);
+    let actual_color = pattern.stripe_at(&point);
+    assert_eq!(actual_color, expected_color);
 }

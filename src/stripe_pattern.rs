@@ -1,4 +1,4 @@
-use crate::Color;
+use crate::{Color, Point};
 
 #[derive(Debug)]
 pub struct StripePattern {
@@ -16,5 +16,12 @@ impl StripePattern {
     }
     pub fn color_2(&self) -> &Color {
         &self.color_2
+    }
+
+    pub fn stripe_at(&self, point: &Point) -> &Color {
+        if point.x.floor() % 2.0 == 0.0 {
+            return self.color_1();
+        }
+        self.color_2()
     }
 }

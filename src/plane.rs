@@ -49,6 +49,7 @@ impl Plane {
     }
 
     pub fn normal_at(&self) -> Vector {
+        // Our planes are always constructed on x and z axes (but can be transformed after) so the normal of a plane is always perfectly aligned on the y axis
         Vector::new_vector(0.0, 1.0, 0.0)
     }
 }
